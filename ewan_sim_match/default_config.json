@@ -1,0 +1,3640 @@
+{
+    "parameters": {
+        "Acquisition_Blocking_Immunity_Decay_Rate": 0.001,
+        "Acquisition_Blocking_Immunity_Duration_Before_Decay": 0,
+        "Age_Dependent_Biting_Risk_Type": "OFF",
+        "Age_Initialization_Distribution_Type": "DISTRIBUTION_OFF",
+        "Air_Migration_Filename": "",
+        "Air_Migration_Roundtrip_Duration": 1,
+        "Air_Migration_Roundtrip_Probability": 0.8,
+        "Air_Temperature_Filename": "air_temp.json",
+        "Air_Temperature_Offset": 0,
+        "Air_Temperature_Variance": 2,
+        "Anemia_Mortality_Inverse_Width": 10,
+        "Anemia_Mortality_Threshold": 3,
+        "Anemia_Severe_Inverse_Width": 10,
+        "Anemia_Severe_Threshold": 5,
+        "Antibody_CSP_Decay_Days": 90,
+        "Antibody_CSP_Killing_Inverse_Width": 1.5,
+        "Antibody_CSP_Killing_Threshold": 10,
+        "Antibody_Capacity_Growth_Rate": 0.1,
+        "Antibody_IRBC_Kill_Rate": 2,
+        "Antibody_Memory_Level": 0.2,
+        "Antibody_Stimulation_C50": 10,
+        "Antigen_Switch_Rate": 2e-09,
+        "Base_Air_Temperature": 22,
+        "Base_Gametocyte_Fraction_Male": 0.2,
+        "Base_Gametocyte_Mosquito_Survival_Rate": 0.01,
+        "Base_Gametocyte_Production_Rate": 0.02,
+        "Base_Individual_Sample_Rate": 1,
+        "Base_Infectivity": 0.3,
+        "Base_Land_Temperature": 26,
+        "Base_Mortality": 0.001,
+        "Base_Rainfall": 10,
+        "Base_Relative_Humidity": 0.75,
+        "Base_Sporozoite_Survival_Fraction": 0.25,
+        "Birth_Rate_Boxcar_Forcing_Amplitude": 0,
+        "Birth_Rate_Boxcar_Forcing_End_Time": 0,
+        "Birth_Rate_Boxcar_Forcing_Start_Time": 0,
+        "Birth_Rate_Dependence": "FIXED_BIRTH_RATE",
+        "Birth_Rate_Sinusoidal_Forcing_Amplitude": 0,
+        "Birth_Rate_Sinusoidal_Forcing_Phase": 0,
+        "Birth_Rate_Time_Dependence": "NONE",
+        "Campaign_Filename": "",
+        "Climate_Model": "CLIMATE_OFF",
+        "Climate_Update_Resolution": "CLIMATE_UPDATE_YEAR",
+        "Clinical_Fever_Threshold_High": 1,
+        "Clinical_Fever_Threshold_Low": 1,
+        "Config_Name": "UNINITIALIZED STRING",
+        "Custom_Coordinator_Events": [],
+        "Custom_Individual_Events": [],
+        "Custom_Node_Events": [],
+        "Custom_Reports_Filename": "UNINITIALIZED STRING",
+        "Cytokine_Gametocyte_Inactivation": 0.02,
+        "Death_Rate_Dependence": "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER",
+        "Default_Geography_Initial_Node_Population": 1000,
+        "Default_Geography_Torus_Size": 10,
+        "Demographics_Filenames": [],
+        "Drought_Egg_Hatch_Delay": 0.33,
+        "Egg_Arrhenius1": 61600000.0,
+        "Egg_Arrhenius2": 5754.03,
+        "Egg_Hatch_Delay_Distribution": "NO_DELAY",
+        "Egg_Hatch_Density_Dependence": "NO_DENSITY_DEPENDENCE",
+        "Egg_Saturation_At_Oviposition": "NO_SATURATION",
+        "Enable_Aging": 1,
+        "Enable_Air_Migration": 0,
+        "Enable_Birth": 1,
+        "Enable_Climate_Stochasticity": 0,
+        "Enable_Default_Reporting": 1,
+        "Enable_Demographics_Birth": 0,
+        "Enable_Demographics_Builtin": 0,
+        "Enable_Demographics_Reporting": 1,
+        "Enable_Demographics_Risk": 0,
+        "Enable_Disease_Mortality": 1,
+        "Enable_Drought_Egg_Hatch_Delay": 0,
+        "Enable_Egg_Mortality": 0,
+        "Enable_Family_Migration": 0,
+        "Enable_Heterogeneous_Intranode_Transmission": 0,
+        "Enable_Immune_Decay": 1,
+        "Enable_Immunity": 1,
+        "Enable_Infectivity_Reservoir": 0,
+        "Enable_Initial_Prevalence": 0,
+        "Enable_Initial_Susceptibility_Distribution": 0,
+        "Enable_Interventions": 0,
+        "Enable_Local_Migration": 0,
+        "Enable_Maternal_Antibodies_Transmission": 0,
+        "Enable_Maternal_Infection_Transmission": 0,
+        "Enable_Maternal_Protection": 0,
+        "Enable_Migration_Heterogeneity": 1,
+        "Enable_Natural_Mortality": 0,
+        "Enable_Property_Output": 0,
+        "Enable_Rainfall_Stochasticity": 1,
+        "Enable_Random_Generator_From_Serialized_Population": 0,
+        "Enable_Regional_Migration": 0,
+        "Enable_Sea_Migration": 0,
+        "Enable_Skipping": 0,
+        "Enable_Spatial_Output": 0,
+        "Enable_Superinfection": 0,
+        "Enable_Susceptibility_Scaling": 0,
+        "Enable_Temperature_Dependent_Egg_Hatching": 0,
+        "Enable_Termination_On_Zero_Total_Infectivity": 0,
+        "Enable_Vector_Aging": 0,
+        "Enable_Vector_Migration": 0,
+        "Enable_Vector_Migration_Local": 0,
+        "Enable_Vector_Migration_Regional": 0,
+        "Enable_Vector_Mortality": 1,
+        "Enable_Vector_Species_Report": 0,
+        "Enable_Vital_Dynamics": 1,
+        "Erythropoiesis_Anemia_Effect": 3.5,
+        "Falciparum_MSP_Variants": 100,
+        "Falciparum_Nonspecific_Types": 20,
+        "Falciparum_PfEMP1_Variants": 1000,
+        "Family_Migration_Filename": "",
+        "Family_Migration_Roundtrip_Duration": 1,
+        "Fever_IRBC_Kill_Rate": 0.15,
+        "Fever_Mortality_Inverse_Width": 10,
+        "Fever_Mortality_Threshold": 3,
+        "Fever_Severe_Inverse_Width": 10,
+        "Fever_Severe_Threshold": 1.5,
+        "Gametocyte_Stage_Survival_Rate": 1,
+        "Genome_Markers": [],
+        "Human_Feeding_Mortality": 0.1,
+        "Immune_Threshold_For_Downsampling": 0,
+        "Incubation_Period_Constant": 6,
+        "Incubation_Period_Distribution": "NOT_INITIALIZED",
+        "Incubation_Period_Exponential": 6,
+        "Incubation_Period_Gaussian_Mean": 6,
+        "Incubation_Period_Gaussian_Std_Dev": 1,
+        "Incubation_Period_Kappa": 1,
+        "Incubation_Period_Lambda": 1,
+        "Incubation_Period_Log_Normal_Mu": 6,
+        "Incubation_Period_Log_Normal_Sigma": 1,
+        "Incubation_Period_Max": 1,
+        "Incubation_Period_Mean_1": 1,
+        "Incubation_Period_Mean_2": 1,
+        "Incubation_Period_Min": 0,
+        "Incubation_Period_Peak_2_Value": 1,
+        "Incubation_Period_Poisson_Mean": 6,
+        "Incubation_Period_Proportion_0": 1,
+        "Incubation_Period_Proportion_1": 1,
+        "Individual_Sampling_Type": "TRACK_ALL",
+        "Infection_Updates_Per_Timestep": 1,
+        "Infectious_Period_Constant": 6,
+        "Infectious_Period_Distribution": "NOT_INITIALIZED",
+        "Infectious_Period_Exponential": 6,
+        "Infectious_Period_Gaussian_Mean": 6,
+        "Infectious_Period_Gaussian_Std_Dev": 1,
+        "Infectious_Period_Kappa": 1,
+        "Infectious_Period_Lambda": 1,
+        "Infectious_Period_Log_Normal_Mu": 6,
+        "Infectious_Period_Log_Normal_Sigma": 1,
+        "Infectious_Period_Max": 1,
+        "Infectious_Period_Mean_1": 1,
+        "Infectious_Period_Mean_2": 1,
+        "Infectious_Period_Min": 0,
+        "Infectious_Period_Peak_2_Value": 1,
+        "Infectious_Period_Poisson_Mean": 6,
+        "Infectious_Period_Proportion_0": 1,
+        "Infectious_Period_Proportion_1": 1,
+        "Infectivity_Boxcar_Forcing_Amplitude": 0,
+        "Infectivity_Boxcar_Forcing_End_Time": 0,
+        "Infectivity_Boxcar_Forcing_Start_Time": 0,
+        "Infectivity_Exponential_Baseline": 0,
+        "Infectivity_Exponential_Delay": 0,
+        "Infectivity_Exponential_Rate": 0,
+        "Infectivity_Scale_Type": "CONSTANT_INFECTIVITY",
+        "Infectivity_Sinusoidal_Forcing_Amplitude": 0,
+        "Infectivity_Sinusoidal_Forcing_Phase": 0,
+        "Innate_Immune_Variation_Type": "NONE",
+        "Insecticides": [],
+        "Inset_Chart_Has_Interventions": [],
+        "Inset_Chart_Reporting_Include_30Day_Avg_Infection_Duration": 1,
+        "Koppen_Filename": "koppen_climate.json",
+        "Land_Temperature_Filename": "land_temp.json",
+        "Land_Temperature_Offset": 0,
+        "Land_Temperature_Variance": 2,
+        "Larval_Density_Dependence": "UNIFORM_WHEN_OVERPOPULATION",
+        "Larval_Density_Mortality_Offset": 0.1,
+        "Larval_Density_Mortality_Scalar": 10,
+        "Larval_Rainfall_Mortality_Threshold": 100,
+        "Load_Balance_Filename": "UNINITIALIZED STRING",
+        "Local_Migration_Filename": "",
+        "Local_Migration_Roundtrip_Duration": 1,
+        "Local_Migration_Roundtrip_Probability": 0.95,
+        "MSP1_Merozoite_Kill_Fraction": 0.5,
+        "Malaria_Drug_Params": [],
+        "Malaria_Model": "MALARIA_MECHANISTIC_MODEL",
+        "Malaria_Strain_Model": "FALCIPARUM_NONRANDOM_STRAIN",
+        "Maternal_Antibodies_Type": "OFF",
+        "Maternal_Antibody_Decay_Rate": 0.01,
+        "Maternal_Antibody_Protection": 0.1,
+        "Maternal_Infection_Transmission_Probability": 0,
+        "Maternal_Linear_Slope": 0.01,
+        "Maternal_Linear_SusZero": 0.2,
+        "Maternal_Protection_Type": "NONE",
+        "Maternal_Sigmoid_HalfMaxAge": 180,
+        "Maternal_Sigmoid_SteepFac": 30,
+        "Maternal_Sigmoid_SusInit": 0,
+        "Max_Individual_Infections": 1,
+        "Max_MSP1_Antibody_Growthrate": 0.02,
+        "Max_Node_Population_Samples": 30,
+        "Mean_Egg_Hatch_Delay": 0,
+        "Mean_Sporozoites_Per_Bite": 11,
+        "Memory_Usage_Halting_Threshold_Working_Set_MB": 8000,
+        "Memory_Usage_Warning_Threshold_Working_Set_MB": 7000,
+        "Merozoites_Per_Hepatocyte": 15000,
+        "Merozoites_Per_Schizont": 16,
+        "Migration_Model": "NO_MIGRATION",
+        "Migration_Pattern": "RANDOM_WALK_DIFFUSION",
+        "Min_Adapted_Response": 0.02,
+        "Min_Days_Between_Clinical_Incidents": 3,
+        "Minimum_Adult_Age_Years": 15,
+        "Minimum_End_Time": 0,
+        "Mortality_Blocking_Immunity_Decay_Rate": 0.001,
+        "Mortality_Blocking_Immunity_Duration_Before_Decay": 0,
+        "Mortality_Time_Course": "DAILY_MORTALITY",
+        "Mosquito_Weight": 1,
+        "Newborn_Biting_Risk_Multiplier": 0.2,
+        "Node_Grid_Size": 0.004167,
+        "Nonspecific_Antibody_Growth_Rate_Factor": 0.5,
+        "Nonspecific_Antigenicity_Factor": 0.2,
+        "Number_Basestrains": 1,
+        "Number_Of_Asexual_Cycles_Without_Gametocytes": 1,
+        "Number_Substrains": 1,
+        "PKPD_Model": "FIXED_DURATION_CONSTANT_EFFECT",
+        "Parasite_Genetics": {
+            "Barcode_Genome_Locations": [],
+            "Crossover_Gamma_K": 2000,
+            "Crossover_Gamma_Theta": 100,
+            "Enable_FPG_Similarity_To_Base": 0,
+            "MSP_Genome_Location": 1,
+            "Neighborhood_Size_MSP": 4,
+            "Neighborhood_Size_PfEMP1": 10,
+            "Num_Oocyst_From_Bite_Fail": 3,
+            "Num_Sporozoites_In_Bite_Fail": 12,
+            "PfEMP1_Variants_Genome_Locations": [],
+            "Probability_Oocyst_From_Bite_Fails": 0.5,
+            "Probability_Sporozoite_In_Bite_Fails": 0.5,
+            "Sporozoite_Life_Expectancy": 10,
+            "Sporozoites_Per_Oocyst_Constant": 6,
+            "Sporozoites_Per_Oocyst_Distribution": "NOT_INITIALIZED",
+            "Sporozoites_Per_Oocyst_Exponential": 6,
+            "Sporozoites_Per_Oocyst_Gaussian_Mean": 6,
+            "Sporozoites_Per_Oocyst_Gaussian_Std_Dev": 1,
+            "Sporozoites_Per_Oocyst_Kappa": 1,
+            "Sporozoites_Per_Oocyst_Lambda": 1,
+            "Sporozoites_Per_Oocyst_Log_Normal_Mu": 6,
+            "Sporozoites_Per_Oocyst_Log_Normal_Sigma": 1,
+            "Sporozoites_Per_Oocyst_Max": 1,
+            "Sporozoites_Per_Oocyst_Mean_1": 1,
+            "Sporozoites_Per_Oocyst_Mean_2": 1,
+            "Sporozoites_Per_Oocyst_Min": 0,
+            "Sporozoites_Per_Oocyst_Peak_2_Value": 1,
+            "Sporozoites_Per_Oocyst_Poisson_Mean": 6,
+            "Sporozoites_Per_Oocyst_Proportion_0": 1,
+            "Sporozoites_Per_Oocyst_Proportion_1": 1,
+            "Var_Gene_Randomness_Type": "FIXED_NEIGHBORHOOD",
+            "schema": {
+                "Barcode_Genome_Locations": {
+                    "ascending": 1,
+                    "default": [],
+                    "description": "This is an array of genome locations where each barcode allele is found.  Its length determines how many values are in the barcode.  That is, if you want a 24-SNP barcode, then there should be 24 locations. This can be initialized to be empty if there are no Barcode positions to be tracked.",
+                    "max": 22790000.0,
+                    "min": 1,
+                    "type": "Vector Int"
+                },
+                "Crossover_Gamma_K": {
+                    "default": 2000,
+                    "description": "The 'K' or shape parameter of the gamma distribution used to select the secondary crossover points.  Remember the mean is K*Theta and variance is K*Theta*Theta.",
+                    "max": 3.40282e+38,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "Crossover_Gamma_Theta": {
+                    "default": 100,
+                    "description": "The 'Theta' or scale parameter of the gamma distribution used to select the secondary crossover points.  Remember the mean is K*Theta and variance is K*Theta*Theta.",
+                    "max": 3.40282e+38,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "Enable_FPG_Similarity_To_Base": {
+                    "default": 0,
+                    "description": "If true the Full Parasite Genetics model will simulate the base model.  That is, a person can only get one infection per timestep, only adult vectors can get infected, and a vectors is always infected once it becomes infected.",
+                    "type": "bool"
+                },
+                "MSP_Genome_Location": {
+                    "default": 1,
+                    "depends-on": {
+                        "Var_Gene_Randomness_Type": "FIXED_NEIGHBORHOOD,FIXED_MSP"
+                    },
+                    "description": "This is a single genome location representing where the merozoite surface protein (MSP) gene is found in the genome.  The initial value of the MSP will be set randomly by the model, but we define its location in the genome here. This cannot be empty as it is required for the immune model.",
+                    "max": 22790000.0,
+                    "min": 1,
+                    "type": "integer"
+                },
+                "Neighborhood_Size_MSP": {
+                    "default": 4,
+                    "depends-on": {
+                        "Var_Gene_Randomness_Type": "FIXED_NEIGHBORHOOD,FIXED_MSP"
+                    },
+                    "description": "The number of MSP variants to randomly select the MSP variant.  This is an 'neighborhood' around a number based on the barcode.",
+                    "max": 1000,
+                    "min": 0,
+                    "type": "integer"
+                },
+                "Neighborhood_Size_PfEMP1": {
+                    "default": 10,
+                    "depends-on": {
+                        "Var_Gene_Randomness_Type": "FIXED_NEIGHBORHOOD"
+                    },
+                    "description": "The number of PfEMP1 variants to randomly select for the i'th PfEMP1 variant.  This is an 'neighborhood' around a number based on the barcode.",
+                    "max": 100000,
+                    "min": 0,
+                    "type": "integer"
+                },
+                "Num_Oocyst_From_Bite_Fail": {
+                    "default": 3,
+                    "description": "Used to determine the number of oocyst to generate in the mosquito from an infectious bite-number of failures.  The genome of the oocyst depend on the gametocytes in the bite.",
+                    "max": 3.40282e+38,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "Num_Sporozoites_In_Bite_Fail": {
+                    "default": 12,
+                    "description": "Used in a negative binomial to the number of sporozoites delivered to the human in a bite from a mosquito-number of failures",
+                    "max": 3.40282e+38,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "PfEMP1_Variants_Genome_Locations": {
+                    "ascending": 1,
+                    "default": [],
+                    "depends-on": {
+                        "Var_Gene_Randomness_Type": "FIXED_NEIGHBORHOOD"
+                    },
+                    "description": "This is an array of genome locations representing where the major epitopes, PfEMP1 variants, are found in the genome.  The initial values will be set randomly by the model, but we define the locations here.  There must be 50 locations defined. This cannot be empty as it is required for the immune model.",
+                    "max": 22790000.0,
+                    "min": 1,
+                    "type": "Vector Int"
+                },
+                "Probability_Oocyst_From_Bite_Fails": {
+                    "default": 0.5,
+                    "description": "Used to determine the number of oocyst to generate in the mosquito from an infectious bite-probability of failure.",
+                    "max": 1,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "Probability_Sporozoite_In_Bite_Fails": {
+                    "default": 0.5,
+                    "description": "BD-Used in a negative binomial to the number of sporozoites delivered to the human in a bite from a mosquito-probability of failure",
+                    "max": 1,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "Sporozoite_Life_Expectancy": {
+                    "default": 10,
+                    "description": "The number of days sporozoite survives in the mosquito.  The mortality rate will be the inverse of this parameter.",
+                    "max": 3.40282e+38,
+                    "min": 1.19209e-07,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Constant": {
+                    "default": 6,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "CONSTANT_DISTRIBUTION"
+                    },
+                    "description": "Each instance will receive this constant/fixed value.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Distribution": {
+                    "default": "NOT_INITIALIZED",
+                    "description": "Determines the number of sporozoites to create for each oocyst.",
+                    "enum": [
+                        "NOT_INITIALIZED",
+                        "CONSTANT_DISTRIBUTION",
+                        "UNIFORM_DISTRIBUTION",
+                        "GAUSSIAN_DISTRIBUTION",
+                        "EXPONENTIAL_DISTRIBUTION",
+                        "POISSON_DISTRIBUTION",
+                        "LOG_NORMAL_DISTRIBUTION",
+                        "DUAL_CONSTANT_DISTRIBUTION",
+                        "WEIBULL_DISTRIBUTION",
+                        "DUAL_EXPONENTIAL_DISTRIBUTION"
+                    ],
+                    "type": "enum"
+                },
+                "Sporozoites_Per_Oocyst_Exponential": {
+                    "default": 6,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "EXPONENTIAL_DISTRIBUTION"
+                    },
+                    "description": "The mean for an exponential distribution.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Gaussian_Mean": {
+                    "default": 6,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "GAUSSIAN_DISTRIBUTION"
+                    },
+                    "description": "The mean for a Gaussian distribution.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Gaussian_Std_Dev": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "GAUSSIAN_DISTRIBUTION"
+                    },
+                    "description": "The standard deviation for a Gaussian distribution.",
+                    "max": 3.40282e+38,
+                    "min": 1.17549e-38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Kappa": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "WEIBULL_DISTRIBUTION"
+                    },
+                    "description": "The shape value in a Weibull distribution.",
+                    "max": 3.40282e+38,
+                    "min": 1.17549e-38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Lambda": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "WEIBULL_DISTRIBUTION"
+                    },
+                    "description": "The scale value in a Weibull distribution.",
+                    "max": 3.40282e+38,
+                    "min": 1.17549e-38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Log_Normal_Mu": {
+                    "default": 6,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                    },
+                    "description": "The mean for a log-normal distribution.",
+                    "max": 3.40282e+38,
+                    "min": -3.40282e+38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Log_Normal_Sigma": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                    },
+                    "description": "The width for a log-normal distribution.",
+                    "max": 3.40282e+38,
+                    "min": -3.40282e+38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Max": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "UNIFORM_DISTRIBUTION"
+                    },
+                    "description": "The maximum of the uniform distribution.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Mean_1": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                    },
+                    "description": "The mean of the first exponential distribution.",
+                    "max": 3.40282e+38,
+                    "min": 1.17549e-38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Mean_2": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                    },
+                    "description": "The mean of the second exponential distribution.",
+                    "max": 3.40282e+38,
+                    "min": 1.17549e-38,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Min": {
+                    "default": 0,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "UNIFORM_DISTRIBUTION"
+                    },
+                    "description": "The minimum of the uniform distribution.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Peak_2_Value": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                    },
+                    "description": "The value to assign to the remaining individuals.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Poisson_Mean": {
+                    "default": 6,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "POISSON_DISTRIBUTION"
+                    },
+                    "description": "The mean for a Poisson distribution.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Proportion_0": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                    },
+                    "description": "The proportion of individuals to assign a value of zero.",
+                    "max": 1,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sporozoites_Per_Oocyst_Proportion_1": {
+                    "default": 1,
+                    "depends-on": {
+                        "Sporozoites_Per_Oocyst_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                    },
+                    "description": "The proportion of individuals in the first exponential distribution.",
+                    "max": 1,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Var_Gene_Randomness_Type": {
+                    "default": "FIXED_NEIGHBORHOOD",
+                    "description": "This controls how random the var genes are in each new infection.  FIXED_NEIGHBOHOOD implies that the are set when the genome is created and each infection with this genome gets the same set of var genes.  FIXED_MSP implies that the MSP var gene is fixed but the PfEMP1 Major var genes are random for every infection.  ALL_RANDOM implies that the MPS and PfEMP1 Major var genes are random with every infection.  The minor epitopes are always random.",
+                    "enum": [
+                        "FIXED_NEIGHBORHOOD",
+                        "FIXED_MSP",
+                        "ALL_RANDOM"
+                    ],
+                    "type": "enum"
+                }
+            }
+        },
+        "Parasite_Mortality_Inverse_Width": 10,
+        "Parasite_Mortality_Threshold": 2000000.0,
+        "Parasite_Severe_Inverse_Width": 10,
+        "Parasite_Severe_Threshold": 1000000.0,
+        "Parasite_Switch_Type": "CONSTANT_SWITCH_RATE_2VARS",
+        "PfHRP2_Boost_Rate": 0.07,
+        "PfHRP2_Decay_Rate": 0.172,
+        "Population_Density_C50": 10,
+        "Population_Density_Infectivity_Correction": "CONSTANT_INFECTIVITY",
+        "Population_Scale_Type": "USE_INPUT_FILE",
+        "Post_Infection_Acquisition_Multiplier": 0,
+        "Post_Infection_Mortality_Multiplier": 0,
+        "Post_Infection_Transmission_Multiplier": 0,
+        "Pyrogenic_Threshold": 1000,
+        "RBC_Destruction_Multiplier": 9.5,
+        "Rainfall_Filename": "rainfall.json",
+        "Rainfall_In_mm_To_Fill_Swamp": 1000,
+        "Rainfall_Scale_Factor": 1,
+        "Random_Number_Generator_Policy": "ONE_PER_CORE",
+        "Random_Number_Generator_Type": "USE_PSEUDO_DES",
+        "Regional_Migration_Filename": "",
+        "Regional_Migration_Roundtrip_Duration": 1,
+        "Regional_Migration_Roundtrip_Probability": 0.1,
+        "Relative_Humidity_Filename": "rel_hum.json",
+        "Relative_Humidity_Scale_Factor": 1,
+        "Relative_Humidity_Variance": 0.05,
+        "Relative_Sample_Rate_Immune": 0.1,
+        "Report_Coordinator_Event_Recorder": 0,
+        "Report_Coordinator_Event_Recorder_Events": [],
+        "Report_Coordinator_Event_Recorder_Ignore_Events_In_List": 0,
+        "Report_Detection_Threshold_Blood_Smear_Gametocytes": 0,
+        "Report_Detection_Threshold_Blood_Smear_Parasites": 0,
+        "Report_Detection_Threshold_Fever": 1,
+        "Report_Detection_Threshold_PCR_Gametocytes": 0.05,
+        "Report_Detection_Threshold_PCR_Parasites": 0.05,
+        "Report_Detection_Threshold_PfHRP2": 5,
+        "Report_Detection_Threshold_True_Parasite_Density": 0,
+        "Report_Event_Recorder": 0,
+        "Report_Event_Recorder_Events": [],
+        "Report_Event_Recorder_Ignore_Events_In_List": 0,
+        "Report_Event_Recorder_Individual_Properties": [],
+        "Report_Gametocyte_Smear_Sensitivity": 0.1,
+        "Report_Node_Event_Recorder": 0,
+        "Report_Node_Event_Recorder_Events": [],
+        "Report_Node_Event_Recorder_Ignore_Events_In_List": 0,
+        "Report_Node_Event_Recorder_Node_Properties": [],
+        "Report_Node_Event_Recorder_Stats_By_IPs": [],
+        "Report_Parasite_Smear_Sensitivity": 0.1,
+        "Report_Surveillance_Event_Recorder": 0,
+        "Report_Surveillance_Event_Recorder_Events": [],
+        "Report_Surveillance_Event_Recorder_Ignore_Events_In_List": 0,
+        "Report_Surveillance_Event_Recorder_Stats_By_IPs": [],
+        "Roundtrip_Waypoints": 10,
+        "Run_Number": 1,
+        "Sample_Rate_0_18mo": 1,
+        "Sample_Rate_10_14": 1,
+        "Sample_Rate_15_19": 1,
+        "Sample_Rate_18mo_4yr": 1,
+        "Sample_Rate_20_Plus": 1,
+        "Sample_Rate_5_9": 1,
+        "Sample_Rate_Birth": 1,
+        "Sea_Migration_Filename": "",
+        "Sea_Migration_Roundtrip_Duration": 1,
+        "Sea_Migration_Roundtrip_Probability": 0.25,
+        "Semipermanent_Habitat_Decay_Rate": 0.01,
+        "Serialization_Mask_Node_Read": 0,
+        "Serialization_Mask_Node_Write": 0,
+        "Serialization_Precision": "REDUCED",
+        "Serialization_Time_Steps": [],
+        "Serialization_Times": [],
+        "Serialized_Population_Filenames": [],
+        "Serialized_Population_Path": ".",
+        "Serialized_Population_Reading_Type": "NONE",
+        "Serialized_Population_Writing_Type": "NONE",
+        "Simulation_Duration": 1,
+        "Simulation_Timestep": 1,
+        "Simulation_Type": "GENERIC_SIM",
+        "Spatial_Output_Channels": [],
+        "Start_Time": 1,
+        "Susceptibility_Initialization_Distribution_Type": "DISTRIBUTION_OFF",
+        "Susceptibility_Scaling_Rate": 0,
+        "Susceptibility_Scaling_Type": "CONSTANT_SUSCEPTIBILITY",
+        "Susceptibility_Type": "FRACTIONAL",
+        "Symptomatic_Infectious_Offset": 3.40282e+38,
+        "Temporary_Habitat_Decay_Factor": 0.05,
+        "Transmission_Blocking_Immunity_Decay_Rate": 0.001,
+        "Transmission_Blocking_Immunity_Duration_Before_Decay": 0,
+        "Vector_Larval_Rainfall_Mortality": "NONE",
+        "Vector_Migration_Filename_Local": "UNSPECIFIED_FILE",
+        "Vector_Migration_Filename_Regional": "UNSPECIFIED_FILE",
+        "Vector_Migration_Food_Modifier": 0,
+        "Vector_Migration_Habitat_Modifier": 0,
+        "Vector_Migration_Modifier_Equation": "LINEAR",
+        "Vector_Migration_Stay_Put_Modifier": 0,
+        "Vector_Sampling_Type": "TRACK_ALL_VECTORS",
+        "Vector_Species_Params": [],
+        "Wolbachia_Infection_Modification": 1,
+        "Wolbachia_Mortality_Modification": 1,
+        "schema": {
+            "Acquisition_Blocking_Immunity_Decay_Rate": {
+                "default": 0.001,
+                "depends-on": {
+                    "Enable_Immune_Decay": 1
+                },
+                "description": "The rate at which acquisition-blocking immunity decays after the initial period indicated by the base acquisition-blocking immunity offset.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Acquisition_Blocking_Immunity_Duration_Before_Decay": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immune_Decay": 1
+                },
+                "description": "The number of days after infection until acquisition-blocking immunity begins to decay.",
+                "max": 45000,
+                "min": 0,
+                "type": "float"
+            },
+            "Age_Dependent_Biting_Risk_Type": {
+                "default": "OFF",
+                "description": "The type of functional form for age-dependent biting risk.",
+                "enum": [
+                    "OFF",
+                    "LINEAR",
+                    "SURFACE_AREA_DEPENDENT"
+                ],
+                "type": "enum"
+            },
+            "Age_Initialization_Distribution_Type": {
+                "default": "DISTRIBUTION_OFF",
+                "description": "The method for initializing the age distribution in the simulated population.",
+                "enum": [
+                    "DISTRIBUTION_OFF",
+                    "DISTRIBUTION_SIMPLE",
+                    "DISTRIBUTION_COMPLEX"
+                ],
+                "type": "enum"
+            },
+            "Air_Migration_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Air_Migration": 1
+                },
+                "description": "The path to the input data file defining patterns of migration by airplane.",
+                "type": "string"
+            },
+            "Air_Migration_Roundtrip_Duration": {
+                "default": 1,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "The average time spent at the destination node during a round-trip migration by airplane.",
+                "max": 10000,
+                "min": 0,
+                "type": "float"
+            },
+            "Air_Migration_Roundtrip_Probability": {
+                "default": 0.8,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "The likelihood that an individual who flies to another node will return to the node of origin during the next migration.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Air_Temperature_Filename": {
+                "default": "air_temp.json",
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "The path to the input data file defining air temperature data measured 2 meters above ground.",
+                "type": "string"
+            },
+            "Air_Temperature_Offset": {
+                "default": 0,
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "The linear shift of air temperature in degrees Celsius.",
+                "max": 20,
+                "min": -20,
+                "type": "float"
+            },
+            "Air_Temperature_Variance": {
+                "default": 2,
+                "depends-on": {
+                    "Enable_Climate_Stochasticity": 1
+                },
+                "description": "The standard deviation (in degrees Celsius) for normally distributed noise applied to the daily air temperature values when Climate_Model is configured as CLIMATE_CONSTANT or CLIMATE_BY_DATA.",
+                "max": 5,
+                "min": 0,
+                "type": "float"
+            },
+            "Anemia_Mortality_Inverse_Width": {
+                "default": 10,
+                "description": "The inverse width relative to threshold value of severe disease turn-on around threshold for anemia.",
+                "max": 1000000.0,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Anemia_Mortality_Threshold": {
+                "default": 3,
+                "description": "The threshold value for hemoglobin count in grams per deciliter (g/dL) at which 50% of individuals die per day.",
+                "max": 100,
+                "min": 0,
+                "type": "float"
+            },
+            "Anemia_Severe_Inverse_Width": {
+                "default": 10,
+                "description": "The inverse width relative to threshold value of severe disease turn-on around threshold for anemia.",
+                "max": 1000000.0,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Anemia_Severe_Threshold": {
+                "default": 5,
+                "description": "The severe disease threshold level for anemia. Threshold units are in grams per deciliter (g/dL).",
+                "max": 100,
+                "min": 0,
+                "type": "float"
+            },
+            "Antibody_CSP_Decay_Days": {
+                "default": 90,
+                "description": "Exponential decay time for CSP antibody concentration (in days).",
+                "max": 3.40282e+38,
+                "min": 1,
+                "type": "float"
+            },
+            "Antibody_CSP_Killing_Inverse_Width": {
+                "default": 1.5,
+                "description": "Inverse width of sigmoidal sporozoite killing function of CSP antibody concentration.",
+                "max": 1000000.0,
+                "min": 1e-06,
+                "type": "float"
+            },
+            "Antibody_CSP_Killing_Threshold": {
+                "default": 10,
+                "description": "Threshold value on CSP antibody concentration for sporozoite killing.",
+                "max": 1000000.0,
+                "min": 1e-06,
+                "type": "float"
+            },
+            "Antibody_Capacity_Growth_Rate": {
+                "default": 0.1,
+                "description": "The maximum daily rate of specific antibody capacity increase.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Antibody_IRBC_Kill_Rate": {
+                "default": 2,
+                "description": "The scale factor multiplied by antibody level to produce the rate of clearance of the infected red blood cell (IRBC) population.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Antibody_Memory_Level": {
+                "default": 0.2,
+                "description": "The limiting level of antibody capacity that remains after a prolonged absence of a specific antigen. The antibody capacity decays to this level gradually after infection is cleared.",
+                "max": 0.35,
+                "min": 0,
+                "type": "float"
+            },
+            "Antibody_Stimulation_C50": {
+                "default": 10,
+                "description": "The concentration of an antigen, measured in IRBC/ul at which growth in antibody capacity against the antigen increases at half the maximum rate specified by Antibody_Capacity_Growth_Rate.",
+                "max": 10000,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Antigen_Switch_Rate": {
+                "default": 2e-09,
+                "description": "The antigenic switching rate per infected red blood cell per asexual cycle.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Air_Temperature": {
+                "default": 22,
+                "description": "The air temperature, in degrees Celsius, where Climate_Model is set to CLIMATE_CONSTANT.",
+                "max": 45,
+                "min": -55,
+                "type": "float"
+            },
+            "Base_Gametocyte_Fraction_Male": {
+                "default": 0.2,
+                "description": "Fraction of gametocytes that are male.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Gametocyte_Mosquito_Survival_Rate": {
+                "default": 0.01,
+                "description": "Average fraction of gametocytes in a blood meal that are successful in infecting the mosquito in the absence of other modulating effects, such as fever.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Gametocyte_Production_Rate": {
+                "default": 0.02,
+                "description": "Fraction of IRBCs producing gametocytes.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Individual_Sample_Rate": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "FIXED_SAMPLING,ADAPTED_SAMPLING_BY_IMMUNE_STATE"
+                },
+                "description": "The base rate of sampling for individuals, equal to the fraction of individuals in each node being sampled.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Base_Infectivity": {
+                "default": 0.3,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM,VECTOR_SIM,STI_SIM,ENVIRONMENTAL_SIM,TBHIV_SIM,PY_SIM,HIV_SIM"
+                },
+                "description": "The base infectiousness of individuals before accounting for transmission-blocking effects of acquired immunity and/or campaign interventions.  It has a slightly different meaning for each of the disease types.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Land_Temperature": {
+                "default": 26,
+                "description": "The land temperature, in degrees Celsius, where Climate_Model is set to CLIMATE_CONSTANT.",
+                "max": 60,
+                "min": -55,
+                "type": "float"
+            },
+            "Base_Mortality": {
+                "default": 0.001,
+                "depends-on": {
+                    "Enable_Disease_Mortality": 1
+                },
+                "description": "The base mortality of the infection before accounting for individual immune modification factors. Depending on the setting of Mortality_Time_Course, this is either the daily probability of the disease being fatal (DAILY_MORTALITY) or the probability of death at the end of the infection duration (MORTALITY_AFTER_INFECTIOUS).",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Rainfall": {
+                "default": 10,
+                "description": "The value of rainfall per day in millimeters when Climate_Model is set to CLIMATE_CONSTANT.",
+                "max": 150,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Relative_Humidity": {
+                "default": 0.75,
+                "description": "The value of humidity where Climate_Model is set to CLIMATE_CONSTANT.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Base_Sporozoite_Survival_Fraction": {
+                "default": 0.25,
+                "description": "Fraction of sporozoites that survive to infect a hepatocyte in the absence of anti-CSP protection.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Birth_Rate_Boxcar_Forcing_Amplitude": {
+                "default": 0,
+                "depends-on": {
+                    "Birth_Rate_Time_Dependence": "ANNUAL_BOXCAR_FUNCTION"
+                },
+                "description": "Fractional increase in birth rate during high birth season.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Birth_Rate_Boxcar_Forcing_End_Time": {
+                "default": 0,
+                "depends-on": {
+                    "Birth_Rate_Time_Dependence": "ANNUAL_BOXCAR_FUNCTION"
+                },
+                "description": "Day of the year when the high birth rate season ends.",
+                "max": 365,
+                "min": 0,
+                "type": "float"
+            },
+            "Birth_Rate_Boxcar_Forcing_Start_Time": {
+                "default": 0,
+                "depends-on": {
+                    "Birth_Rate_Time_Dependence": "ANNUAL_BOXCAR_FUNCTION"
+                },
+                "description": "Day of the year when the high birth rate season begins",
+                "max": 365,
+                "min": 0,
+                "type": "float"
+            },
+            "Birth_Rate_Dependence": {
+                "default": "FIXED_BIRTH_RATE",
+                "depends-on": {
+                    "Enable_Birth": 1
+                },
+                "description": "The method used to modify the value set in BirthRate in the demographics file.",
+                "enum": [
+                    "FIXED_BIRTH_RATE",
+                    "POPULATION_DEP_RATE",
+                    "DEMOGRAPHIC_DEP_RATE",
+                    "INDIVIDUAL_PREGNANCIES",
+                    "INDIVIDUAL_PREGNANCIES_BY_AGE_AND_YEAR"
+                ],
+                "type": "enum"
+            },
+            "Birth_Rate_Sinusoidal_Forcing_Amplitude": {
+                "default": 0,
+                "depends-on": {
+                    "Birth_Rate_Time_Dependence": "SINUSOIDAL_FUNCTION_OF_TIME"
+                },
+                "description": "The amplitude of sinusoidal variations in birth rate.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Birth_Rate_Sinusoidal_Forcing_Phase": {
+                "default": 0,
+                "depends-on": {
+                    "Birth_Rate_Time_Dependence": "SINUSOIDAL_FUNCTION_OF_TIME"
+                },
+                "description": "The phase of sinusoidal variations in birth rate.",
+                "max": 365,
+                "min": 0,
+                "type": "float"
+            },
+            "Birth_Rate_Time_Dependence": {
+                "default": "NONE",
+                "depends-on": {
+                    "Enable_Birth": 1
+                },
+                "description": "A scale factor for BirthRate that allows it to be altered by time or season.",
+                "enum": [
+                    "NONE",
+                    "SINUSOIDAL_FUNCTION_OF_TIME",
+                    "ANNUAL_BOXCAR_FUNCTION"
+                ],
+                "type": "enum"
+            },
+            "Campaign_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Interventions": 1
+                },
+                "description": "The path to the campaign file.",
+                "type": "string"
+            },
+            "Climate_Model": {
+                "default": "CLIMATE_OFF",
+                "depends-on": {
+                    "Simulation_Type": "VECTOR_SIM, MALARIA_SIM, DENGUE_SIM, POLIO_SIM, AIRBORNE_SIM"
+                },
+                "description": "How and from what files the climate of a simulation is configured.",
+                "enum": [
+                    "CLIMATE_OFF",
+                    "CLIMATE_CONSTANT",
+                    "CLIMATE_KOPPEN",
+                    "CLIMATE_BY_DATA"
+                ],
+                "type": "enum"
+            },
+            "Climate_Update_Resolution": {
+                "default": "CLIMATE_UPDATE_YEAR",
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_CONSTANT,CLIMATE_BY_DATA,CLIMATE_KOPPEN"
+                },
+                "description": "The resolution for data in climate files.",
+                "enum": [
+                    "CLIMATE_UPDATE_YEAR",
+                    "CLIMATE_UPDATE_MONTH",
+                    "CLIMATE_UPDATE_WEEK",
+                    "CLIMATE_UPDATE_DAY",
+                    "CLIMATE_UPDATE_HOUR"
+                ],
+                "type": "enum"
+            },
+            "Clinical_Fever_Threshold_High": {
+                "default": 1,
+                "description": "The fever threshold (in degrees Celsius above normal) to start a clinical incident.",
+                "max": 15,
+                "min": 0,
+                "type": "float"
+            },
+            "Clinical_Fever_Threshold_Low": {
+                "default": 1,
+                "description": "The fever threshold (in degrees Celsius above normal) to end a clinical incident.",
+                "max": 5,
+                "min": 0,
+                "type": "float"
+            },
+            "Config_Name": {
+                "default": "UNINITIALIZED STRING",
+                "description": "The optional, user-supplied title naming a configuration.",
+                "type": "string"
+            },
+            "Custom_Coordinator_Events": {
+                "default": [],
+                "description": "The list of valid, user-defined events for Event Coordinators that will be included in the campaign. Any event used in the campaign must either be one of the built-in events or in this list.",
+                "type": "Vector String"
+            },
+            "Custom_Individual_Events": {
+                "default": [],
+                "description": "The list of valid, user-defined events that will be included in the campaign. Any event used in the campaign must either be one of the built-in events or in this list.",
+                "type": "Vector String"
+            },
+            "Custom_Node_Events": {
+                "default": [],
+                "description": "The list of valid, user-defined events for nodes that will be included in the campaign. Any event used in the campaign must either be one of the built-in events or in this list.",
+                "type": "Vector String"
+            },
+            "Custom_Reports_Filename": {
+                "default": "UNINITIALIZED STRING",
+                "description": "The name of the file containing custom report configuration parameters. Omitting this parameter or setting it to RunAllCustomReports will load all reporters found that are valid for the given simulation type.",
+                "type": "string"
+            },
+            "Cytokine_Gametocyte_Inactivation": {
+                "default": 0.02,
+                "description": "The strength of inflammatory response inactivation of :term:`gametocytes`.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Death_Rate_Dependence": {
+                "default": "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER",
+                "depends-on": {
+                    "Enable_Natural_Mortality": 1
+                },
+                "description": "Determines how likely individuals are to die from natural, non-disease causes.",
+                "enum": [
+                    "NONDISEASE_MORTALITY_BY_AGE_AND_GENDER",
+                    "NONDISEASE_MORTALITY_BY_YEAR_AND_AGE_FOR_EACH_GENDER"
+                ],
+                "type": "enum"
+            },
+            "Default_Geography_Initial_Node_Population": {
+                "default": 1000,
+                "depends-on": {
+                    "Enable_Demographics_Builtin": 1
+                },
+                "description": "When using the built-in demographics for default geography, the initial number of individuals in each node.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "integer"
+            },
+            "Default_Geography_Torus_Size": {
+                "default": 10,
+                "depends-on": {
+                    "Enable_Demographics_Builtin": 1
+                },
+                "description": "When using the built-in demographics for default geography, the square root of the number of nodes in the simulation. For migration, the nodes are assumed to be a torus.",
+                "max": 100,
+                "min": 3,
+                "type": "integer"
+            },
+            "Demographics_Filenames": {
+                "default": [],
+                "description": "An array of the paths to demographics files containing information on the identity and demographics of the region to simulate.",
+                "type": "Vector String"
+            },
+            "Drought_Egg_Hatch_Delay": {
+                "default": 0.33,
+                "depends-on": {
+                    "Enable_Drought_Egg_Hatch_Delay": 1
+                },
+                "description": "Proportion of regular egg hatching that still occurs when habitat dries up.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Egg_Arrhenius1": {
+                "default": 61600000.0,
+                "depends-on": {
+                    "Enable_Temperature_Dependent_Egg_Hatching": 1
+                },
+                "description": "The temperature-independent scale factor in the Arrhenius equation for egg hatching rate.",
+                "max": 10000000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Egg_Arrhenius2": {
+                "default": 5754.03,
+                "depends-on": {
+                    "Enable_Temperature_Dependent_Egg_Hatching": 1
+                },
+                "description": "The temperature-dependent scale factor in the Arrhenius equation for egg hatching rate.",
+                "max": 10000000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Egg_Hatch_Delay_Distribution": {
+                "default": "NO_DELAY",
+                "description": "The distribution of the delay from oviposition to egg hatching.",
+                "enum": [
+                    "NO_DELAY",
+                    "EXPONENTIAL_DISTRIBUTION"
+                ],
+                "type": "enum"
+            },
+            "Egg_Hatch_Density_Dependence": {
+                "default": "NO_DENSITY_DEPENDENCE",
+                "description": "The effect of larval density on egg hatching rate.",
+                "enum": [
+                    "NO_DENSITY_DEPENDENCE",
+                    "DENSITY_DEPENDENCE"
+                ],
+                "type": "enum"
+            },
+            "Egg_Saturation_At_Oviposition": {
+                "default": "NO_SATURATION",
+                "description": "If laying all eggs from ovipositing females would overflow the larval habitat capacity on a given day, the means by which the viable eggs become saturated.",
+                "enum": [
+                    "NO_SATURATION",
+                    "SATURATION_AT_OVIPOSITION",
+                    "SIGMOIDAL_SATURATION"
+                ],
+                "type": "enum"
+            },
+            "Enable_Aging": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Vital_Dynamics": 1
+                },
+                "description": "Controls whether or not individuals in a population age during the simulation.",
+                "type": "bool"
+            },
+            "Enable_Air_Migration": {
+                "default": 0,
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "Controls whether or not migration by air travel will occur.",
+                "type": "bool"
+            },
+            "Enable_Birth": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Vital_Dynamics": 1
+                },
+                "description": "Controls whether or not individuals will be added to the simulation by birth.",
+                "type": "bool"
+            },
+            "Enable_Climate_Stochasticity": {
+                "default": 0,
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_CONSTANT,CLIMATE_BY_DATA"
+                },
+                "description": "Controls whether or not the climate has stochasticity.",
+                "type": "bool"
+            },
+            "Enable_Default_Reporting": {
+                "default": 1,
+                "description": "Controls whether or not the default InsetChart.json report is created.",
+                "type": "bool"
+            },
+            "Enable_Demographics_Birth": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Birth": 1
+                },
+                "description": "Controls whether or not newborns have identical or heterogeneous characteristics.",
+                "type": "bool"
+            },
+            "Enable_Demographics_Builtin": {
+                "default": 0,
+                "description": "Controls whether or not built-in demographics for default geography will be used. Note that the built-in demographics feature does not represent a real geographical location and is mostly used for testing.",
+                "type": "bool"
+            },
+            "Enable_Demographics_Reporting": {
+                "default": 1,
+                "description": "Controls whether or not demographic summary data and age-binned reports are outputted to file.",
+                "type": "bool"
+            },
+            "Enable_Demographics_Risk": {
+                "default": 0,
+                "depends-on": {
+                    "Simulation_Type": "VECTOR_SIM,MALARIA_SIM,TBHIV_SIM,DENGUE_SIM"
+                },
+                "description": "Controls whether or not the simulation includes the impact of disease risk in demographics.",
+                "type": "bool"
+            },
+            "Enable_Disease_Mortality": {
+                "default": 1,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM,VECTOR_SIM,STI_SIM,ENVIRONMENTAL_SIM,MALARIA_SIM,TBHIV_SIM,TYPHOID_SIM,PY_SIM"
+                },
+                "description": "Controls whether or not individuals are removed from the simulation due to disease deaths.",
+                "type": "bool"
+            },
+            "Enable_Drought_Egg_Hatch_Delay": {
+                "default": 0,
+                "description": "Controls whether or not eggs hatch at delayed rates, set by Drought_Egg_Hatch_Delay, when the habitat dries up completely.",
+                "type": "bool"
+            },
+            "Enable_Egg_Mortality": {
+                "default": 0,
+                "description": "Controls whether or not to include a daily mortality rate on the egg population, which is independent of climatic factors.",
+                "type": "bool"
+            },
+            "Enable_Family_Migration": {
+                "default": 0,
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "Controls whether or not all members of a household can migrate together when an MigrateFamily event occurs. All residents must be home before they can leave on the trip.",
+                "type": "bool"
+            },
+            "Enable_Heterogeneous_Intranode_Transmission": {
+                "default": 0,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM,ENVIRONMENTAL_SIM,POLIO_SIM,TYPHOID_SIM,PY_SIM,AIRBORNE_SIM,TBHIV_SIM"
+                },
+                "description": "Controls whether or not individuals experience heterogeneous disease transmission within a node.",
+                "type": "bool"
+            },
+            "Enable_Immune_Decay": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Immunity": 1
+                },
+                "description": "Controls whether or not immunity decays after an infection clears.",
+                "type": "bool"
+            },
+            "Enable_Immunity": {
+                "default": 1,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM,VECTOR_SIM,STI_SIM,ENVIRONMENTAL_SIM,TBHIV_SIM,PY_SIM"
+                },
+                "description": "Controls whether or not an individual has protective immunity after an infection clears.",
+                "type": "bool"
+            },
+            "Enable_Infectivity_Reservoir": {
+                "default": 0,
+                "description": "Controls whether or not an exogeneous reservoir of infectivity will be included in the simulation and allows for the infectivity in a node to be increased additively.",
+                "type": "bool"
+            },
+            "Enable_Initial_Prevalence": {
+                "default": 0,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM, VECTOR_SIM, STI_SIM, ENVIRONMENTAL_SIM, MALARIA_SIM"
+                },
+                "description": "Controls whether or not parameters in the demographics file are used to define a distribution for the number of infected people per node at the beginning of the simulation. Set the distribution under IndividualAttributes using PrevalenceDistributionFlag, PrevalenceDistribution1, and PrevalenceDistribution2.",
+                "type": "bool"
+            },
+            "Enable_Initial_Susceptibility_Distribution": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immunity": 1
+                },
+                "description": "Controls whether or not individuals in the population have immunity at the beginning of the simulation. If set to 0, individuals are not initialized with immunity but may acquire immunity. If set to 1, you must indicate the type of distribution to use for immunity in the configuration parameter Immunity_Initialization_Distribution_Type and the distribution values in the demographics file.",
+                "type": "bool"
+            },
+            "Enable_Interventions": {
+                "default": 0,
+                "description": "Controls whether or not campaign interventions will be used in the simulation.",
+                "type": "bool"
+            },
+            "Enable_Local_Migration": {
+                "default": 0,
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "Controls whether or not local migration (the diffusion of people in and out of nearby nodes by foot travel) occurs.",
+                "type": "bool"
+            },
+            "Enable_Maternal_Antibodies_Transmission": {
+                "default": 0,
+                "depends-on": {
+                    "Simulation_Type": "MALARIA_SIM"
+                },
+                "description": "Controls whether or not mothers pass antibodies to their infants.",
+                "type": "bool"
+            },
+            "Enable_Maternal_Infection_Transmission": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Birth": 1
+                },
+                "description": "Controls whether or not infectious mothers infect infants at birth.",
+                "type": "bool"
+            },
+            "Enable_Maternal_Protection": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Birth": 1
+                },
+                "description": "Controls whether or not mothers pass immunity on to their infants. Setting to 1 (true) enables maternal protection as defined by Maternal_Protection_Type.",
+                "type": "bool"
+            },
+            "Enable_Migration_Heterogeneity": {
+                "default": 1,
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "Controls whether or not migration rate is heterogeneous among individuals.",
+                "type": "bool"
+            },
+            "Enable_Natural_Mortality": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Vital_Dynamics": 1
+                },
+                "description": "Controls whether or not individuals are removed from the simulation due to natural (non-disease) deaths.",
+                "type": "bool"
+            },
+            "Enable_Property_Output": {
+                "default": 0,
+                "description": "Controls whether or not property output reports are created.",
+                "type": "bool"
+            },
+            "Enable_Rainfall_Stochasticity": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Climate_Stochasticity": 1
+                },
+                "description": "Controls whether or not there is stochastic variation in rainfall.",
+                "type": "bool"
+            },
+            "Enable_Random_Generator_From_Serialized_Population": {
+                "default": 0,
+                "depends-on": {
+                    "Serialized_Population_Reading_Type": "READ"
+                },
+                "description": "Determines if the random number generator(s) should be extracted from a serialized population file. Enabling this will start a simulation from this file with the exact same random number stream and location in that stream as when the file was serialized.",
+                "type": "bool"
+            },
+            "Enable_Regional_Migration": {
+                "default": 0,
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "Controls whether or not there is migration by road or rail network into and out of nodes in the simulation.",
+                "type": "bool"
+            },
+            "Enable_Sea_Migration": {
+                "default": 0,
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "Controls whether or not there is migration on ships into and out of coastal cities with seaports.",
+                "type": "bool"
+            },
+            "Enable_Skipping": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "CONSTANT_INFECTIVITY"
+                },
+                "description": "Controls whether or not the simulation uses an optimization that can increase performance by up to 50% in some cases by probablistically exposing individuals rather than exposing every single person. Useful in low-prevalence, high-population scenarios",
+                "type": "bool"
+            },
+            "Enable_Spatial_Output": {
+                "default": 0,
+                "description": "Controls whether or not spatial output reports are created.",
+                "type": "bool"
+            },
+            "Enable_Superinfection": {
+                "default": 0,
+                "depends-on": {
+                    "Simulation_Type": "STI_SIM,ENVIRONMENTAL_SIM,VECTOR_SIM,MALARIA_SIM"
+                },
+                "description": "Controls whether or not an individual can have multiple infections simultaneously.",
+                "type": "bool"
+            },
+            "Enable_Susceptibility_Scaling": {
+                "default": 0,
+                "description": "Controls whether or not susceptibility is scaled by time as defined by Susceptibility_Scaling_Type.",
+                "type": "bool"
+            },
+            "Enable_Temperature_Dependent_Egg_Hatching": {
+                "default": 0,
+                "description": "Controls whether or not temperature has an effect on egg hatching, defined by Egg_Arrhenius1 and Egg_Arrhenius2.",
+                "type": "bool"
+            },
+            "Enable_Termination_On_Zero_Total_Infectivity": {
+                "default": 0,
+                "description": "Controls whether or not the simulation should be ended when total infectivity falls to zero. Supported only in single-node simulations.",
+                "type": "bool"
+            },
+            "Enable_Vector_Aging": {
+                "default": 0,
+                "description": "Controls whether or not vectors undergo senescence as they age.",
+                "type": "bool"
+            },
+            "Enable_Vector_Migration": {
+                "default": 0,
+                "description": "Controls whether or not vectors can migrate. Vector_Sampling_Type must be set to  TRACK_ALL_VECTORS or SAMPLE_IND_VECTORS.",
+                "type": "bool"
+            },
+            "Enable_Vector_Migration_Local": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Vector_Migration": 1
+                },
+                "description": "Controls whether or not vectors may migrate to adjacent nodes.",
+                "type": "bool"
+            },
+            "Enable_Vector_Migration_Regional": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Vector_Migration": 1
+                },
+                "description": "Controls whether or not vectors can migration to non-adjacent nodes.",
+                "type": "bool"
+            },
+            "Enable_Vector_Mortality": {
+                "default": 1,
+                "description": "Controls whether or not vectors can die. Vector_Sampling_Type must be set to TRACK_ALL_VECTORS.",
+                "type": "bool"
+            },
+            "Enable_Vector_Species_Report": {
+                "default": 0,
+                "description": "A value of one will cause the VectorSpeciesReport.json file to be created.",
+                "type": "bool"
+            },
+            "Enable_Vital_Dynamics": {
+                "default": 1,
+                "description": "Controls whether or not births and deaths occur in the simulation.",
+                "type": "bool"
+            },
+            "Erythropoiesis_Anemia_Effect": {
+                "default": 3.5,
+                "description": "The exponential rate of increased red-blood-cell production from reduced red-blood-cell availability.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Falciparum_MSP_Variants": {
+                "default": 100,
+                "description": "The number of distinct MSP variants for P. falciparum malaria in the overall parasite population in the simulation, not necessarily in an individual.",
+                "max": 1000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Falciparum_Nonspecific_Types": {
+                "default": 20,
+                "description": "The number of distinct non-specific types of P. falciparum malaria.",
+                "max": 1000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Falciparum_PfEMP1_Variants": {
+                "default": 1000,
+                "description": "The number of distinct PfEMP1 variants for P. falciparum malaria in the overall parasite population in the simulation.",
+                "max": 100000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Family_Migration_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Family_Migration": 1
+                },
+                "description": "The name of the binary file to use to configure family migration.",
+                "type": "string"
+            },
+            "Family_Migration_Roundtrip_Duration": {
+                "default": 1,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "The number of days to complete the trip and return to the original node.",
+                "max": 10000,
+                "min": 0,
+                "type": "float"
+            },
+            "Fever_IRBC_Kill_Rate": {
+                "default": 0.15,
+                "description": "The maximum kill rate for infected red blood cells due to the inflammatory innate immune response. As fever increases above 38.5 degrees Celsius, the kill rate becomes successively higher along a sigmoidal curve approaching this rate.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Fever_Mortality_Inverse_Width": {
+                "default": 10,
+                "description": "The inverse width relative to threshold value of mortality turn-on around threshold for fever.",
+                "max": 1000000.0,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Fever_Mortality_Threshold": {
+                "default": 3,
+                "description": "The fever mortality threshold, in units of degrees Celsius above normal body temperature (defined as 37 C); sets the midpoint in the sigmoidal response for mortality rate associated with fever.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Fever_Severe_Inverse_Width": {
+                "default": 10,
+                "description": "The inverse width relative to threshold value of severe disease turn-on around threshold for fever.",
+                "max": 1000000.0,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Fever_Severe_Threshold": {
+                "default": 1.5,
+                "description": "The threshold (in degrees Celsius above normal) for fever indicating severe disease.",
+                "max": 10,
+                "min": 0,
+                "type": "float"
+            },
+            "Gametocyte_Stage_Survival_Rate": {
+                "default": 1,
+                "description": "The rate of gametocyte survival from one development stage to the next in the absence of drugs or inflammatory immune response.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Genome_Markers": {
+                "default": [],
+                "description": "A list of the names (strings) of genome marker(s) that represent the genetic components in a strain of an infection.",
+                "type": "Vector String"
+            },
+            "Human_Feeding_Mortality": {
+                "default": 0.1,
+                "description": "The fraction of mosquitoes, for all species, that die while feeding on a human.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Immune_Threshold_For_Downsampling": {
+                "default": 0,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_IMMUNE_STATE"
+                },
+                "description": "The threshold on acquisition immunity at which to apply immunity-dependent downsampling; individuals who are more immune than this threshold are downsampled.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Constant": {
+                "default": 6,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "CONSTANT_DISTRIBUTION"
+                },
+                "description": "Each instance will receive this constant/fixed value.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Distribution": {
+                "default": "NOT_INITIALIZED",
+                "description": "The distribution type to use for assigning the incubation period to each individual in the population.",
+                "enum": [
+                    "NOT_INITIALIZED",
+                    "CONSTANT_DISTRIBUTION",
+                    "UNIFORM_DISTRIBUTION",
+                    "GAUSSIAN_DISTRIBUTION",
+                    "EXPONENTIAL_DISTRIBUTION",
+                    "POISSON_DISTRIBUTION",
+                    "LOG_NORMAL_DISTRIBUTION",
+                    "DUAL_CONSTANT_DISTRIBUTION",
+                    "WEIBULL_DISTRIBUTION",
+                    "DUAL_EXPONENTIAL_DISTRIBUTION"
+                ],
+                "type": "enum"
+            },
+            "Incubation_Period_Exponential": {
+                "default": 6,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean for an exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Gaussian_Mean": {
+                "default": 6,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "GAUSSIAN_DISTRIBUTION"
+                },
+                "description": "The mean for a Gaussian distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Gaussian_Std_Dev": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "GAUSSIAN_DISTRIBUTION"
+                },
+                "description": "The standard deviation for a Gaussian distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Incubation_Period_Kappa": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "WEIBULL_DISTRIBUTION"
+                },
+                "description": "The shape value in a Weibull distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Incubation_Period_Lambda": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "WEIBULL_DISTRIBUTION"
+                },
+                "description": "The scale value in a Weibull distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Incubation_Period_Log_Normal_Mu": {
+                "default": 6,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                },
+                "description": "The mean for a log-normal distribution.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Incubation_Period_Log_Normal_Sigma": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                },
+                "description": "The width for a log-normal distribution.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Incubation_Period_Max": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "UNIFORM_DISTRIBUTION"
+                },
+                "description": "The maximum of the uniform distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Mean_1": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean of the first exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Incubation_Period_Mean_2": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean of the second exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Incubation_Period_Min": {
+                "default": 0,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "UNIFORM_DISTRIBUTION"
+                },
+                "description": "The minimum of the uniform distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Peak_2_Value": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                },
+                "description": "The value to assign to the remaining individuals.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Poisson_Mean": {
+                "default": 6,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "POISSON_DISTRIBUTION"
+                },
+                "description": "The mean for a Poisson distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Proportion_0": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                },
+                "description": "The proportion of individuals to assign a value of zero.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Incubation_Period_Proportion_1": {
+                "default": 1,
+                "depends-on": {
+                    "Incubation_Period_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The proportion of individuals in the first exponential distribution.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Individual_Sampling_Type": {
+                "default": "TRACK_ALL",
+                "description": "The type of individual human sampling to use, which can be used to down sample large populations, certain age groups, or the immune population that does not contribute to transmission.",
+                "enum": [
+                    "TRACK_ALL",
+                    "FIXED_SAMPLING",
+                    "ADAPTED_SAMPLING_BY_POPULATION_SIZE",
+                    "ADAPTED_SAMPLING_BY_AGE_GROUP",
+                    "ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE",
+                    "ADAPTED_SAMPLING_BY_IMMUNE_STATE"
+                ],
+                "type": "enum"
+            },
+            "Infection_Updates_Per_Timestep": {
+                "default": 1,
+                "description": "Number of infection updates executed during each timestep. A timestep defaults to one day.",
+                "max": 144,
+                "min": 0,
+                "type": "integer"
+            },
+            "Infectious_Period_Constant": {
+                "default": 6,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "CONSTANT_DISTRIBUTION"
+                },
+                "description": "Each instance will receive this constant/fixed value.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Distribution": {
+                "default": "NOT_INITIALIZED",
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM, POLIO_SIM, VECTOR_SIM, ENVIRONMENTAL_SIM, PY_SIM, STI_SIM"
+                },
+                "description": "The distribution type to use for assigning the infectious period to each individual in the population.",
+                "enum": [
+                    "NOT_INITIALIZED",
+                    "CONSTANT_DISTRIBUTION",
+                    "UNIFORM_DISTRIBUTION",
+                    "GAUSSIAN_DISTRIBUTION",
+                    "EXPONENTIAL_DISTRIBUTION",
+                    "POISSON_DISTRIBUTION",
+                    "LOG_NORMAL_DISTRIBUTION",
+                    "DUAL_CONSTANT_DISTRIBUTION",
+                    "WEIBULL_DISTRIBUTION",
+                    "DUAL_EXPONENTIAL_DISTRIBUTION"
+                ],
+                "type": "enum"
+            },
+            "Infectious_Period_Exponential": {
+                "default": 6,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean for an exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Gaussian_Mean": {
+                "default": 6,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "GAUSSIAN_DISTRIBUTION"
+                },
+                "description": "The mean for a Gaussian distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Gaussian_Std_Dev": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "GAUSSIAN_DISTRIBUTION"
+                },
+                "description": "The standard deviation for a Gaussian distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Infectious_Period_Kappa": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "WEIBULL_DISTRIBUTION"
+                },
+                "description": "The shape value in a Weibull distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Infectious_Period_Lambda": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "WEIBULL_DISTRIBUTION"
+                },
+                "description": "The scale value in a Weibull distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Infectious_Period_Log_Normal_Mu": {
+                "default": 6,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                },
+                "description": "The mean for a log-normal distribution.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Infectious_Period_Log_Normal_Sigma": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                },
+                "description": "The width for a log-normal distribution.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Infectious_Period_Max": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "UNIFORM_DISTRIBUTION"
+                },
+                "description": "The maximum of the uniform distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Mean_1": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean of the first exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Infectious_Period_Mean_2": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean of the second exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Infectious_Period_Min": {
+                "default": 0,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "UNIFORM_DISTRIBUTION"
+                },
+                "description": "The minimum of the uniform distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Peak_2_Value": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                },
+                "description": "The value to assign to the remaining individuals.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Poisson_Mean": {
+                "default": 6,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "POISSON_DISTRIBUTION"
+                },
+                "description": "The mean for a Poisson distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Proportion_0": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                },
+                "description": "The proportion of individuals to assign a value of zero.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectious_Period_Proportion_1": {
+                "default": 1,
+                "depends-on": {
+                    "Infectious_Period_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The proportion of individuals in the first exponential distribution.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Boxcar_Forcing_Amplitude": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "ANNUAL_BOXCAR_FUNCTION"
+                },
+                "description": "Fractional increase in R0 during high infectivity season when Infectivity_Scale_Type is equal to ANNUAL_BOXCAR_FUNCTION.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Boxcar_Forcing_End_Time": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "ANNUAL_BOXCAR_FUNCTION"
+                },
+                "description": "End of high infectivity season when Infectivity_Scale_Type is equal to ANNUAL_BOXCAR_FUNCTION.",
+                "max": 365,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Boxcar_Forcing_Start_Time": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "ANNUAL_BOXCAR_FUNCTION"
+                },
+                "description": "Beginning of high infectivity season when Infectivity_Scale_Type is equal to ANNUAL_BOXCAR_FUNCTION.",
+                "max": 365,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Exponential_Baseline": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "EXPONENTIAL_FUNCTION_OF_TIME"
+                },
+                "description": "The scale factor applied to Base_Infectivity at the beginning of a simulation, before the infectivity begins to grow exponentially.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Exponential_Delay": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "EXPONENTIAL_FUNCTION_OF_TIME"
+                },
+                "description": "The number of days before infectivity begins to ramp up exponentially.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Exponential_Rate": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "EXPONENTIAL_FUNCTION_OF_TIME"
+                },
+                "description": "The daily rate of exponential growth to approach full infectivity after the delay set by Infectivity_Exponential_Delay has passed.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Scale_Type": {
+                "default": "CONSTANT_INFECTIVITY",
+                "description": "Alter infectivity by time or season.",
+                "enum": [
+                    "CONSTANT_INFECTIVITY",
+                    "FUNCTION_OF_TIME_AND_LATITUDE",
+                    "FUNCTION_OF_CLIMATE",
+                    "SINUSOIDAL_FUNCTION_OF_TIME",
+                    "ANNUAL_BOXCAR_FUNCTION",
+                    "EXPONENTIAL_FUNCTION_OF_TIME"
+                ],
+                "type": "enum"
+            },
+            "Infectivity_Sinusoidal_Forcing_Amplitude": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "SINUSOIDAL_FUNCTION_OF_TIME"
+                },
+                "description": "Only used or needed when Infectivity_Scale_Type is set to SINUSOIDAL_FUNCTION_OF_TIME.  Sets the amplitude of sinusoidal variations in Base_Infectivity.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Infectivity_Sinusoidal_Forcing_Phase": {
+                "default": 0,
+                "depends-on": {
+                    "Infectivity_Scale_Type": "SINUSOIDAL_FUNCTION_OF_TIME"
+                },
+                "description": "Only used or needed when Infectivity_Scale_Type is set to SINUSOIDAL_FUNCTION_OF_TIME.  Sets the phase of sinusoidal variations in Base_Infectivity.",
+                "max": 365,
+                "min": 0,
+                "type": "float"
+            },
+            "Innate_Immune_Variation_Type": {
+                "default": "NONE",
+                "description": "The type of innate immunity on which to apply individual-level variation.",
+                "enum": [
+                    "NONE",
+                    "PYROGENIC_THRESHOLD",
+                    "CYTOKINE_KILLING",
+                    "PYROGENIC_THRESHOLD_VS_AGE"
+                ],
+                "type": "enum"
+            },
+            "Insecticides": {
+                "default": [],
+                "description": "An Array of insecticides and their resistance modifiers",
+                "item_type": "idmType:Insecticide",
+                "type": "Vector idmType:Insecticide"
+            },
+            "Inset_Chart_Has_Interventions": {
+                "default": [],
+                "depends-on": {
+                    "Enable_Default_Reporting": 1
+                },
+                "description": "A channel is added to InsetChart for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
+                "type": "Vector String"
+            },
+            "Inset_Chart_Reporting_Include_30Day_Avg_Infection_Duration": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Default_Reporting": 1
+                },
+                "description": "If true the '30-Day Avg Infection Duration' channel is included in the InsetChart.json report.",
+                "type": "bool"
+            },
+            "Koppen_Filename": {
+                "default": "koppen_climate.json",
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_KOPPEN"
+                },
+                "description": "Path to input file used to specify Koppen climate classifications.",
+                "type": "string"
+            },
+            "Land_Temperature_Filename": {
+                "default": "land_temp.json",
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "Path of input file defining temperature data measured at land surface.",
+                "type": "string"
+            },
+            "Land_Temperature_Offset": {
+                "default": 0,
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "The linear shift of land surface temperature in degrees Celsius.",
+                "max": 20,
+                "min": -20,
+                "type": "float"
+            },
+            "Land_Temperature_Variance": {
+                "default": 2,
+                "depends-on": {
+                    "Enable_Climate_Stochasticity": 1
+                },
+                "description": "The standard deviation (in degrees Celsius) for normally distributed noise applied to the daily land temperature values.",
+                "max": 7,
+                "min": 0,
+                "type": "float"
+            },
+            "Larval_Density_Dependence": {
+                "default": "UNIFORM_WHEN_OVERPOPULATION",
+                "description": "The funtional form of mortality and growth delay for mosquito larvae based on population density.",
+                "enum": [
+                    "UNIFORM_WHEN_OVERPOPULATION",
+                    "GRADUAL_INSTAR_SPECIFIC",
+                    "LARVAL_AGE_DENSITY_DEPENDENT_MORTALITY_ONLY",
+                    "NO_DENSITY_DEPENDENCE",
+                    "DENSITY_DELAYED_GROWTH_NOT_MORTALITY"
+                ],
+                "type": "enum"
+            },
+            "Larval_Density_Mortality_Offset": {
+                "default": 0.1,
+                "depends-on": {
+                    "Larval_Density_Dependence": "GRADUAL_INSTAR_SPECIFIC,LARVAL_AGE_DENSITY_DEPENDENT_MORTALITY_ONLY"
+                },
+                "description": "An offset factor in the formula determining the larval-age-dependent mortality.",
+                "max": 1000,
+                "min": 0.0001,
+                "type": "float"
+            },
+            "Larval_Density_Mortality_Scalar": {
+                "default": 10,
+                "depends-on": {
+                    "Larval_Density_Dependence": "GRADUAL_INSTAR_SPECIFIC,LARVAL_AGE_DENSITY_DEPENDENT_MORTALITY_ONLY"
+                },
+                "description": "A scale factor in the formula determining the larval-age-dependent mortality.",
+                "max": 1000,
+                "min": 0.01,
+                "type": "float"
+            },
+            "Larval_Rainfall_Mortality_Threshold": {
+                "default": 100,
+                "depends-on": {
+                    "Vector_Larval_Rainfall_Mortality": "SIGMOID,SIGMOID_HABITAT_SHIFTING"
+                },
+                "description": "The threshold value on daily rainfall in millimeters, above which larval mortality is applied.",
+                "max": 1000,
+                "min": 0.01,
+                "type": "float"
+            },
+            "Load_Balance_Filename": {
+                "default": "UNINITIALIZED STRING",
+                "description": "Path to input file used when a static load balancing scheme is selected.",
+                "type": "string"
+            },
+            "Local_Migration_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Local_Migration": 1
+                },
+                "description": "Path of input file defining patterns of migration to adjacent nodes by foot travel.",
+                "type": "string"
+            },
+            "Local_Migration_Roundtrip_Duration": {
+                "default": 1,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "The average time spent at the destination node during a round-trip migration by foot travel.",
+                "max": 10000,
+                "min": 0,
+                "type": "float"
+            },
+            "Local_Migration_Roundtrip_Probability": {
+                "default": 0.95,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "Likelihood that an individual who walks into a neighboring node will return to the node of origin during the next migration.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "MSP1_Merozoite_Kill_Fraction": {
+                "default": 0.5,
+                "description": "Fraction of merozoites inhibited from invading new erythrocytes when MSP1-specific antibody level is 1.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Malaria_Drug_Params": {
+                "default": [],
+                "description": "This JSON structure contains the names of anti-malarial drugs and the parameters that define them.",
+                "item_type": "idmType:MalariaDrugTypeParameters",
+                "type": "Vector idmType:MalariaDrugTypeParameters"
+            },
+            "Malaria_Model": {
+                "default": "MALARIA_MECHANISTIC_MODEL",
+                "description": "The type of malaria model used in a simulation.",
+                "enum": [
+                    "MALARIA_MECHANISTIC_MODEL",
+                    "MALARIA_MECHANISTIC_MODEL_WITH_CO_TRANSMISSION",
+                    "MALARIA_MECHANISTIC_MODEL_WITH_PARASITE_GENETICS"
+                ],
+                "type": "enum"
+            },
+            "Malaria_Strain_Model": {
+                "default": "FALCIPARUM_NONRANDOM_STRAIN",
+                "description": "The generator that is used to construct the antigenic repertoire of a malaria infection.",
+                "enum": [
+                    "FALCIPARUM_NONRANDOM_STRAIN",
+                    "FALCIPARUM_RANDOM50_STRAIN",
+                    "FALCIPARUM_RANDOM_STRAIN",
+                    "FALCIPARUM_FIXED_STRAIN",
+                    "FALCIPARUM_STRAIN_GENERATOR"
+                ],
+                "type": "enum"
+            },
+            "Maternal_Antibodies_Type": {
+                "default": "OFF",
+                "depends-on": {
+                    "Enable_Maternal_Antibodies_Transmission": 1
+                },
+                "description": "Type of maternal antibody protection.",
+                "enum": [
+                    "OFF",
+                    "SIMPLE_WANING",
+                    "CONSTANT_INITIAL_IMMUNITY"
+                ],
+                "type": "enum"
+            },
+            "Maternal_Antibody_Decay_Rate": {
+                "default": 0.01,
+                "depends-on": {
+                    "Maternal_Antibodies_Type": "SIMPLE_WANING,CONSTANT_INITIAL_IMMUNITY"
+                },
+                "description": "Decay rate per day in protection from maternal antibodies.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Maternal_Antibody_Protection": {
+                "default": 0.1,
+                "depends-on": {
+                    "Maternal_Antibodies_Type": "SIMPLE_WANING,CONSTANT_INITIAL_IMMUNITY"
+                },
+                "description": "Strength of protection from maternal antibodies as a multiple of full antibody killing effect.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Maternal_Infection_Transmission_Probability": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Maternal_Infection_Transmission": 1
+                },
+                "description": "Probability of transmission of infection from mother to infant at birth. Note: For malaria and vector simulations, set this to 0.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Maternal_Linear_Slope": {
+                "default": 0.01,
+                "depends-on": {
+                    "Maternal_Protection_Type": "LINEAR"
+                },
+                "description": "Slope parameter describing the rate of waning for maternal protection, must be positive. The per-day increase in susceptibility.",
+                "max": 1,
+                "min": 0.0001,
+                "type": "float"
+            },
+            "Maternal_Linear_SusZero": {
+                "default": 0.2,
+                "depends-on": {
+                    "Maternal_Protection_Type": "LINEAR"
+                },
+                "description": "The initial level of maternal protection at age 0, given as susceptibility. A value of 0.0 implies total protection, a value of 1.0 implies no protection.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Maternal_Protection_Type": {
+                "default": "NONE",
+                "depends-on": {
+                    "Enable_Maternal_Protection": 1
+                },
+                "description": "The type of maternal protection afforded to infants.",
+                "enum": [
+                    "NONE",
+                    "LINEAR",
+                    "SIGMOID"
+                ],
+                "type": "enum"
+            },
+            "Maternal_Sigmoid_HalfMaxAge": {
+                "default": 180,
+                "depends-on": {
+                    "Maternal_Protection_Type": "SIGMOID"
+                },
+                "description": "The age in days that the level of maternal protection is half of its initial value.",
+                "max": 3650,
+                "min": -270,
+                "type": "float"
+            },
+            "Maternal_Sigmoid_SteepFac": {
+                "default": 30,
+                "depends-on": {
+                    "Maternal_Protection_Type": "SIGMOID"
+                },
+                "description": "The steepness factor describing the rate of waning for maternal protection, must be positive. Small values imply rapid waning.",
+                "max": 1000,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Maternal_Sigmoid_SusInit": {
+                "default": 0,
+                "depends-on": {
+                    "Maternal_Protection_Type": "SIGMOID"
+                },
+                "description": "The initial level of maternal protection at age -INF, given as susceptibility. A value of 0.0 implies total protection, a value of 1.0 implies no protection.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Max_Individual_Infections": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Superinfection": 1
+                },
+                "description": "Limit on the number of infections that an individual can have simultaneously.",
+                "max": 1000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Max_MSP1_Antibody_Growthrate": {
+                "default": 0.02,
+                "description": "Maximum increase in MSP1 antibody capacity during each asexual cycle. The higher this value, the sooner early clearances are observed and the earlier the parasite density envelope decreases.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Max_Node_Population_Samples": {
+                "default": 30,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_POPULATION_SIZE,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "The maximum number of individuals to track in a node. When the population exceeds this number, the sampling rate will drop according to the value set in Individual_Sampling_Type.",
+                "max": 3.40282e+38,
+                "min": 1,
+                "type": "float"
+            },
+            "Mean_Egg_Hatch_Delay": {
+                "default": 0,
+                "description": "The mean delay in egg hatch time, in days, from the time of oviposition.",
+                "max": 120,
+                "min": 0,
+                "type": "float"
+            },
+            "Mean_Sporozoites_Per_Bite": {
+                "default": 11,
+                "description": "Mean number of sporozoites per infectious mosquito bite.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Memory_Usage_Halting_Threshold_Working_Set_MB": {
+                "default": 8000,
+                "description": "The maximum size of working set memory before the system throws an exception and halts.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "integer"
+            },
+            "Memory_Usage_Warning_Threshold_Working_Set_MB": {
+                "default": 7000,
+                "description": "The maximum size of working set memory before memory usage statistics are written to the log regardless of log level.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "integer"
+            },
+            "Merozoites_Per_Hepatocyte": {
+                "default": 15000,
+                "description": "Number of IRBCs caused by a single infected hepatocyte at the start of infection.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Merozoites_Per_Schizont": {
+                "default": 16,
+                "description": "Number of merozoites released by a single infected schizont after each asexual cycle. The number of resulting IRBC's depends on the RBC availability and merozoite-specific immunity.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Migration_Model": {
+                "default": "NO_MIGRATION",
+                "description": "Model to use for migration.  Note: VARIABLE_RATE_MIGRATION and LEVY FLIGHTS are currently not supported.",
+                "enum": [
+                    "NO_MIGRATION",
+                    "FIXED_RATE_MIGRATION"
+                ],
+                "type": "enum"
+            },
+            "Migration_Pattern": {
+                "default": "RANDOM_WALK_DIFFUSION",
+                "depends-on": {
+                    "Migration_Model": "FIXED_RATE_MIGRATION"
+                },
+                "description": "The type of migration pattern used for the trip. For example, a single roundtrip or several waypoints before retracing their steps to return home.",
+                "enum": [
+                    "RANDOM_WALK_DIFFUSION",
+                    "SINGLE_ROUND_TRIPS",
+                    "WAYPOINTS_HOME"
+                ],
+                "type": "enum"
+            },
+            "Min_Adapted_Response": {
+                "default": 0.02,
+                "description": "Minimum level of antibody stimulation to novel antigen. The value sets the low-range asymptote for antibody capacity growth, which is calculated from Antibody_Capacity_Growth_Rate and antigen density, in the presence of any nonzero antigen level.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Min_Days_Between_Clinical_Incidents": {
+                "default": 3,
+                "description": "The number of days with fever below the low threshold before a new incident can start when the high fever threshold is again exceeded.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Minimum_Adult_Age_Years": {
+                "default": 15,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP"
+                },
+                "description": "The age, in years, after which an individual is considered an adult.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Minimum_End_Time": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Termination_On_Zero_Total_Infectivity": 1
+                },
+                "description": "The minimum time step the simulation must reach before checking for early termination conditions.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Mortality_Blocking_Immunity_Decay_Rate": {
+                "default": 0.001,
+                "depends-on": {
+                    "Enable_Immune_Decay": 1
+                },
+                "description": "Rate at which mortality-blocking immunity decays after the mortality-blocking immunity offset period.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Mortality_Blocking_Immunity_Duration_Before_Decay": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immune_Decay": 1
+                },
+                "description": "Number of days after infection until mortality-blocking immunity begins to decay.",
+                "max": 45000,
+                "min": 0,
+                "type": "float"
+            },
+            "Mortality_Time_Course": {
+                "default": "DAILY_MORTALITY",
+                "depends-on": {
+                    "Enable_Disease_Mortality": 1
+                },
+                "description": "The method used to calculate disease deaths: on every time step or once at the end of the disease duration.",
+                "enum": [
+                    "DAILY_MORTALITY",
+                    "MORTALITY_AFTER_INFECTIOUS"
+                ],
+                "type": "enum"
+            },
+            "Mosquito_Weight": {
+                "default": 1,
+                "depends-on": {
+                    "Vector_Sampling_Type": "SAMPLE_IND_VECTORS"
+                },
+                "description": "Value indicating how many mosquitoes are represented by a sample mosquito in the simulation.",
+                "max": 10000,
+                "min": 1,
+                "type": "integer"
+            },
+            "Newborn_Biting_Risk_Multiplier": {
+                "default": 0.2,
+                "depends-on": {
+                    "Age_Dependent_Biting_Risk_Type": "LINEAR"
+                },
+                "description": "Scale factor that defines the y-intercept of the linear portion of the biting risk curve when Age_Dependent_Biting_Risk_Type is set to LINEAR.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Node_Grid_Size": {
+                "default": 0.004167,
+                "description": "Spatial resolution indicating the node grid size for a simulation in degrees.",
+                "max": 90,
+                "min": 0.004167,
+                "type": "float"
+            },
+            "Nonspecific_Antibody_Growth_Rate_Factor": {
+                "default": 0.5,
+                "description": "Factor that adjusts Antibody_Capacity_Growth_Rate for less immunogenic surface proteins called the minor epitopes.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Nonspecific_Antigenicity_Factor": {
+                "default": 0.2,
+                "description": "Nonspecific antigenicity factor that adjusts antibody IRBC kill rate to account for IRBCs caused by antibody responses to antigenically weak surface proteins.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "Number_Basestrains": {
+                "default": 1,
+                "description": "The number of base strains in the simulation, such as antigenic variants.",
+                "max": 10,
+                "min": 1,
+                "type": "integer"
+            },
+            "Number_Of_Asexual_Cycles_Without_Gametocytes": {
+                "default": 1,
+                "description": "Number of asexual reproduction cycles that do not produce gametocytes. All later cycles will produce gametocytes according to Base_Gametocyte_Production_Rate.",
+                "max": 500,
+                "min": 0,
+                "type": "integer"
+            },
+            "Number_Substrains": {
+                "default": 1,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM, ENVIRONMENTAL_SIM, TBHIV_SIM"
+                },
+                "description": "The number of disease substrains for each base strain, such as genetic variants.",
+                "max": 16777200.0,
+                "min": 1,
+                "type": "integer"
+            },
+            "PKPD_Model": {
+                "default": "FIXED_DURATION_CONSTANT_EFFECT",
+                "description": "The pharmacokinetic pharmacodynamic model to use.",
+                "enum": [
+                    "FIXED_DURATION_CONSTANT_EFFECT",
+                    "CONCENTRATION_VERSUS_TIME"
+                ],
+                "type": "enum"
+            },
+            "Parasite_Genetics": {
+                "depends-on": {
+                    "Malaria_Model": "MALARIA_MECHANISTIC_MODEL_WITH_PARASITE_GENETICS"
+                },
+                "description": "The set of parameters needed for modeling the genetics of plasmodium falciparum.",
+                "type": "idmType:ParasiteGenetics"
+            },
+            "Parasite_Mortality_Inverse_Width": {
+                "default": 10,
+                "description": "The inverse width relative to threshold value of mortality turn-on around threshold for parasite density.",
+                "max": 1000000.0,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Parasite_Mortality_Threshold": {
+                "default": 2000000.0,
+                "description": "The parasite-density mortality threshold for a simulation.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Parasite_Severe_Inverse_Width": {
+                "default": 10,
+                "description": "The inverse width relative to threshold value of severe disease turn-on around threshold for parasite density.",
+                "max": 1000000.0,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Parasite_Severe_Threshold": {
+                "default": 1000000.0,
+                "description": "The severe disease threshold level for parasite density.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Parasite_Switch_Type": {
+                "default": "CONSTANT_SWITCH_RATE_2VARS",
+                "description": "Parasite switch type for erythrocyte surface antigens.",
+                "enum": [
+                    "CONSTANT_SWITCH_RATE_2VARS",
+                    "RATE_PER_PARASITE_7VARS",
+                    "RATE_PER_PARASITE_5VARS_DECAYING"
+                ],
+                "type": "enum"
+            },
+            "PfHRP2_Boost_Rate": {
+                "default": 0.07,
+                "description": "The rate at which PfHRP2 protein is being added to the blood stream by the infected red blood cells. - pg/iRBC/day: 1.4e-13 grams per 48h / 2 (48h cycle to daily)",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "PfHRP2_Decay_Rate": {
+                "default": 0.172,
+                "description": "The fraction of the protein decaying each day (based on 3.67 day half-life)",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Population_Density_C50": {
+                "default": 10,
+                "depends-on": {
+                    "Population_Density_Infectivity_Correction": "SATURATING_FUNCTION_OF_DENSITY"
+                },
+                "description": "The population density at which R0 for a 2.5-arc minute square reaches half of its initial value.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Population_Density_Infectivity_Correction": {
+                "default": "CONSTANT_INFECTIVITY",
+                "description": "Correction to alter infectivity by population density set in the Population_Density_C50 parameter. Measured in people per sq. km. Note: Sparsely populated areas have a lower infectivity, while densely populated areas have a higher infectivity, which rises to saturate at the Base_Infectivity value.",
+                "enum": [
+                    "CONSTANT_INFECTIVITY",
+                    "SATURATING_FUNCTION_OF_DENSITY"
+                ],
+                "type": "enum"
+            },
+            "Population_Scale_Type": {
+                "default": "USE_INPUT_FILE",
+                "description": "The method to use for scaling the initial population specified in the demographics input file.",
+                "enum": [
+                    "USE_INPUT_FILE",
+                    "FIXED_SCALING"
+                ],
+                "type": "enum"
+            },
+            "Post_Infection_Acquisition_Multiplier": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immunity": 1
+                },
+                "description": "Multiplicative reduction in probability of reacquiring the disease.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Post_Infection_Mortality_Multiplier": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immunity": 1
+                },
+                "description": "Multiplicative reduction in probability of dying from infection after getting re-infected.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Post_Infection_Transmission_Multiplier": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immunity": 1
+                },
+                "description": "Multiplicative reduction in probability of transmitting infection after getting re-infected.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Pyrogenic_Threshold": {
+                "default": 1000,
+                "description": "Level of bloodstream infection, measured in IRBC per microliter, at which stimulation of the innate inflammatory immune response is half its maximum value.",
+                "max": 20000,
+                "min": 0.1,
+                "type": "float"
+            },
+            "RBC_Destruction_Multiplier": {
+                "default": 9.5,
+                "description": "Number of total RBCs destroyed per infected rupturing schizont.",
+                "max": 30,
+                "min": 0,
+                "type": "float"
+            },
+            "Rainfall_Filename": {
+                "default": "rainfall.json",
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "Path of input file defining rainfall data.",
+                "type": "string"
+            },
+            "Rainfall_In_mm_To_Fill_Swamp": {
+                "default": 1000,
+                "description": "Millimeters of rain to fill larval habitat to capacity. Only used for vector species with Larval_Habitat_Types set to BRACKISH_SWAMP.",
+                "max": 10000,
+                "min": 1,
+                "type": "float"
+            },
+            "Rainfall_Scale_Factor": {
+                "default": 1,
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "The scale factor used in multiplying rainfall value(s).",
+                "max": 10,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Random_Number_Generator_Policy": {
+                "default": "ONE_PER_CORE",
+                "description": "The policy that determines if random numbers are generated for objects in a simulation on a per-core or per-node basis.",
+                "enum": [
+                    "ONE_PER_CORE",
+                    "ONE_PER_NODE"
+                ],
+                "type": "enum"
+            },
+            "Random_Number_Generator_Type": {
+                "default": "USE_PSEUDO_DES",
+                "description": "The type of random number generator to use for objects in a simulation. Must set the RNG seed in Run_Number.",
+                "enum": [
+                    "USE_PSEUDO_DES",
+                    "USE_LINEAR_CONGRUENTIAL",
+                    "USE_AES_COUNTER"
+                ],
+                "type": "enum"
+            },
+            "Regional_Migration_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Regional_Migration": 1
+                },
+                "description": "Path of input file defining patterns of migration by vehicle via road or rail network. If the node is not on a road or rail network, regional migration focuses on the closest hub city in the network.",
+                "type": "string"
+            },
+            "Regional_Migration_Roundtrip_Duration": {
+                "default": 1,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "The average time spent at the destination node during a round-trip migration by road network.",
+                "max": 10000,
+                "min": 0,
+                "type": "float"
+            },
+            "Regional_Migration_Roundtrip_Probability": {
+                "default": 0.1,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "Likelihood that an individual who travels by vehicle to another node will return to the node of origin during the next migration.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Relative_Humidity_Filename": {
+                "default": "rel_hum.json",
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "Path of input file defining relative humidity data measured 2 meters above ground.",
+                "type": "string"
+            },
+            "Relative_Humidity_Scale_Factor": {
+                "default": 1,
+                "depends-on": {
+                    "Climate_Model": "CLIMATE_BY_DATA"
+                },
+                "description": "The scale factor used in multiplying relative humidity values.",
+                "max": 10,
+                "min": 0.1,
+                "type": "float"
+            },
+            "Relative_Humidity_Variance": {
+                "default": 0.05,
+                "depends-on": {
+                    "Enable_Climate_Stochasticity": 1
+                },
+                "description": "The standard deviation (in percentage) for normally distributed noise applied to the daily relative humidity values when Climate_Model is configured as CLIMATE_CONSTANT or CLIMATE_BY_DATA.",
+                "max": 0.12,
+                "min": 0,
+                "type": "float"
+            },
+            "Relative_Sample_Rate_Immune": {
+                "default": 0.1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_IMMUNE_STATE"
+                },
+                "description": "Relative sampling rate for people who have acquired immunity through recovery or vaccination. If set to 1, this will have no effect, even if the individual's immunity modifier is below threshold.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Report_Coordinator_Event_Recorder": {
+                "default": 0,
+                "description": "Enables or disables the ReportCoordinatorEventRecorder.csv output report for coordinator events.",
+                "type": "bool"
+            },
+            "Report_Coordinator_Event_Recorder_Events": {
+                "default": [],
+                "depends-on": {
+                    "Report_Coordinator_Event_Recorder": 1
+                },
+                "description": "The list of events to include or exclude in the ReportCoordinatorEventRecorder.csv output report, based on how **Report_Coordinator_Event_Recorder_Ignore_Events_In_List** is set.",
+                "type": "Vector Constrained String",
+                "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+            },
+            "Report_Coordinator_Event_Recorder_Ignore_Events_In_List": {
+                "default": 0,
+                "depends-on": {
+                    "Report_Coordinator_Event_Recorder": 1
+                },
+                "description": "If set to false (0), only the events listed in the **Report_Coordinator_Event_Recorder_Events** array will be included in the ReportCoordinatorEventRecorder.csv output report. If set to true (1), only the events listed in the array will be excluded, and all other events will be included. If you want to return all events from the simulation, leave the events array empty.",
+                "type": "bool"
+            },
+            "Report_Detection_Threshold_Blood_Smear_Gametocytes": {
+                "default": 0,
+                "description": "gametocytes/microliter-For each person in the sim, the BLOOD_SMEAR_GAMETOCYTES diagnostic must have more gametocytes than this threshold to be counted as detected.  This impacts all reports keeping track of this stat for the population.",
+                "max": 50000,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Detection_Threshold_Blood_Smear_Parasites": {
+                "default": 0,
+                "description": "parsites/microliter-For each person in the sim, the BLOOD_SMEAR_PARASITES diagnostic must have more parasites than this threshold to be counted as detected.  This impacts all reports keeping track of this stat for the population.",
+                "max": 50000,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Detection_Threshold_Fever": {
+                "default": 1,
+                "description": "Level of body temperature above normal, in degrees Celsius, corresponding to detectable fever.  Normal body temperature is defined as 37 degrees Celsius.",
+                "max": 5,
+                "min": 0.5,
+                "type": "float"
+            },
+            "Report_Detection_Threshold_PCR_Gametocytes": {
+                "default": 0.05,
+                "description": "gametocytes/microliter-For each person in the sim, the PCR_GAMETOCYTES diagnostic must have more gametocytes than this threshold to be counted as detected.  This impacts all reports keeping track of this stat for the population.",
+                "max": 50000,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Detection_Threshold_PCR_Parasites": {
+                "default": 0.05,
+                "description": "parasites/microliter-For each person in the sim, the PCR_PARASITES diagnostic must have more parasites than this threshold to be counted as detected.  This impacts all reports keeping track of this stat for the population.",
+                "max": 50000,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Detection_Threshold_PfHRP2": {
+                "default": 5,
+                "description": "picograms/microliter-For each person in the sim, the PF_HRP2 diagnostic must have more PfHRP2 protein than this threshold to be counted as detected.  This impacts all reports keeping track of this stat for the population.",
+                "max": 50000,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Detection_Threshold_True_Parasite_Density": {
+                "default": 0,
+                "description": "parasites/microliter-For each person in the sim, the TRUE_PARASITE_DENSITY diagnostic must have more parasites than this threshold to be counted as detected.  This impacts all reports keeping track of this stat for the population.",
+                "max": 50000,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Event_Recorder": {
+                "default": 0,
+                "description": "Set to true (1) to enable or to false (0) to disable the ReportEventRecorder.csv output report that lists individual events in the simulation.",
+                "type": "bool"
+            },
+            "Report_Event_Recorder_Events": {
+                "Built-in": [
+                    "Births",
+                    "EveryUpdate",
+                    "EveryTimeStep",
+                    "NewInfectionEvent",
+                    "TBActivation",
+                    "NewClinicalCase",
+                    "NewSevereCase",
+                    "DiseaseDeaths",
+                    "OpportunisticInfectionDeath",
+                    "NonDiseaseDeaths",
+                    "TBActivationSmearPos",
+                    "TBActivationSmearNeg",
+                    "TBActivationExtrapulm",
+                    "TBActivationPostRelapse",
+                    "TBPendingRelapse",
+                    "TBActivationPresymptomatic",
+                    "TestPositiveOnSmear",
+                    "ProviderOrdersTBTest",
+                    "TBTestPositive",
+                    "TBTestNegative",
+                    "TBTestDefault",
+                    "TBRestartHSB",
+                    "TBMDRTestPositive",
+                    "TBMDRTestNegative",
+                    "TBMDRTestDefault",
+                    "TBFailedDrugRegimen",
+                    "TBRelapseAfterDrugRegimen",
+                    "TBStartDrugRegimen",
+                    "TBStopDrugRegimen",
+                    "PropertyChange",
+                    "STIDebut",
+                    "StartedART",
+                    "StoppedART",
+                    "InterventionDisqualified",
+                    "HIVNewlyDiagnosed",
+                    "GaveBirth",
+                    "Pregnant",
+                    "Emigrating",
+                    "Immigrating",
+                    "HIVTestedNegative",
+                    "HIVTestedPositive",
+                    "NewlySymptomatic",
+                    "SymptomaticCleared",
+                    "TwelveWeeksPregnant",
+                    "FourteenWeeksPregnant",
+                    "SixWeeksOld",
+                    "EighteenMonthsOld",
+                    "STIPreEmigrating",
+                    "STIPostImmigrating",
+                    "STINewInfection",
+                    "NewExternalHIVInfection",
+                    "NodePropertyChange",
+                    "HappyBirthday",
+                    "EnteredRelationship",
+                    "ExitedRelationship",
+                    "FirstCoitalAct",
+                    "ExposureComplete",
+                    "VectorToHumanTransmission",
+                    "HumanToVectorTransmission",
+                    "ReceivedInfectiousBites",
+                    "InfectionCleared"
+                ],
+                "default": [],
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "The list of events to include or exclude in the ReportEventRecorder.csv output report, based on how Report_Event_Recorder_Ignore_Events_In_List is set.",
+                "type": "Vector Constrained String",
+                "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
+            },
+            "Report_Event_Recorder_Ignore_Events_In_List": {
+                "default": 0,
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "If set to 0, only the events listed in the Report_Event_Recorder_Events array will be included in the ReportEventRecorder.csv output report. If set to 1, only the events listed in the array will be excluded, and all other events will be included. If you want to return all events from the simulation, leave the events array empty.",
+                "type": "bool"
+            },
+            "Report_Event_Recorder_Individual_Properties": {
+                "default": [],
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "A list of the IndividualProperty key:value pairs, as defined in the demographics file, that individuals must have to be targeted by this intervention.",
+                "type": "Dynamic String Set",
+                "value_source": "<demographics>::*.Individual_Properties.*.Property"
+            },
+            "Report_Gametocyte_Smear_Sensitivity": {
+                "default": 0.1,
+                "description": "For reports only.  The number of microliters of blood tested to find single gametocytes in a traditional smear (corresponds to inverse gametocytes/microliters sensitivity).",
+                "max": 100,
+                "min": 0.0001,
+                "type": "float"
+            },
+            "Report_Node_Event_Recorder": {
+                "default": 0,
+                "description": "Enables or disables the ReportNodeEventRecorder.csv output report.",
+                "type": "bool"
+            },
+            "Report_Node_Event_Recorder_Events": {
+                "Built-in": [
+                    "SheddingComplete"
+                ],
+                "default": [],
+                "depends-on": {
+                    "Report_Node_Event_Recorder": 1
+                },
+                "description": "",
+                "type": "Vector Constrained String",
+                "value_source": "'<configuration>:Custom_Node_Events.*' or Built-in"
+            },
+            "Report_Node_Event_Recorder_Ignore_Events_In_List": {
+                "default": 0,
+                "depends-on": {
+                    "Report_Node_Event_Recorder": 1
+                },
+                "description": "",
+                "type": "bool"
+            },
+            "Report_Node_Event_Recorder_Node_Properties": {
+                "default": [],
+                "depends-on": {
+                    "Report_Node_Event_Recorder": 1
+                },
+                "description": "Specifies an array of (optional) node property keys, as defined in **NodeProperties** in the demographics file, to be added as additional columns to the ReportNodeEventRecorder.csv output report.",
+                "type": "Dynamic String Set",
+                "value_source": "<demographics>::NodeProperties.*.Property"
+            },
+            "Report_Node_Event_Recorder_Stats_By_IPs": {
+                "default": [],
+                "depends-on": {
+                    "Report_Node_Event_Recorder": 1
+                },
+                "description": "Specifies an array of (optional) individual property keys, as defined in **IndividualProperties** in the demographics file, to be added to the ReportNodeEventRecorder.csv output report. An empty array equals no additional columns added.",
+                "type": "Dynamic String Set",
+                "value_source": "<demographics>::*.Individual_Properties.*.Property"
+            },
+            "Report_Parasite_Smear_Sensitivity": {
+                "default": 0.1,
+                "description": "For reports only.  The number of microliters of blood tested to find single parasites in a traditional smear (corresponds to inverse parasites/microliters sensitivity).",
+                "max": 100,
+                "min": 0.0001,
+                "type": "float"
+            },
+            "Report_Surveillance_Event_Recorder": {
+                "default": 0,
+                "description": "Enables or disables the ReportCoordinatorEventRecorder.csv output report for coordinator events.",
+                "type": "bool"
+            },
+            "Report_Surveillance_Event_Recorder_Events": {
+                "default": [],
+                "depends-on": {
+                    "Report_Surveillance_Event_Recorder": 1
+                },
+                "description": "The list of events to include or exclude in the ReportSurveillanceEventRecorder.csv output report, based on how **Report_Surveillance_Event_Recorder_Ignore_Events_In_List** is set.",
+                "type": "Vector Constrained String",
+                "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+            },
+            "Report_Surveillance_Event_Recorder_Ignore_Events_In_List": {
+                "default": 0,
+                "depends-on": {
+                    "Report_Surveillance_Event_Recorder": 1
+                },
+                "description": "If set to false (0), only the events listed in the **Report_Surveillance_Event_Recorder_Events** array will be included in the ReportSurveillanceEventRecorder.csv output report. If set to true (1), only the events listed in the array will be excluded, and all other events will be included. If you want to return all events from the simulation, leave the events array empty.",
+                "type": "bool"
+            },
+            "Report_Surveillance_Event_Recorder_Stats_By_IPs": {
+                "default": [],
+                "depends-on": {
+                    "Report_Surveillance_Event_Recorder": 1
+                },
+                "description": "Specifies an array of (optional) individual property keys, as defined in **IndividualProperties** in the demographics file, to be added to the ReportSurveillanceEventRecorder.csv output report.",
+                "type": "Dynamic String Set",
+                "value_source": "<demographics>::*.Individual_Properties.*.Property"
+            },
+            "Roundtrip_Waypoints": {
+                "default": 10,
+                "depends-on": {
+                    "Migration_Pattern": "WAYPOINTS_HOME"
+                },
+                "description": "The maximum number of points reached during a trip before steps are retraced on the return trip home.",
+                "max": 1000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Run_Number": {
+                "default": 1,
+                "description": "Sets the random number seed used with Random_Number_Generator_Type and Random_Number_Generator_Policy to assign random numbers to objects in a simulation.",
+                "max": 65535,
+                "min": 0,
+                "type": "integer"
+            },
+            "Sample_Rate_0_18mo": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for infants age 0 to 18 months.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sample_Rate_10_14": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for children age 10 to 14 years.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sample_Rate_15_19": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for adolescents age 15 to 19 years.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sample_Rate_18mo_4yr": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for children age 18 months to 4 years.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sample_Rate_20_Plus": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for adults age 20 and older.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sample_Rate_5_9": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for children age 5 to 9 years.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sample_Rate_Birth": {
+                "default": 1,
+                "depends-on": {
+                    "Individual_Sampling_Type": "ADAPTED_SAMPLING_BY_AGE_GROUP,ADAPTED_SAMPLING_BY_AGE_GROUP_AND_POP_SIZE"
+                },
+                "description": "For age-adapted sampling, the relative sampling rate for births.",
+                "max": 1,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Sea_Migration_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Sea_Migration": 1
+                },
+                "description": "Path of input file defining patterns of migration by ship.",
+                "type": "string"
+            },
+            "Sea_Migration_Roundtrip_Duration": {
+                "default": 1,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "The average time spent at the destination node during a round-trip migration by ship.",
+                "max": 10000,
+                "min": 0,
+                "type": "float"
+            },
+            "Sea_Migration_Roundtrip_Probability": {
+                "default": 0.25,
+                "depends-on": {
+                    "Migration_Pattern": "SINGLE_ROUND_TRIPS"
+                },
+                "description": "Likelihood that an individual who travels by ship into a neighboring node will return to the node of origin during the next migration. Used only when Enable_Sea_Migration is set to 1.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Semipermanent_Habitat_Decay_Rate": {
+                "default": 0.01,
+                "description": "Daily rate of larval habitat loss for semi-permanent habitats with Larval_Habitat_Types parameter value of WATER_VEGETATION or BRACKISH_SWAMP.",
+                "max": 100,
+                "min": 0.0001,
+                "type": "float"
+            },
+            "Serialization_Mask_Node_Read": {
+                "default": 0,
+                "depends-on": {
+                    "Serialized_Population_Reading_Type": "READ"
+                },
+                "description": "A control that determines what data is read from the serialized file. If the control is set, the configuration file is used. For example, a value of 0 implies that the Larval Habitat data is read from the serialized file while a value of 16 implies that the habitats are configured using the data from the configuration file (i.e. config.json).",
+                "max": 4294970000.0,
+                "min": 0,
+                "type": "integer"
+            },
+            "Serialization_Mask_Node_Write": {
+                "default": 0,
+                "depends-on": {
+                    "Serialized_Population_Writing_Type": "TIME,TIMESTEP"
+                },
+                "description": "A control that determines what data is written to the serialized file letting the user reduce the file size.  If the mask is set, the data of the masked module is not written to the file. For example, a value of 0 implies that the Larval Habitat data is written to the serialized file while a value of 16 implies that the habitats are not saved.",
+                "max": 4294970000.0,
+                "min": 0,
+                "type": "integer"
+            },
+            "Serialization_Precision": {
+                "default": "REDUCED",
+                "depends-on": {
+                    "Serialized_Population_Writing_Type": "TIMESTEP,TIME"
+                },
+                "description": "Default is REDUCED to reduce the size of the serialized file.  FULL gives more floating point precision but creates larger files.",
+                "enum": [
+                    "REDUCED",
+                    "FULL"
+                ],
+                "type": "enum"
+            },
+            "Serialization_Time_Steps": {
+                "ascending": 0,
+                "default": [],
+                "depends-on": {
+                    "Serialized_Population_Writing_Type": "TIMESTEP"
+                },
+                "description": "The list of time steps after which to save the serialized state to file. 0 indicates the initial state before simulation, n indicates after the nth time step. The serialized population files can then be loaded at the beginning of a simulation using Serialized_Population_Filenames and Serialized_Population_Path.",
+                "max": 2147480000.0,
+                "min": -1,
+                "type": "Vector Int"
+            },
+            "Serialization_Times": {
+                "ascending": 0,
+                "default": [],
+                "depends-on": {
+                    "Serialized_Population_Writing_Type": "TIME"
+                },
+                "description": "The list of times at which to save the serialized state to file. 0 indicates the initial state before simulation, n indicates the time to serialize in terms of start time and step size, and will be rounded up to the nearest time step. The serialized population files can then be loaded at the beginning of a simulation using Serialized_Population_Filenames and Serialized_Population_Path",
+                "max": 3.40282e+38,
+                "min": -1,
+                "type": "Vector Float"
+            },
+            "Serialized_Population_Filenames": {
+                "default": [],
+                "depends-on": {
+                    "Serialized_Population_Reading_Type": "READ"
+                },
+                "description": "An array of filenames with serialized population data. The number of filenames must match the number of cores used for the simulation.",
+                "type": "Vector String"
+            },
+            "Serialized_Population_Path": {
+                "default": ".",
+                "depends-on": {
+                    "Serialized_Population_Reading_Type": "READ"
+                },
+                "description": "Root path for the serialized population files.",
+                "type": "string"
+            },
+            "Serialized_Population_Reading_Type": {
+                "default": "NONE",
+                "description": "Set to READ to enable reading from a serialized population file, set to NONE otherwise.",
+                "enum": [
+                    "NONE",
+                    "READ"
+                ],
+                "type": "enum"
+            },
+            "Serialized_Population_Writing_Type": {
+                "default": "NONE",
+                "description": "The type of serialization to perform. NONE for no serialization, TIME to use definition from Serialization_Times, and TIMESTEP to use definition from Serialization_Time_Steps.",
+                "enum": [
+                    "NONE",
+                    "TIME",
+                    "TIMESTEP"
+                ],
+                "type": "enum"
+            },
+            "Simulation_Duration": {
+                "default": 1,
+                "description": "Elapsed time noted in days from the start to the end of a simulation.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Simulation_Timestep": {
+                "default": 1,
+                "description": "Value indicating simulation time step in days.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Simulation_Type": {
+                "default": "GENERIC_SIM",
+                "description": "Type of disease being simulated. IDM-supported values include GENERIC_SIM, VECTOR_SIM, MALARIA_SIM, TBHIV_SIM, STI_SIM, HIV_SIM, ENVIRONMENTAL_SIM, and TYPHOID_SIM. To query the values supported for your specific build, use the --version option.",
+                "enum": [
+                    "GENERIC_SIM",
+                    "VECTOR_SIM",
+                    "MALARIA_SIM",
+                    "ENVIRONMENTAL_SIM",
+                    "POLIO_SIM",
+                    "AIRBORNE_SIM",
+                    "TBHIV_SIM",
+                    "STI_SIM",
+                    "HIV_SIM",
+                    "PY_SIM",
+                    "TYPHOID_SIM",
+                    "DENGUE_SIM"
+                ],
+                "type": "enum"
+            },
+            "Spatial_Output_Channels": {
+                "default": [],
+                "depends-on": {
+                    "Enable_Spatial_Output": 1
+                },
+                "description": "An array of channel names for spatial output by node and time step. The data from each channel will be written to a separate binary file. For full documentation of spatial output channels, please see the online documentation.",
+                "possible_values": [
+                    "Adult_Vectors",
+                    "Air_Temperature",
+                    "Births",
+                    "Campaign_Cost",
+                    "Daily_Bites_Per_Human",
+                    "Daily_EIR",
+                    "Disease_Deaths",
+                    "Human_Infectious_Reservoir",
+                    "Infected",
+                    "Infectious_Vectors",
+                    "Land_Temperature",
+                    "New_Infections",
+                    "New_Reported_Infections",
+                    "Population",
+                    "Prevalence",
+                    "Rainfall",
+                    "Relative_Humidity"
+                ],
+                "type": "Fixed String Set"
+            },
+            "Start_Time": {
+                "default": 1,
+                "description": "Time noted in days when the simulation begins. This time influences the point in the temporal input data, such as where in the climate input EMOD starts running the simulation. Note: The Start_Day of campaign events is in absolute time. So, time relative to the beginning of the simulation depends on this parameter.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Susceptibility_Initialization_Distribution_Type": {
+                "default": "DISTRIBUTION_OFF",
+                "depends-on": {
+                    "Enable_Initial_Susceptibility_Distribution": 1
+                },
+                "description": "The method for initializing the susceptibility distribution in the simulated population.",
+                "enum": [
+                    "DISTRIBUTION_OFF",
+                    "DISTRIBUTION_SIMPLE",
+                    "DISTRIBUTION_COMPLEX"
+                ],
+                "type": "enum"
+            },
+            "Susceptibility_Scaling_Rate": {
+                "default": 0,
+                "depends-on": {
+                    "Susceptibility_Scaling_Type": "LOG_LINEAR_FUNCTION_OF_TIME"
+                },
+                "description": "The scaling rate for the variation in time of the log-linear susceptibility scaling.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Susceptibility_Scaling_Type": {
+                "default": "CONSTANT_SUSCEPTIBILITY",
+                "depends-on": {
+                    "Enable_Susceptibility_Scaling": 1
+                },
+                "description": "The effect of time on susceptibility.",
+                "enum": [
+                    "CONSTANT_SUSCEPTIBILITY",
+                    "LOG_LINEAR_FUNCTION_OF_TIME"
+                ],
+                "type": "enum"
+            },
+            "Susceptibility_Type": {
+                "default": "FRACTIONAL",
+                "depends-on": {
+                    "Enable_Maternal_Protection": 1
+                },
+                "description": "Controls implementation of an individual's susceptibility.",
+                "enum": [
+                    "FRACTIONAL",
+                    "BINARY"
+                ],
+                "type": "enum"
+            },
+            "Symptomatic_Infectious_Offset": {
+                "default": 3.40282e+38,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM"
+                },
+                "description": "Amount of time, in days, after the infectious period starts that symptoms appear.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Temporary_Habitat_Decay_Factor": {
+                "default": 0.05,
+                "description": "Factor to convert raw evaporation rate (ignoring boundary layer effects) to the daily rate of larval habitat loss for temporary habitats (Larval_Habitat_Types set to TEMPORARY_RAINFALL). Units are (larval carrying capacity per day) / (kg per square meter per second).",
+                "max": 100,
+                "min": 0.001,
+                "type": "float"
+            },
+            "Transmission_Blocking_Immunity_Decay_Rate": {
+                "default": 0.001,
+                "depends-on": {
+                    "Enable_Immune_Decay": 1
+                },
+                "description": "Rate at which transmission-blocking immunity decays after the base transmission-blocking immunity offset period. Relevant only when Enable_Immunity and Enable_Immune_Decay parameters are set to 1.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Transmission_Blocking_Immunity_Duration_Before_Decay": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Immune_Decay": 1
+                },
+                "description": "Number of days after infection until transmission-blocking immunity begins to decay. Relevant only when Enable_Immunity and Enable_Immune_Decay parameters are set to 1.",
+                "max": 45000,
+                "min": 0,
+                "type": "float"
+            },
+            "Vector_Larval_Rainfall_Mortality": {
+                "default": "NONE",
+                "description": "Type of vector larval mortality function due to rainfall.",
+                "enum": [
+                    "NONE",
+                    "SIGMOID",
+                    "SIGMOID_HABITAT_SHIFTING"
+                ],
+                "type": "enum"
+            },
+            "Vector_Migration_Filename_Local": {
+                "default": "UNSPECIFIED_FILE",
+                "depends-on": {
+                    "Enable_Vector_Migration_Local": 1
+                },
+                "description": "Path to the vector migration file defining patterns of vector migration to adjacent nodes.",
+                "type": "string"
+            },
+            "Vector_Migration_Filename_Regional": {
+                "default": "UNSPECIFIED_FILE",
+                "depends-on": {
+                    "Enable_Vector_Migration_Regional": 1
+                },
+                "description": "Path to the vector migration file defining patterns of vector migration to non-adjacent nodes.",
+                "type": "string"
+            },
+            "Vector_Migration_Food_Modifier": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Vector_Migration": 1
+                },
+                "description": "Preference of a vector to migrate toward a node currently occupied by humans, independent of the number of humans in the node. Only relevant when Vector_Sampling_Type is set to TRACK_ALL_VECTORS.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Vector_Migration_Habitat_Modifier": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Vector_Migration": 1
+                },
+                "description": "Preference of a vector to migrate toward a node with more habitat. Only relevant when Vector_Sampling_Type is set to TRACK_ALL_VECTORS.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Vector_Migration_Modifier_Equation": {
+                "default": "LINEAR",
+                "depends-on": {
+                    "Enable_Vector_Migration": 1
+                },
+                "description": "Functional form of vector migration modifiers.",
+                "enum": [
+                    "LINEAR",
+                    "EXPONENTIAL"
+                ],
+                "type": "enum"
+            },
+            "Vector_Migration_Stay_Put_Modifier": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Vector_Migration": 1
+                },
+                "description": "Preference of a vector to remain in its current node rather than migrate to another node. Only relevant when Vector_Sampling_Type is set to TRACK_ALL_VECTORS.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Vector_Sampling_Type": {
+                "default": "TRACK_ALL_VECTORS",
+                "description": "Type of vector sampling used.",
+                "enum": [
+                    "TRACK_ALL_VECTORS",
+                    "SAMPLE_IND_VECTORS",
+                    "VECTOR_COMPARTMENTS_NUMBER",
+                    "VECTOR_COMPARTMENTS_PERCENT"
+                ],
+                "type": "enum"
+            },
+            "Vector_Species_Params": {
+                "default": [],
+                "description": "A list of JSON object where each object contains the parameters for a specific species of vectors.",
+                "item_type": "idmType:VectorSpeciesParameters",
+                "type": "Vector idmType:VectorSpeciesParameters"
+            },
+            "Wolbachia_Infection_Modification": {
+                "default": 1,
+                "description": "The change in vector susceptibility to infection due to a Wolbachia infection.",
+                "max": 100,
+                "min": 0,
+                "type": "float"
+            },
+            "Wolbachia_Mortality_Modification": {
+                "default": 1,
+                "description": "The change in vector mortality due to a Wolbachia infection.",
+                "max": 100,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Air_Migration": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Air_Migration": 1
+                },
+                "description": "Scale factor for the rate of migration by air.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Base_Population": {
+                "default": 1,
+                "depends-on": {
+                    "Population_Scale_Type": "FIXED_SCALING"
+                },
+                "description": "Scale facor for InitialPopulation in the demographics file.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Birth": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Birth": 1
+                },
+                "description": "Scale factor for birth rate.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Family_Migration": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Family_Migration": 1
+                },
+                "description": "Scale factor for the rate of migration by families.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Local_Migration": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Local_Migration": 1
+                },
+                "description": "Scale factor for the rate of migration by foot travel.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Other_Mortality": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Natural_Mortality": 1
+                },
+                "description": "Scale factor for mortality from causes other than the disease being simulated.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Regional_Migration": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Regional_Migration": 1
+                },
+                "description": "Scale factor for the rate of migration by road vehicle.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Sea_Migration": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Sea_Migration": 1
+                },
+                "description": "Scale factor for the rate of migration by sea.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Temporary_Larval_Habitat": {
+                "default": 1,
+                "description": "Scale factor for the habitat size for all mosquito populations.",
+                "max": 10000,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Vector_Migration_Local": {
+                "default": 1,
+                "description": "Scale factor for the rate of migration by foot travel.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "x_Vector_Migration_Regional": {
+                "default": 1,
+                "depends-on": {
+                    "Enable_Vector_Migration_Regional": 1
+                },
+                "description": "Scale factor for the rate of vector migration to non-adjacent nodes.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            }
+        },
+        "x_Air_Migration": 1,
+        "x_Base_Population": 1,
+        "x_Birth": 1,
+        "x_Family_Migration": 1,
+        "x_Local_Migration": 1,
+        "x_Other_Mortality": 1,
+        "x_Regional_Migration": 1,
+        "x_Sea_Migration": 1,
+        "x_Temporary_Larval_Habitat": 1,
+        "x_Vector_Migration_Local": 1,
+        "x_Vector_Migration_Regional": 1
+    }
+}
