@@ -33,8 +33,11 @@ def set_param_fn(config):
     config.parameters.Enable_Vector_Species_Report = 0
     config.parameters.Enable_Vital_Dynamics = 0
     config.parameters.Demographics_Filenames = ['demographics.json']
-    config.parameters.Simulation_Duration = 2*365
+    config.parameters.Simulation_Duration = 70*365
     config.parameters.Enable_Initial_Prevalence = 1
+    config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_SIMPLE'
+    config.parameters.Vector_Species_Params = []
+    config.parameters.Start_Time = 0
     # config.parameters.pop("Serialized_Population_Filenames")
 
     return config

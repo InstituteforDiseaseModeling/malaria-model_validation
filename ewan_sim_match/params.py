@@ -1,2 +1,2 @@
-exp_name="model_validation_dielmo_test"
-nSims = 2
+exp_name="model_validation_dielmo_dry_run"
+nSims = 50

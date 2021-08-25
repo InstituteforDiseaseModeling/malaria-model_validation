@@ -43,7 +43,7 @@ def general_sim():
     builder = SimulationBuilder()
 
     # Add asset
-    task.common_assets.add_asset("C:\\Users\\pselvaraj\\Github\\malaria-model_validation\\ewan_sim_match\\input_files\\demographics.json")
+    task.common_assets.add_asset("/Users/pselvaraj/Github/malaria-model_validation/ewan_sim_match/input_files/demographics.json")
 
     # Sweep run number
     builder.add_sweep_definition(update_sim_random_seed, range(params.nSims))
