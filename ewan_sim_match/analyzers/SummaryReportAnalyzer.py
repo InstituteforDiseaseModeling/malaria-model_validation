@@ -71,19 +71,17 @@ class SummaryReportAnalyzer(BaseAnalyzer):
         output_dir = os.path.join(self.working_dir, "output")
         df_final = pd.DataFrame()
         for s, v in all_data.items():
-            dftemp = v[0].copy()
+            dftemp = v.copy()
             for t in self.tags:
-                dftemp[t] = [s.tags[t]]*len(v[0])
+                dftemp[t] = [s.tags[t]]*len(v)
             df_final = pd.concat([df_final, dftemp])
         df_final.to_csv(os.path.join(output_dir, "summary_data_full.csv"))
         # df_incidence.to_csv(os.path.join(output_dir, "sporozoite_reduction_incidence_full.csv"))
 
         groupby_tags = self.tags
         groupby_tags.remove('Run_Number')
-        df_summarized = df_final[['Age', 'Prevalence', 'Incidence']].apply(
-             np.mean).reset_index()
-        df_summarized_std = df_final[['Prevalence', 'Incidence']].apply(
-            np.std)
+        df_summarized = df_final.groupby('Age')['Prevalence', 'Incidence'].apply(np.mean).reset_index()
+        df_summarized_std = df_final.groupby('Age')['Prevalence', 'Incidence'].apply(np.std)
         for c in ['Prevalence', 'Incidence']:
             df_summarized[c + '_std'] = list(df_summarized_std[c])
 
