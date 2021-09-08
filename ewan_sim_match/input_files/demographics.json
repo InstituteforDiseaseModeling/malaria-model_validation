@@ -69,7 +69,7 @@
                 "Airport": 0,
                 "Altitude": 0,
                 "BirthRate": 0.0274,
-                "InitialPopulation": 10,
+                "InitialPopulation": 1000,
                 "Latitude": -8.5,
                 "Longitude": 36.5,
                 "Region": 1,
