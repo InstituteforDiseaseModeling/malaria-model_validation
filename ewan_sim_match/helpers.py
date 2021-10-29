@@ -53,8 +53,8 @@ def build_camp():
     camp.schema_path = manifest.schema_file
 
     # print( f"Telling emod-api to use {manifest.schema_file} as schema." )
-    add(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
-        drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
+    # add(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
+    #     drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
 
     camp.add(InputEIR(camp, monthly_eir=[10.4, 13, 6, 2.6, 4, 6, 35, 21, 28, 15, 10.4, 8.4],
              start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))

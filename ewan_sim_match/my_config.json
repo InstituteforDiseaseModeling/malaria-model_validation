@@ -30,9 +30,7 @@
         "Clinical_Fever_Threshold_Low": 0.5,
         "Config_Name": "",
         "Custom_Coordinator_Events": [],
-        "Custom_Individual_Events": [
-            "Received_Treatment"
-        ],
+        "Custom_Individual_Events": [],
         "Custom_Node_Events": [],
         "Custom_Reports_Filename": "custom_reports.json",
         "Cytokine_Gametocyte_Inactivation": 0.01667,
