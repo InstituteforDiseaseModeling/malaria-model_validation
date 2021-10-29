@@ -1,4 +1,7 @@
 import ewan_sim_match.manifest as manifest
+from ewan_sim_match.site_eir_values import study_site_monthly_EIRs, mAb_vs_EIR, sites_with_interventions
+
+from functools import partial
 
 import emod_api.demographics.Demographics as Demographics
 
@@ -14,10 +17,9 @@ def update_sim_random_seed(simulation, value):
     return {"Run_Number": value}
 
 
-def mAb_vs_EIR(EIR):
-    # Rough cut at function from eyeballing a few BinnedReport outputs parsed into antibody fractions
-    mAb = 0.9 * (1e-4*EIR*EIR + 0.7*EIR) / ( 0.7*EIR + 2 )
-    return min(mAb, 1.0)
+def update_mab(simulation, value):
+    simulation.task.config.parameters.Maternal_Antibody_Protection *= value
+    return None
 
 
 def set_param_fn(config):
@@ -43,7 +45,17 @@ def set_param_fn(config):
     return config
 
 
-def build_camp():
+def update_camp_type(simulation, site):
+    # simulation.task.config.parameters.Run_Number = value
+    build_camp_partial = partial(build_camp, site=site)
+    simulation.task.create_campaign_from_callback(build_camp_partial)
+
+    update_mab(simulation, mAb_vs_EIR(sum(study_site_monthly_EIRs[site])))
+
+    return {"Site": site}
+
+
+def build_camp(site):
     """
     Build a campaign input file for the DTK using emod_api.
     Right now this function creates the file and returns the filename. If calling code just needs an asset that's fine.
@@ -52,11 +64,15 @@ def build_camp():
     # This isn't desirable. Need to think about right way to provide schema (once)
     camp.schema_path = manifest.schema_file
 
-    # print( f"Telling emod-api to use {manifest.schema_file} as schema." )
-    # add(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
-    #     drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
+    if site not in study_site_monthly_EIRs.keys():
+        raise Exception("Don't know how to configure site: %s " % site)
 
-    camp.add(InputEIR(camp, monthly_eir=[10.4, 13, 6, 2.6, 4, 6, 35, 21, 28, 15, 10.4, 8.4],
+    # print( f"Telling emod-api to use {manifest.schema_file} as schema." )
+    if site in sites_with_interventions:
+        add(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
+            drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
+
+    camp.add(InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
              start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
 
     return camp

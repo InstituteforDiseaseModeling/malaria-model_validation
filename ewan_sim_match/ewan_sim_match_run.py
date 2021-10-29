@@ -16,7 +16,7 @@ import ewan_sim_match.params as params
 import ewan_sim_match.manifest as manifest
 
 
-def general_sim():
+def general_sim(sites=None):
     """
     This function is designed to be a parameterized version of the sequence of things we do 
     every time we run an emod experiment. 
@@ -33,7 +33,7 @@ def general_sim():
             config_path="my_config.json",
             eradication_path=manifest.eradication_path,
             ep4_custom_cb=None,
-            campaign_builder=build_camp,
+            campaign_builder=None,
             schema_path=manifest.schema_file,
             param_custom_cb=set_param_fn,
             demog_builder=None,
@@ -47,6 +47,9 @@ def general_sim():
 
     # Sweep run number
     builder.add_sweep_definition(update_sim_random_seed, range(params.nSims))
+
+    # Sweep sites
+    builder.add_sweep_definition(update_camp_type, sites)
 
     exp_name = params.exp_name
 
@@ -83,4 +86,5 @@ if __name__ == "__main__":
     # get_model_files( plan, manifest )
     # print("...done.")
 
-    general_sim()
+    sites = ['Ndiop', 'Dielmo']
+    general_sim(sites)
