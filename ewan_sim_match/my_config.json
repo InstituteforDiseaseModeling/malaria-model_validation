@@ -2,7 +2,6 @@
     "parameters": {
         "Age_Dependent_Biting_Risk_Type": "SURFACE_AREA_DEPENDENT",
         "Age_Initialization_Distribution_Type": "DISTRIBUTION_SIMPLE",
-        "Air_Temperature_Variance": 2,
         "Anemia_Mortality_Inverse_Width": 1,
         "Anemia_Mortality_Threshold": 0.654726662830038,
         "Anemia_Severe_Inverse_Width": 10,
@@ -25,12 +24,14 @@
         "Base_Sporozoite_Survival_Fraction": 0.25,
         "Campaign_Filename": "campaign.json",
         "Climate_Model": "CLIMATE_CONSTANT",
-        "Climate_Update_Resolution": "CLIMATE_UPDATE_YEAR",
+        "Climate_Update_Resolution": "CLIMATE_UPDATE_DAY",
         "Clinical_Fever_Threshold_High": 1.5,
         "Clinical_Fever_Threshold_Low": 0.5,
         "Config_Name": "",
         "Custom_Coordinator_Events": [],
-        "Custom_Individual_Events": [],
+        "Custom_Individual_Events": [
+            "Received_Treatment"
+        ],
         "Custom_Node_Events": [],
         "Custom_Reports_Filename": "custom_reports.json",
         "Cytokine_Gametocyte_Inactivation": 0.01667,
@@ -40,11 +41,11 @@
         "Egg_Hatch_Delay_Distribution": "NO_DELAY",
         "Egg_Hatch_Density_Dependence": "NO_DENSITY_DEPENDENCE",
         "Egg_Saturation_At_Oviposition": "SATURATION_AT_OVIPOSITION",
-        "Enable_Climate_Stochasticity": 1,
+        "Enable_Climate_Stochasticity": 0,
         "Enable_Default_Reporting": 1,
         "Enable_Demographics_Builtin": 0,
         "Enable_Demographics_Reporting": 0,
-        "Enable_Demographics_Risk": 1,
+        "Enable_Demographics_Risk": 0,
         "Enable_Disease_Mortality": 0,
         "Enable_Drought_Egg_Hatch_Delay": 0,
         "Enable_Egg_Mortality": 0,
@@ -53,7 +54,6 @@
         "Enable_Interventions": 1,
         "Enable_Maternal_Antibodies_Transmission": 1,
         "Enable_Property_Output": 0,
-        "Enable_Rainfall_Stochasticity": 1,
         "Enable_Skipping": 0,
         "Enable_Spatial_Output": 0,
         "Enable_Superinfection": 1,
@@ -77,7 +77,6 @@
         "Fever_Severe_Inverse_Width": 27.5653580403806,
         "Fever_Severe_Threshold": 3.98354299722192,
         "Gametocyte_Stage_Survival_Rate": 0.588569307,
-        "Genome_Markers": [],
         "Human_Feeding_Mortality": 0.1,
         "Incubation_Period_Constant": 7,
         "Incubation_Period_Distribution": "CONSTANT_DISTRIBUTION",
@@ -88,8 +87,7 @@
         "Innate_Immune_Variation_Type": "NONE",
         "Insecticides": [],
         "Inset_Chart_Has_Interventions": [],
-        "Inset_Chart_Reporting_Include_30Day_Avg_Infection_Duration": 1,
-        "Land_Temperature_Variance": 2,
+        "Inset_Chart_Reporting_Include_30Day_Avg_Infection_Duration": 0,
         "Larval_Density_Dependence": "UNIFORM_WHEN_OVERPOPULATION",
         "Load_Balance_Filename": "",
         "MSP1_Merozoite_Kill_Fraction": 0.511735322,
@@ -123,7 +121,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 8.9,
                 "Name": "Artemether",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 0.35,
@@ -154,7 +153,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 4.8,
                 "Name": "Lumefantrine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -193,7 +193,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 9.2,
                 "Name": "DHA",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 0,
@@ -232,7 +233,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 4.6,
                 "Name": "Piperaquine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -263,7 +265,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 0.0,
                 "Name": "Primaquine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -294,7 +297,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 4.8,
                 "Name": "Chloroquine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -321,7 +325,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 4.2,
                 "Name": "Artesunate",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -348,7 +353,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 0.506,
                 "Name": "Sulfadoxine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -375,7 +381,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 0.6,
                 "Name": "Pyrimethamine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -402,7 +409,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 0.67089,
                 "Name": "Amodiaquine",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -429,7 +437,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 0.7089,
                 "Name": "Amodiaquine_for_AS_combination",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 1.0,
@@ -460,7 +469,8 @@
                 ],
                 "Max_Drug_IRBC_Kill": 4.0,
                 "Name": "Abstract",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             },
             {
                 "Bodyweight_Exponent": 0,
@@ -478,7 +488,8 @@
                 "Fractional_Dose_By_Upper_Age": [],
                 "Max_Drug_IRBC_Kill": 0.0,
                 "Name": "Vehicle",
-                "Resistance": []
+                "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
+                "Resistances": []
             }
         ],
         "Malaria_Model": "MALARIA_MECHANISTIC_MODEL",
@@ -504,7 +515,6 @@
         "Nonspecific_Antigenicity_Factor": 0.415111634,
         "Number_Basestrains": 1,
         "Number_Of_Asexual_Cycles_Without_Gametocytes": 1,
-        "PKPD_Model": "CONCENTRATION_VERSUS_TIME",
         "Parasite_Mortality_Inverse_Width": 327.51594505874,
         "Parasite_Mortality_Threshold": 851138.0382023759,
         "Parasite_Severe_Inverse_Width": 56.5754896048744,
@@ -520,7 +530,6 @@
         "Rainfall_In_mm_To_Fill_Swamp": 1000,
         "Random_Number_Generator_Policy": "ONE_PER_CORE",
         "Random_Number_Generator_Type": "USE_PSEUDO_DES",
-        "Relative_Humidity_Variance": 0.05,
         "Report_Coordinator_Event_Recorder": 0,
         "Report_Detection_Threshold_Blood_Smear_Gametocytes": 20,
         "Report_Detection_Threshold_Blood_Smear_Parasites": 20,
@@ -552,9 +561,9 @@
         "Temporary_Habitat_Decay_Factor": 0.05,
         "Vector_Larval_Rainfall_Mortality": "NONE",
         "Vector_Migration_Food_Modifier": 0,
-        "Vector_Migration_Habitat_Modifier": 6.5,
+        "Vector_Migration_Habitat_Modifier": 0,
         "Vector_Migration_Modifier_Equation": "LINEAR",
-        "Vector_Migration_Stay_Put_Modifier": 0.3,
+        "Vector_Migration_Stay_Put_Modifier": 0,
         "Vector_Sampling_Type": "SAMPLE_IND_VECTORS",
         "Vector_Species_Params": [],
         "Wolbachia_Infection_Modification": 1,
