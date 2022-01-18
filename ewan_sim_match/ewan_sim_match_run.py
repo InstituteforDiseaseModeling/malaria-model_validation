@@ -24,7 +24,7 @@ def general_sim(sites=None):
 
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform("SLURM")
+    platform = Platform("Calculon")
 
     # create EMODTask 
     print("Creating EMODTask (from files)...")
@@ -43,7 +43,7 @@ def general_sim(sites=None):
     builder = SimulationBuilder()
 
     # Add asset
-    task.common_assets.add_asset("/Users/pselvaraj/Github/malaria-model_validation/ewan_sim_match/input_files/demographics.json")
+    task.common_assets.add_asset(manifest.asset_path)
 
     # Sweep run number
     builder.add_sweep_definition(update_sim_random_seed, range(params.nSims))

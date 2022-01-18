@@ -5,8 +5,8 @@ from functools import partial
 
 import emod_api.demographics.Demographics as Demographics
 
-from emodpy_malaria import config as malconf
-from emodpy_malaria.interventions.treatment_seeking import add
+from emodpy_malaria import malaria_config as malconf
+from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 from emodpy_malaria.interventions.inputeir import InputEIR
 
 import emod_api.campaign as camp
@@ -69,11 +69,11 @@ def build_camp(site):
 
     # print( f"Telling emod-api to use {manifest.schema_file} as schema." )
     if site in sites_with_interventions:
-        add(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
+        add_treatment_seeking(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
             drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
 
-    camp.add(InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
-             start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
+    InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
+             start_day=0, age_dependence="SURFACE_AREA_DEPENDENT")
 
     return camp
 

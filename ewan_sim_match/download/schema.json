@@ -1,8 +1,8 @@
 {
     "Version": {
-        "DTK_Branch": "Malaria-Ongoing(8a74ae23d9)",
-        "DTK_Build_Date": "Jun  8 2021",
-        "DTK_Version": "2.20.5013.0"
+        "DTK_Branch": "Malaria-Ongoing(6ee63023a)",
+        "DTK_Build_Date": "Nov 18 2021",
+        "DTK_Version": "2.20.5097.0"
     },
     "config": {
         "Climate.ByData": {
@@ -358,12 +358,6 @@
                 "description": "An Array of insecticides and their resistance modifiers",
                 "item_type": "idmType:Insecticide",
                 "type": "Vector idmType:Insecticide"
-            },
-            "Malaria_Drug_Params": {
-                "default": [],
-                "description": "This JSON structure contains the names of anti-malarial drugs and the parameters that define them.",
-                "item_type": "idmType:MalariaDrugTypeParameters",
-                "type": "Vector idmType:MalariaDrugTypeParameters"
             },
             "Migration_Model": {
                 "default": "NO_MIGRATION",
@@ -1149,32 +1143,6 @@
                 "description": "A value of one will cause the VectorSpeciesReport.json file to be created.",
                 "type": "bool"
             },
-            "Falciparum_MSP_Variants": {
-                "default": 100,
-                "description": "The number of distinct MSP variants for P. falciparum malaria in the overall parasite population in the simulation, not necessarily in an individual.",
-                "max": 1000,
-                "min": 0,
-                "type": "integer"
-            },
-            "Falciparum_Nonspecific_Types": {
-                "default": 20,
-                "description": "The number of distinct non-specific types of P. falciparum malaria.",
-                "max": 1000,
-                "min": 0,
-                "type": "integer"
-            },
-            "Falciparum_PfEMP1_Variants": {
-                "default": 1000,
-                "description": "The number of distinct PfEMP1 variants for P. falciparum malaria in the overall parasite population in the simulation.",
-                "max": 100000,
-                "min": 0,
-                "type": "integer"
-            },
-            "Genome_Markers": {
-                "default": [],
-                "description": "A list of the names (strings) of genome marker(s) that represent the genetic components in a strain of an infection.",
-                "type": "Vector String"
-            },
             "Human_Feeding_Mortality": {
                 "default": 0.1,
                 "description": "The fraction of mosquitoes, for all species, that die while feeding on a human.",
@@ -1230,12 +1198,6 @@
                 "min": 0.01,
                 "type": "float"
             },
-            "Malaria_Drug_Params": {
-                "default": [],
-                "description": "This JSON structure contains the names of anti-malarial drugs and the parameters that define them.",
-                "item_type": "idmType:MalariaDrugTypeParameters",
-                "type": "Vector idmType:MalariaDrugTypeParameters"
-            },
             "Mean_Egg_Hatch_Delay": {
                 "default": 0,
                 "description": "The mean delay in egg hatch time, in days, from the time of oviposition.",
@@ -1259,25 +1221,16 @@
                 "min": 0.004167,
                 "type": "float"
             },
-            "PKPD_Model": {
-                "default": "FIXED_DURATION_CONSTANT_EFFECT",
-                "description": "The pharmacokinetic pharmacodynamic model to use.",
-                "enum": [
-                    "FIXED_DURATION_CONSTANT_EFFECT",
-                    "CONCENTRATION_VERSUS_TIME"
-                ],
-                "type": "enum"
-            },
             "Rainfall_In_mm_To_Fill_Swamp": {
                 "default": 1000,
-                "description": "Millimeters of rain to fill larval habitat to capacity. Only used for vector species with Larval_Habitat_Types set to BRACKISH_SWAMP.",
+                "description": "Millimeters of rain to fill larval habitat to capacity. Only used for vector species with Habitats set to BRACKISH_SWAMP.",
                 "max": 10000,
                 "min": 1,
                 "type": "float"
             },
             "Semipermanent_Habitat_Decay_Rate": {
                 "default": 0.01,
-                "description": "Daily rate of larval habitat loss for semi-permanent habitats with Larval_Habitat_Types parameter value of WATER_VEGETATION or BRACKISH_SWAMP.",
+                "description": "Daily rate of larval habitat loss for semi-permanent habitats with Habitats parameter value of WATER_VEGETATION or BRACKISH_SWAMP.",
                 "max": 100,
                 "min": 0.0001,
                 "type": "float"
@@ -1324,7 +1277,7 @@
             },
             "Temporary_Habitat_Decay_Factor": {
                 "default": 0.05,
-                "description": "Factor to convert raw evaporation rate (ignoring boundary layer effects) to the daily rate of larval habitat loss for temporary habitats (Larval_Habitat_Types set to TEMPORARY_RAINFALL). Units are (larval carrying capacity per day) / (kg per square meter per second).",
+                "description": "Factor to convert raw evaporation rate (ignoring boundary layer effects) to the daily rate of larval habitat loss for temporary habitats (Habitats set to TEMPORARY_RAINFALL). Units are (larval carrying capacity per day) / (kg per square meter per second).",
                 "max": 100,
                 "min": 0.001,
                 "type": "float"
@@ -2918,6 +2871,14 @@
                 "description": "Controls whether or not an exogeneous reservoir of infectivity will be included in the simulation and allows for the infectivity in a node to be increased additively.",
                 "type": "bool"
             },
+            "Enable_Initial_Prevalence": {
+                "default": 0,
+                "depends-on": {
+                    "Simulation_Type": "GENERIC_SIM, VECTOR_SIM, STI_SIM, ENVIRONMENTAL_SIM, MALARIA_SIM"
+                },
+                "description": "Controls whether or not parameters in the demographics file are used to define a distribution for the number of infected people per node at the beginning of the simulation. Set the distribution under IndividualAttributes using PrevalenceDistributionFlag, PrevalenceDistribution1, and PrevalenceDistribution2.",
+                "type": "bool"
+            },
             "Enable_Maternal_Infection_Transmission": {
                 "default": 0,
                 "depends-on": {
@@ -4208,10 +4169,37 @@
                 "description": "Controls whether or not the simulation should be ended when total infectivity falls to zero. Supported only in single-node simulations.",
                 "type": "bool"
             },
+            "Falciparum_MSP_Variants": {
+                "default": 100,
+                "description": "The number of distinct MSP variants for P. falciparum malaria in the overall parasite population in the simulation, not necessarily in an individual.",
+                "max": 1000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Falciparum_Nonspecific_Types": {
+                "default": 20,
+                "description": "The number of distinct non-specific types of P. falciparum malaria.",
+                "max": 1000,
+                "min": 0,
+                "type": "integer"
+            },
+            "Falciparum_PfEMP1_Variants": {
+                "default": 1000,
+                "description": "The number of distinct PfEMP1 variants for P. falciparum malaria in the overall parasite population in the simulation.",
+                "max": 100000,
+                "min": 0,
+                "type": "integer"
+            },
             "Load_Balance_Filename": {
                 "default": "UNINITIALIZED STRING",
                 "description": "Path to input file used when a static load balancing scheme is selected.",
                 "type": "string"
+            },
+            "Malaria_Drug_Params": {
+                "default": [],
+                "description": "This JSON structure contains the names of anti-malarial drugs and the parameters that define them.",
+                "item_type": "idmType:MalariaDrugTypeParameters",
+                "type": "Vector idmType:MalariaDrugTypeParameters"
             },
             "Malaria_Model": {
                 "default": "MALARIA_MECHANISTIC_MODEL",
@@ -4808,12 +4796,6 @@
                 "min": 0.01,
                 "type": "float"
             },
-            "Malaria_Drug_Params": {
-                "default": [],
-                "description": "This JSON structure contains the names of anti-malarial drugs and the parameters that define them.",
-                "item_type": "idmType:MalariaDrugTypeParameters",
-                "type": "Vector idmType:MalariaDrugTypeParameters"
-            },
             "Mean_Egg_Hatch_Delay": {
                 "default": 0,
                 "description": "The mean delay in egg hatch time, in days, from the time of oviposition.",
@@ -4839,14 +4821,14 @@
             },
             "Rainfall_In_mm_To_Fill_Swamp": {
                 "default": 1000,
-                "description": "Millimeters of rain to fill larval habitat to capacity. Only used for vector species with Larval_Habitat_Types set to BRACKISH_SWAMP.",
+                "description": "Millimeters of rain to fill larval habitat to capacity. Only used for vector species with Habitats set to BRACKISH_SWAMP.",
                 "max": 10000,
                 "min": 1,
                 "type": "float"
             },
             "Semipermanent_Habitat_Decay_Rate": {
                 "default": 0.01,
-                "description": "Daily rate of larval habitat loss for semi-permanent habitats with Larval_Habitat_Types parameter value of WATER_VEGETATION or BRACKISH_SWAMP.",
+                "description": "Daily rate of larval habitat loss for semi-permanent habitats with Habitats parameter value of WATER_VEGETATION or BRACKISH_SWAMP.",
                 "max": 100,
                 "min": 0.0001,
                 "type": "float"
@@ -4893,7 +4875,7 @@
             },
             "Temporary_Habitat_Decay_Factor": {
                 "default": 0.05,
-                "description": "Factor to convert raw evaporation rate (ignoring boundary layer effects) to the daily rate of larval habitat loss for temporary habitats (Larval_Habitat_Types set to TEMPORARY_RAINFALL). Units are (larval carrying capacity per day) / (kg per square meter per second).",
+                "description": "Factor to convert raw evaporation rate (ignoring boundary layer effects) to the daily rate of larval habitat loss for temporary habitats (Habitats set to TEMPORARY_RAINFALL). Units are (larval carrying capacity per day) / (kg per square meter per second).",
                 "max": 100,
                 "min": 0.001,
                 "type": "float"
@@ -5064,7 +5046,7 @@
                         "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                     },
                     "description": "The lower end of ages targeted for an intervention, in years.",
-                    "max": 3.40282e+38,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
@@ -5352,7 +5334,7 @@
                         "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                     },
                     "description": "The lower end of ages targeted for an intervention, in years.",
-                    "max": 3.40282e+38,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
@@ -5510,7 +5492,7 @@
                         "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                     },
                     "description": "The lower end of ages targeted for an intervention, in years.",
-                    "max": 3.40282e+38,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
@@ -5822,7 +5804,7 @@
                         "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                     },
                     "description": "The lower end of ages targeted for an intervention, in years.",
-                    "max": 3.40282e+38,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
@@ -5990,7 +5972,7 @@
                         "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                     },
                     "description": "The lower end of ages targeted for an intervention, in years.",
-                    "max": 3.40282e+38,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
@@ -6170,7 +6152,7 @@
                         "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                     },
                     "description": "The lower end of ages targeted for an intervention, in years.",
-                    "max": 3.40282e+38,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
@@ -6226,7 +6208,7 @@
             "idmAbstractType:IndividualIntervention": {
                 "AdherentDrug": {
                     "Adherence_Config": {
-                        "description": "A list of nested JSON objects for the interventions to be distributed by this event coordinator.",
+                        "description": "A WaningEffect used to determine if the person is going to take the next dose.  WaningEffectMapCount can be used to set the probability for a particular dose.  WaningEffectMapLinearAge can be used to set the probability that a dose is take based on a person's age.  WaningEffectCombo can be used to combine them.",
                         "type": "idmType:WaningEffect"
                     },
                     "Cost_To_Consumer": {
@@ -7427,7 +7409,7 @@
                     },
                     "Days_To_Diagnosis": {
                         "default": 0,
-                        "description": "The number of days from test until diagnosis.",
+                        "description": "The number of days from diagnosis (which is done when the intervention is distributed) until a positive response is performed. The response to a negative diagnosis is done immediately when the diagnosis is made (at distribution of the intervention).",
                         "max": 3.40282e+38,
                         "min": 0,
                         "type": "float"
@@ -7759,7 +7741,7 @@
                     },
                     "Days_To_Diagnosis": {
                         "default": 0,
-                        "description": "The number of days from test until diagnosis.",
+                        "description": "The number of days from diagnosis (which is done when the intervention is distributed) until a positive response is performed. The response to a negative diagnosis is done immediately when the diagnosis is made (at distribution of the intervention).",
                         "max": 3.40282e+38,
                         "min": 0,
                         "type": "float"
@@ -7812,7 +7794,7 @@
                     },
                     "Measurement_Sensitivity": {
                         "default": 0.1,
-                        "description": "The number of microliters of blood tested to find single parasites/gameotcytes in a traditional smear (corresponds to inverse parasites/microliters sensitivity).  This is similar to 'Parasite_Smear_Sensitivity' and 'Gametocyte_Smear_Sensitivity_DESC_TEXT' in the config used for reports, but this is for this instance of the diagnostic.",
+                        "description": "The number of microliters of blood tested to find single parasites/gameotcytes in a traditional smear (corresponds to inverse parasites/microliters sensitivity).  This is similar to 'Report_Parasite_Smear_Sensitivity' and 'Report_Gametocyte_Smear_Sensitivity' in the config used for reports, but this is for this instance of the diagnostic.",
                         "max": 1000000.0,
                         "min": 0,
                         "type": "float"
@@ -9126,50 +9108,13 @@
                     "class": "OutbreakIndividual",
                     "iv_type": "IndividualTargeted"
                 },
-                "OutbreakIndividualMalaria": {
-                    "Antigen": {
-                        "default": 0,
-                        "description": "The antigenic base strain ID of the outbreak infection.",
-                        "max": 10,
-                        "min": 0,
-                        "type": "integer"
-                    },
-                    "Create_Random_Genome": {
-                        "default": 0,
-                        "description": "If set to true (1), then a random genome is created for the infection and the Genome_Markers parameter is not used. If set to false (0), then you must define the  Genome_Markers parameter which allows you to then specify genetic components in a strain of infection.",
-                        "type": "bool"
-                    },
-                    "Genome_Markers": {
-                        "default": [],
-                        "description": "A list of the names of genome marker(s) that represent the genetic components in a strain of an infection.",
-                        "type": "Vector String",
-                        "value_source": "<configuration>.Genome_Markers"
-                    },
-                    "Ignore_Immunity": {
-                        "default": 1,
-                        "description": "Individuals will be force-infected (with a specific strain) regardless of actual immunity level when set to true (1).",
-                        "type": "bool"
-                    },
-                    "Incubation_Period_Override": {
-                        "default": -1,
-                        "description": "The incubation period, in days, that infected individuals will go through before becoming infectious. This value overrides the incubation period set in the configuration file. Set to -1 to honor the configuration parameter settings.",
-                        "max": 2147480000.0,
-                        "min": -1,
-                        "type": "integer"
-                    },
-                    "Sim_Types": [
-                        "MALARIA_SIM"
-                    ],
-                    "class": "OutbreakIndividualMalaria",
-                    "iv_type": "IndividualTargeted"
-                },
                 "OutbreakIndividualMalariaGenetics": {
                     "Barcode_Allele_Frequencies_Per_Genome_Location": {
                         "default": [],
                         "depends-on": {
                             "Create_Nucleotide_Sequence_From": "ALLELE_FREQUENCIES"
                         },
-                        "description": "The fractions of allele occurences for each location in the barcode.  This 2D array should have one array for each location/character in the barcode.  For each location, there should be four values between 0 and 1 indicating the probability that specific character will appear.  The possible letters are'A'=0, 'C'=1, 'G'=2, 'T'=3.",
+                        "description": "The fractions of allele occurrences for each location in the barcode.  This 2D array should have one array for each location/character in the barcode.  For each location, there should be four values between 0 and 1 indicating the probability that specific character will appear.  The possible letters are'A'=0, 'C'=1, 'G'=2, 'T'=3.",
                         "max": 1,
                         "min": 0,
                         "type": "Vector2d Float"
@@ -9179,7 +9124,7 @@
                         "depends-on": {
                             "Create_Nucleotide_Sequence_From": "NUCLEOTIDE_SEQUENCE,BARCODE_STRING"
                         },
-                        "description": "A series of nucleotide base letters (A, C, G, T) that represent the values at locations in the genome.",
+                        "description": "A series of nucleotide base letters (A, C, G, T) that represent the barcode values at locations in the genome.",
                         "type": "string"
                     },
                     "Create_Nucleotide_Sequence_From": {
@@ -9191,6 +9136,24 @@
                             "ALLELE_FREQUENCIES"
                         ],
                         "type": "enum"
+                    },
+                    "Drug_Resistant_Allele_Frequencies_Per_Genome_Location": {
+                        "default": [],
+                        "depends-on": {
+                            "Create_Nucleotide_Sequence_From": "ALLELE_FREQUENCIES"
+                        },
+                        "description": "The fractions of allele occurrences for each location in the drug resistant markers.  This 2D array should have one array for each drug resistant location.  For each location, there should be four values between 0 and 1 indicating the probability that specific character will appear.  The possible letters are'A'=0, 'C'=1, 'G'=2, 'T'=3.",
+                        "max": 1,
+                        "min": 0,
+                        "type": "Vector2d Float"
+                    },
+                    "Drug_Resistant_String": {
+                        "default": "",
+                        "depends-on": {
+                            "Create_Nucleotide_Sequence_From": "NUCLEOTIDE_SEQUENCE,BARCODE_STRING"
+                        },
+                        "description": "A series of nucleotide base letters (A, C, G, T) that represent the drug resistant values at locations in the genome.  There must be one character for each location defined in <config>.Parasite_Genetics.Drug_Resistant_Genome_Locations.",
+                        "type": "string"
                     },
                     "Ignore_Immunity": {
                         "default": 1,
@@ -9220,7 +9183,7 @@
                         "depends-on": {
                             "Create_Nucleotide_Sequence_From": "NUCLEOTIDE_SEQUENCE"
                         },
-                        "description": "The PfEMP1 Variant values / major empitopes that are used to define how the antiboies will recognize the infected red blood cells.",
+                        "description": "The PfEMP1 Variant values / major epitopes that are used to define how the antiboies will recognize the infected red blood cells.",
                         "max": 10000,
                         "min": 0,
                         "type": "Vector Int"
@@ -9596,7 +9559,7 @@
                     },
                     "Days_To_Diagnosis": {
                         "default": 0,
-                        "description": "The number of days from test until diagnosis.",
+                        "description": "The number of days from diagnosis (which is done when the intervention is distributed) until a positive response is performed.",
                         "max": 3.40282e+38,
                         "min": 0,
                         "type": "float"
@@ -10078,7 +10041,7 @@
                     },
                     "Days_To_Diagnosis": {
                         "default": 0,
-                        "description": "The number of days from test until diagnosis.",
+                        "description": "The number of days from diagnosis (which is done when the intervention is distributed) until a positive response is performed. The response to a negative diagnosis is done immediately when the diagnosis is made (at distribution of the intervention).",
                         "max": 3.40282e+38,
                         "min": 0,
                         "type": "float"
@@ -10877,7 +10840,7 @@
                             "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                         },
                         "description": "The lower end of ages targeted for an intervention, in years.",
-                        "max": 3.40282e+38,
+                        "max": 9.3228e+35,
                         "min": 0,
                         "type": "float"
                     },
@@ -11071,11 +11034,31 @@
                         ],
                         "type": "enum"
                     },
+                    "Daily_EIR": {
+                        "ascending": 0,
+                        "default": [],
+                        "depends-on": {
+                            "EIR_Type": "DAILY"
+                        },
+                        "description": "An array of 365 values where each value is the mean number of infectious bites experienced by an individual for that day of the year.",
+                        "max": 1000,
+                        "min": 0,
+                        "type": "Vector Float"
+                    },
                     "Disqualifying_Properties": {
                         "default": [],
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "EIR_Type": {
+                        "default": "MONTHLY",
+                        "description": "Choose whether you want the EIR read in to be monthly or daily.",
+                        "enum": [
+                            "MONTHLY",
+                            "DAILY"
+                        ],
+                        "type": "enum"
                     },
                     "Intervention_Name": {
                         "default": "InputEIR",
@@ -11085,6 +11068,9 @@
                     "Monthly_EIR": {
                         "ascending": 0,
                         "default": [],
+                        "depends-on": {
+                            "EIR_Type": "MONTHLY"
+                        },
                         "description": "An array of 12 elements that contain an entomological inoculation rate (EIR) for each month. Each value should be between 0 and 1000.",
                         "max": 1000,
                         "min": 0,
@@ -11095,6 +11081,13 @@
                         "description": "An optional NodeProperty key:value pair that will be assigned when the intervention is distributed. Generally used to indicate the broad category of health care cascade to which an intervention belongs to prevent individuals from accessing care through multiple pathways.",
                         "type": "Constrained String",
                         "value_source": "'<demographics>::NodeProperties.*.Property':'<demographics>::NodeProperties.*.Values'"
+                    },
+                    "Scaling_Factor": {
+                        "default": 1,
+                        "description": "A modifier that is multiplied by the EIR determined for the current day.",
+                        "max": 10000,
+                        "min": 0,
+                        "type": "float"
                     },
                     "Sim_Types": [
                         "MALARIA_SIM"
@@ -11126,7 +11119,6 @@
                             "HUMAN_POPULATION",
                             "CONSTANT",
                             "BRACKISH_SWAMP",
-                            "MARSHY_STREAM",
                             "LINEAR_SPLINE",
                             "ALL_HABITATS"
                         ],
@@ -11678,7 +11670,7 @@
                     },
                     "Released_Type": {
                         "default": "FIXED_NUMBER",
-                        "description": "If 'PERCENTAGE', the 'Released_Percentage' parameter is used to specify the percentage of the current population to release.  If 'FIXED_NUMBER; then 'Released_Number' is used to specify an exact count of mosquitos to release.",
+                        "description": "If 'FRACTION', the 'Released_Fraction' parameter is used to specify the fraction of the current population to release.  If 'FIXED_NUMBER; then 'Released_Number' is used to specify an exact count of mosquitos to release.",
                         "enum": [
                             "FIXED_NUMBER",
                             "FRACTION"
@@ -12017,7 +12009,7 @@
                             "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                         },
                         "description": "The lower end of ages targeted for an intervention, in years.",
-                        "max": 3.40282e+38,
+                        "max": 9.3228e+35,
                         "min": 0,
                         "type": "float"
                     },
@@ -12290,7 +12282,6 @@
                             "HUMAN_POPULATION",
                             "CONSTANT",
                             "BRACKISH_SWAMP",
-                            "MARSHY_STREAM",
                             "LINEAR_SPLINE",
                             "ALL_HABITATS"
                         ],
@@ -12333,7 +12324,7 @@
                     },
                     "Larval_Habitat_Multiplier": {
                         "default": [],
-                        "description": "The value by which to scale the larval habitat availability specified in the configuration file with Larval_Habitat_Types across all habitat types, for specific habitat types, or for specific mosquito species within each habitat type.",
+                        "description": "The value by which to scale the larval habitat availability specified in the configuration file with Habitats across all habitat types, for specific habitat types, or for specific mosquito species within each habitat type.",
                         "item_type": "idmType:LarvalHabitatMultiplierSpec",
                         "type": "Vector idmType:LarvalHabitatMultiplierSpec"
                     },
@@ -12821,8 +12812,7 @@
                 "description": "This is a dictionary of allele-to-likelihood.  If the other gamete has the 'Allele_To_Replace', this is the likelihood that it will result in one of the specified values.  Notice that you can specify the 'Allele_To_Copy' to indicate the probability that the copy failed or other alleles to account for mutation in the copy process.",
                 "item_type": "idmType:CopyToAlleleLikelihood",
                 "type": "Vector idmType:CopyToAlleleLikelihood"
-            },
-            "class": "AlleleDriven"
+            }
         },
         "idmType:CopyToAlleleLikelihood": {
             "Copy_To_Allele": {
@@ -12857,10 +12847,32 @@
             },
             "class": "DoseFractionByAge"
         },
+        "idmType:DrugModifier": {
+            "Drug_Resistant_String": {
+                "default": "",
+                "description": "A series of nucleotide base letters (A, C, G, T) that represent the drug resistant values at locations in the genome.  There must be one character for each location defined in <config>.Parasite_Genetics.Drug_Resistant_Genome_Locations.",
+                "type": "string"
+            },
+            "Max_IRBC_Kill_Modifier": {
+                "default": 1,
+                "description": "If the parasite has this drug resistant string, this value will be multiplied times the 'Max_Drug_IRBC_Kill' value of the drug.  Genomes with multiple matching strings will be simply multiplied together.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "PKPD_C50_Modifier": {
+                "default": 1,
+                "description": "If the parasite has this drug resistant string, this value will be multiplied times the 'Drug_PKPD_C50' value of the drug.  Genomes with multiple matching strings will be simply multiplied together.",
+                "max": 1000,
+                "min": 0,
+                "type": "float"
+            },
+            "class": "DrugModifier"
+        },
         "idmType:GeneToTraitModifierConfig": {
             "Allele_Combinations": {
                 "default": [],
-                "description": "This defines a possible subset of allele pairs that a vector could have.  Each pair are alleles from one gene.  If the vector has this subset, then the associated traits will be adjusted.  Order does not matter.  '*' is allowed when only the occurence of one allele is important.",
+                "description": "This defines a possible subset of allele pairs that a vector could have.  Each pair are alleles from one gene.  If the vector has this subset, then the associated traits will be adjusted.  Order does not matter.  '*' is allowed when only the occurrence of one allele is important.",
                 "type": "Vector2d String",
                 "value_source": "<configuration>:Vector_Species_Params.Genes.*"
             },
@@ -12872,55 +12884,32 @@
             },
             "class": "GeneToTraitModifierConfig"
         },
-        "idmType:GenomeMarkerModifiers": {
-            "Genome_Marker_Name": {
-                "default": "",
-                "description": "The name of the marker associated with these resistance parameters.  The name must be deinfed in 'Genome_Markers'.",
-                "type": "Constrained String",
-                "value_source": "<configuration>:Genome_Markers"
-            },
-            "Max_IRBC_Kill_Modifier": {
-                "default": 1,
-                "description": "If the parasite has this genome marker, this value will be multiplied times the 'Max_Drug_IRBC_Kill' value of the drug.  Genomes with multiple markers will be simply multiplied together.",
-                "max": 1000,
-                "min": 0,
-                "type": "float"
-            },
-            "PKPD_C50_Modifier": {
-                "default": 1,
-                "description": "If the parasite has this genome marker, this value will be multiplied times the 'Drug_PKPD_C50' value of the drug.  Genomes with multiple markers will be simply multiplied together.",
-                "max": 1000,
-                "min": 0,
-                "type": "float"
-            },
-            "class": "GenomeMarkerModifiers"
-        },
         "idmType:IReport": {
             "MalariaImmunityReport": {
                 "Age_Bins": {
                     "ascending": 1,
                     "default": [],
-                    "description": "Age Bins (in years) to aggregate within and report",
+                    "description": "Age Bins (in years) to aggregate within and report, empty array implies do not stratify by age",
                     "max": 125,
                     "min": 0,
                     "type": "Vector Float"
                 },
                 "Duration_Days": {
                     "default": 3.40282e+38,
-                    "description": "Used by reports and custom reports. The number of days over which to report events.",
+                    "description": "The number of days over which to collect report data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
                 "Max_Number_Reports": {
                     "default": 1,
-                    "description": "Used by reports and custom reports. The maximum number of report output files that will be produced for a given campaign.",
+                    "description": "The maximum number of report output files that will be produced for a given simulation.",
                     "max": 1000000.0,
                     "min": 0,
                     "type": "integer"
                 },
                 "Nodeset_Config": {
-                    "description": "An object that specifies in which nodes the interventions will be distributed.",
+                    "description": "An object that specifies for which nodes the report will collect data.",
                     "type": "idmAbstractType:NodeSet"
                 },
                 "Pretty_Format": {
@@ -12929,13 +12918,13 @@
                     "type": "bool"
                 },
                 "Report_Description": {
-                    "default": "UNINITIALIZED STRING",
-                    "description": "Used by reports and custom reports. Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Reporting_Interval": {
                     "default": 1000000.0,
-                    "description": "Used by reports and custom reports. Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
+                    "description": "Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
                     "max": 1000000.0,
                     "min": 1,
                     "type": "float"
@@ -12945,7 +12934,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "The day of the simulation to activate the event's event coordinator.",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -12961,10 +12950,15 @@
             "MalariaSqlReport": {
                 "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "Day to stop collecting data",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
+                },
+                "Include_Drug_Status_Table": {
+                    "default": 0,
+                    "description": "Include the table that provides data at each time step for each drug the person has.",
+                    "type": "bool"
                 },
                 "Include_Health_Table": {
                     "default": 1,
@@ -12981,7 +12975,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "Day to start collecting data",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -12992,14 +12986,14 @@
                 "Age_Bins": {
                     "ascending": 1,
                     "default": [],
-                    "description": "Age Bins (in years) to aggregate within and report",
+                    "description": "Age Bins (in years) to aggregate within and report, empty array implies do not stratify by age",
                     "max": 125,
                     "min": 0,
                     "type": "Vector Float"
                 },
                 "Duration_Days": {
                     "default": 3.40282e+38,
-                    "description": "Used by reports and custom reports. The number of days over which to report events.",
+                    "description": "The number of days over which to collect report data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13019,13 +13013,13 @@
                 },
                 "Max_Number_Reports": {
                     "default": 1,
-                    "description": "Used by reports and custom reports. The maximum number of report output files that will be produced for a given campaign.",
+                    "description": "The maximum number of report output files that will be produced for a given simulation.",
                     "max": 1000000.0,
                     "min": 0,
                     "type": "integer"
                 },
                 "Nodeset_Config": {
-                    "description": "An object that specifies in which nodes the interventions will be distributed.",
+                    "description": "An object that specifies for which nodes the report will collect data.",
                     "type": "idmAbstractType:NodeSet"
                 },
                 "Parasitemia_Bins": {
@@ -13042,13 +13036,13 @@
                     "type": "bool"
                 },
                 "Report_Description": {
-                    "default": "UNINITIALIZED STRING",
-                    "description": "Used by reports and custom reports. Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Reporting_Interval": {
                     "default": 1000000.0,
-                    "description": "Used by reports and custom reports. Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
+                    "description": "Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
                     "max": 1000000.0,
                     "min": 1,
                     "type": "float"
@@ -13058,7 +13052,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "The day of the simulation to activate the event's event coordinator.",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13068,7 +13062,7 @@
             "MalariaSurveyJSONAnalyzer": {
                 "Duration_Days": {
                     "default": 3.40282e+38,
-                    "description": "Used by reports and custom reports. The number of days over which to report events.",
+                    "description": "The number of days over which to collect report data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13138,7 +13132,7 @@
                         "InfectionCleared"
                     ],
                     "default": [],
-                    "description": "Used by reports and custom reports. The list of triggers for the events included in the report.",
+                    "description": "The list of triggers for the events included in the report.",
                     "type": "Vector Constrained String",
                     "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
                 },
@@ -13149,13 +13143,13 @@
                 },
                 "Max_Number_Reports": {
                     "default": 1,
-                    "description": "Used by reports and custom reports. The maximum number of report output files that will be produced for a given campaign.",
+                    "description": "The maximum number of report output files that will be produced for a given simulation.",
                     "max": 1000000.0,
                     "min": 0,
                     "type": "integer"
                 },
                 "Nodeset_Config": {
-                    "description": "An object that specifies in which nodes the interventions will be distributed.",
+                    "description": "An object that specifies for which nodes the report will collect data.",
                     "type": "idmAbstractType:NodeSet"
                 },
                 "Pretty_Format": {
@@ -13164,13 +13158,13 @@
                     "type": "bool"
                 },
                 "Report_Description": {
-                    "default": "UNINITIALIZED STRING",
-                    "description": "Used by reports and custom reports. Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Reporting_Interval": {
                     "default": 1000000.0,
-                    "description": "Used by reports and custom reports. Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
+                    "description": "Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
                     "max": 1000000.0,
                     "min": 1,
                     "type": "float"
@@ -13180,7 +13174,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "The day of the simulation to activate the event's event coordinator.",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13190,7 +13184,7 @@
             "ReportDrugStatus": {
                 "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "Day to stop collecting data",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13200,7 +13194,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "Day to start collecting data",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13210,7 +13204,7 @@
             "ReportEventCounter": {
                 "Duration_Days": {
                     "default": 3.40282e+38,
-                    "description": "Used by reports and custom reports. The number of days over which to report events.",
+                    "description": "The number of days over which to collect report data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13280,17 +13274,17 @@
                         "InfectionCleared"
                     ],
                     "default": [],
-                    "description": "Used by reports and custom reports. The list of triggers for the events included in the report.",
+                    "description": "The list of triggers for the events included in the report.",
                     "type": "Vector Constrained String",
                     "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
                 },
                 "Nodeset_Config": {
-                    "description": "An object that specifies in which nodes the interventions will be distributed.",
+                    "description": "An object that specifies for which nodes the report will collect data.",
                     "type": "idmAbstractType:NodeSet"
                 },
                 "Report_Description": {
-                    "default": "UNINITIALIZED STRING",
-                    "description": "Used by reports and custom reports. Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Sim_Types": [
@@ -13298,7 +13292,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "The day of the simulation to activate the event's event coordinator.",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13311,28 +13305,111 @@
                 ],
                 "class": "ReportHumanMigrationTracking"
             },
+            "ReportInfectionDuration": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "ReportInfectionDuration"
+            },
+            "ReportInfectionStatsMalaria": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "ReportInfectionStatsMalaria"
+            },
+            "ReportInterventionPopAvg": {
+                "Duration_Days": {
+                    "default": 3.40282e+38,
+                    "description": "The number of days over which to collect report data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Nodeset_Config": {
+                    "description": "An object that specifies for which nodes the report will collect data.",
+                    "type": "idmAbstractType:NodeSet"
+                },
+                "Report_Description": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "ReportInterventionPopAvg"
+            },
             "ReportMalariaFiltered": {
                 "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "Day to stop collecting data",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
                 "Has_Interventions": {
                     "default": [],
-                    "description": "A channel is added to InsetChart for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
+                    "description": "A channel is added to the report for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
                     "type": "Vector String"
                 },
                 "Include_30Day_Avg_Infection_Duration": {
                     "default": 1,
-                    "description": "If true the '30-Day Avg Infection Duration' channel is included in the InsetChart.json report.",
+                    "description": "If true the '30-Day Avg Infection Duration' channel is included in the report.",
                     "type": "bool"
+                },
+                "Max_Age_Years": {
+                    "default": 125,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 125,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 125,
+                    "min": 0,
+                    "type": "float"
                 },
                 "Node_IDs_Of_Interest": {
                     "ascending": 0,
                     "default": [],
-                    "description": "Data will be collected for the nodes in tis list.",
+                    "description": "Data will be collected for the nodes in this list.",
                     "max": 2147480000.0,
                     "min": -2147480000.0,
                     "type": "Vector Int"
@@ -13347,12 +13424,69 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "Day to start collecting data",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
                 "class": "ReportMalariaFiltered"
+            },
+            "ReportMalariaFilteredIntraHost": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Has_Interventions": {
+                    "default": [],
+                    "description": "A channel is added to the report for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
+                    "type": "Vector String"
+                },
+                "Include_30Day_Avg_Infection_Duration": {
+                    "default": 1,
+                    "description": "If true the '30-Day Avg Infection Duration' channel is included in the report.",
+                    "type": "bool"
+                },
+                "Max_Age_Years": {
+                    "default": 125,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 125,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 125,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": -2147480000.0,
+                    "type": "Vector Int"
+                },
+                "Report_File_Name": {
+                    "default": "ReportMalariaFiltered.json",
+                    "description": "Name of the file to be written",
+                    "type": "string"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "ReportMalariaFilteredIntraHost"
             },
             "ReportNodeDemographics": {
                 "Age_Bins": {
@@ -13416,6 +13550,20 @@
                     "description": "A list of barcode strings where a column will be created with the number of human infections with that barcode.  One can use '*' for a wild card.  A 'BarcodeOther' column will be created for barcodes not defined.",
                     "type": "Vector String"
                 },
+                "Drug_Resistant_Statistic_Type": {
+                    "default": "NUM_PEOPLE_WITH_RESISTANT_INFECTION",
+                    "description": "Indicates the statistic in the Drug Resistant columns: NUM_PEOPLE_WITH_RESISTANT_INFECTION = A person is counted if they have one infection with that drug resistant marker; NUM_INFECTIONS = The total number of infections with that marker.",
+                    "enum": [
+                        "NUM_PEOPLE_WITH_RESISTANT_INFECTION",
+                        "NUM_INFECTIONS"
+                    ],
+                    "type": "enum"
+                },
+                "Drug_Resistant_Strings": {
+                    "default": [],
+                    "description": "A list of strings representing the set of drug resistant markers.  A column will be created with the number of humans infetions with that barcode.  One can use '*' for a wild card.  A 'BarcodeOther' column will be created for barcodes not defined.",
+                    "type": "Vector String"
+                },
                 "IP_Key_To_Collect": {
                     "default": "",
                     "description": "Name of the key to add a column for.",
@@ -13461,23 +13609,23 @@
             "ReportSimpleMalariaTransmissionJSON": {
                 "Duration_Days": {
                     "default": 3.40282e+38,
-                    "description": "Used by reports and custom reports. The number of days over which to report events.",
+                    "description": "The number of days over which to collect report data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
                 "Nodeset_Config": {
-                    "description": "An object that specifies in which nodes the interventions will be distributed.",
+                    "description": "An object that specifies for which nodes the report will collect data.",
                     "type": "idmAbstractType:NodeSet"
                 },
                 "Pretty_Format": {
                     "default": 0,
-                    "description": "True implies pretty JSON format, false saves space.",
+                    "description": "True (1) sets pretty JSON formatting. The default, false (0), saves space.",
                     "type": "bool"
                 },
                 "Report_Description": {
-                    "default": "UNINITIALIZED STRING",
-                    "description": "Used by reports and custom reports. Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Sim_Types": [
@@ -13485,7 +13633,7 @@
                 ],
                 "Start_Day": {
                     "default": 0,
-                    "description": "The day of the simulation to activate the event's event coordinator.",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13519,15 +13667,10 @@
                 },
                 "Duration_Days": {
                     "default": 3.40282e+38,
-                    "description": "Used by reports and custom reports. The number of days over which to report events.",
+                    "description": "The number of days over which to collect report data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
-                },
-                "File_Name_Suffix": {
-                    "default": "",
-                    "description": "The text to add to the file name right before the extension.",
-                    "type": "string"
                 },
                 "Gender": {
                     "default": "VECTOR_FEMALE",
@@ -13539,18 +13682,23 @@
                     ],
                     "type": "enum"
                 },
+                "Include_Death_By_State_Columns": {
+                    "default": 0,
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECIOUS, and MALE.",
+                    "type": "bool"
+                },
                 "Include_Vector_State_Columns": {
                     "default": 1,
                     "description": "1 implies to add the columns for vectors in the different states (i.e Eggs, Larva, etc).",
                     "type": "bool"
                 },
                 "Nodeset_Config": {
-                    "description": "An object that specifies in which nodes the interventions will be distributed.",
+                    "description": "An object that specifies for which nodes the report will collect data.",
                     "type": "idmAbstractType:NodeSet"
                 },
                 "Report_Description": {
-                    "default": "UNINITIALIZED STRING",
-                    "description": "Used by reports and custom reports. Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Sim_Types": [
@@ -13568,13 +13716,13 @@
                     "depends-on": {
                         "Stratify_By": "SPECIFIC_GENOME"
                     },
-                    "description": "If stratifying by SPECIFC_GENOME, then use these genomes to stratify by. '*' = list all entries at that location, '?' = combine all entries at that location",
+                    "description": "If stratifying by SPECIFIC_GENOME, then use these genomes to stratify by. '*' = list all entries at that location, '?' = combine all entries at that location",
                     "item_type": "idmType:RVG_AlleleCombo",
                     "type": "Vector idmType:RVG_AlleleCombo"
                 },
                 "Start_Day": {
                     "default": 0,
-                    "description": "The day of the simulation to activate the event's event coordinator.",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13595,7 +13743,7 @@
             "ReportVectorMigration": {
                 "End_Day": {
                     "default": 372,
-                    "description": "Day to stop collecting data",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13607,7 +13755,7 @@
                 ],
                 "Start_Day": {
                     "default": 365,
-                    "description": "Day to start collecting data",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13615,6 +13763,11 @@
                 "class": "ReportVectorMigration"
             },
             "ReportVectorStats": {
+                "Include_Death_By_State_Columns": {
+                    "default": 0,
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECIOUS, and MALE.",
+                    "type": "bool"
+                },
                 "Include_Gestation_Columns": {
                     "default": 0,
                     "description": "Adds columns for feeding and gestation",
@@ -13642,37 +13795,16 @@
                 },
                 "class": "ReportVectorStats"
             },
-            "ReportVectorStatsMalaria": {
-                "Include_Gestation_Columns": {
-                    "default": 0,
-                    "description": "Adds columns for feeding and gestation",
-                    "type": "bool"
-                },
-                "Include_Wolbachia_Columns": {
-                    "default": 0,
-                    "description": "Add a column for each type of Wolbachia.  Summation of columns should equal VectorPopulation.",
-                    "type": "bool"
-                },
-                "Sim_Types": [
-                    "MALARIA_SIM"
-                ],
-                "Species_List": {
-                    "default": [],
-                    "description": "The species to include information on.",
-                    "type": "Vector String"
-                },
-                "Stratify_By_Species": {
-                    "default": 0,
-                    "description": "If true data will break out each the species for each node",
-                    "type": "bool"
-                },
-                "class": "ReportVectorStatsMalaria"
-            },
             "ReportVectorStatsMalariaGenetics": {
                 "Barcodes": {
                     "default": [],
                     "description": "A list of barcode strings where a column will be created with the number of vectors with sporozoites with that barcode.  One can use '*' for a wild card.  A 'BarcodeOther' column will be created for barcodes not defined.",
                     "type": "Vector String"
+                },
+                "Include_Death_By_State_Columns": {
+                    "default": 0,
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECIOUS, and MALE.",
+                    "type": "bool"
                 },
                 "Include_Gestation_Columns": {
                     "default": 0,
@@ -13702,7 +13834,7 @@
             "SpatialReportMalariaFiltered": {
                 "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "Day to stop collecting data",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13710,7 +13842,7 @@
                 "Node_IDs_Of_Interest": {
                     "ascending": 0,
                     "default": [],
-                    "description": "Data will be collected for the nodes in tis list.",
+                    "description": "Data will be collected for the nodes in this list.",
                     "max": 2147480000.0,
                     "min": -2147480000.0,
                     "type": "Vector Int"
@@ -13766,7 +13898,7 @@
                 },
                 "Start_Day": {
                     "default": 0,
-                    "description": "Day to start collecting data",
+                    "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13827,7 +13959,7 @@
                     "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                 },
                 "description": "The lower end of ages targeted for an intervention, in years.",
-                "max": 3.40282e+38,
+                "max": 9.3228e+35,
                 "min": 0,
                 "type": "float"
             },
@@ -14002,7 +14134,7 @@
                     "Target_Demographic": "ExplicitAgeRanges,ExplicitAgeRangesAndGender"
                 },
                 "description": "The lower end of ages targeted for an intervention, in years.",
-                "max": 3.40282e+38,
+                "max": 9.3228e+35,
                 "min": 0,
                 "type": "float"
             },
@@ -14111,7 +14243,6 @@
                     "HUMAN_POPULATION",
                     "CONSTANT",
                     "BRACKISH_SWAMP",
-                    "MARSHY_STREAM",
                     "LINEAR_SPLINE",
                     "ALL_HABITATS"
                 ],
@@ -14134,6 +14265,9 @@
             },
             "Drug_Cmax": {
                 "default": 1000,
+                "depends-on": {
+                    "PKPD_Model": "CONCENTRATION_VERSUS_TIME"
+                },
                 "description": "The maximum drug concentration used.",
                 "max": 100000,
                 "min": 0,
@@ -14197,6 +14331,9 @@
             },
             "Drug_PKPD_C50": {
                 "default": 100,
+                "depends-on": {
+                    "PKPD_Model": "CONCENTRATION_VERSUS_TIME"
+                },
                 "description": "The concentration at which drug killing rates are half of maximum.",
                 "max": 100000,
                 "min": 0,
@@ -14204,6 +14341,9 @@
             },
             "Drug_Vd": {
                 "default": 10,
+                "depends-on": {
+                    "PKPD_Model": "CONCENTRATION_VERSUS_TIME"
+                },
                 "description": "The volume of drug distribution in a pharmacokinetic two compartment model. This value is the ratio of the volume of the second compartment to that of the first.",
                 "max": 100000,
                 "min": 0,
@@ -14227,11 +14367,23 @@
                 "description": "The unique name of the drug.",
                 "type": "string"
             },
-            "Resistance": {
+            "PKPD_Model": {
+                "default": "FIXED_DURATION_CONSTANT_EFFECT",
+                "description": "The pharmacokinetic pharmacodynamic model to use.",
+                "enum": [
+                    "FIXED_DURATION_CONSTANT_EFFECT",
+                    "CONCENTRATION_VERSUS_TIME"
+                ],
+                "type": "enum"
+            },
+            "Resistances": {
                 "default": [],
+                "depends-on": {
+                    "Malaria_Model": "MALARIA_MECHANISTIC_MODEL_WITH_PARASITE_GENETICS"
+                },
                 "description": "Specifies the drug resistance multiplier.",
-                "item_type": "idmType:GenomeMarkerModifiers",
-                "type": "Vector idmType:GenomeMarkerModifiers"
+                "item_type": "idmType:DrugModifier",
+                "type": "Vector idmType:DrugModifier"
             },
             "class": "MalariaDrugTypeParameters"
         },
@@ -14283,18 +14435,26 @@
                 "type": "Vector Int"
             },
             "Crossover_Gamma_K": {
-                "default": 2000,
-                "description": "The 'K' or shape parameter of the gamma distribution used to select the secondary crossover points.  Remember the mean is K*Theta and variance is K*Theta*Theta.",
-                "max": 3.40282e+38,
+                "default": 2,
+                "description": "The 'K' or shape parameter of the gamma distribution used to select the secondary crossover points.  Remember the mean is K*Theta and variance is K*Theta*Theta.  Output of the distribution is assumed to be in centimorgans which is internally converted to genome locations/base pairs.",
+                "max": 10,
                 "min": 1.19209e-07,
                 "type": "float"
             },
             "Crossover_Gamma_Theta": {
-                "default": 100,
-                "description": "The 'Theta' or scale parameter of the gamma distribution used to select the secondary crossover points.  Remember the mean is K*Theta and variance is K*Theta*Theta.",
-                "max": 3.40282e+38,
+                "default": 0.38,
+                "description": "The 'Theta' or scale parameter of the gamma distribution used to select the secondary crossover points.  Remember the mean is K*Theta and variance is K*Theta*Theta.  Output of the distribution is assumed to be in centimorgans which is internally converted to genome locations/base pairs.",
+                "max": 10,
                 "min": 1.19209e-07,
                 "type": "float"
+            },
+            "Drug_Resistant_Genome_Locations": {
+                "ascending": 1,
+                "default": [],
+                "description": "This is an array of genome locations where each drug resistant allele is found.  Its length determines the total number of possible drug related markers.  These locations and possible values can be used in Malaria_Drug_Params.Resistances to indicate when the effect of a drug should be modified.",
+                "max": 22790000.0,
+                "min": 1,
+                "type": "Vector Int"
             },
             "Enable_FPG_Similarity_To_Base": {
                 "default": 0,
@@ -14556,7 +14716,7 @@
             },
             "Var_Gene_Randomness_Type": {
                 "default": "FIXED_NEIGHBORHOOD",
-                "description": "This controls how random the var genes are in each new infection.  FIXED_NEIGHBOHOOD implies that the are set when the genome is created and each infection with this genome gets the same set of var genes.  FIXED_MSP implies that the MSP var gene is fixed but the PfEMP1 Major var genes are random for every infection.  ALL_RANDOM implies that the MPS and PfEMP1 Major var genes are random with every infection.  The minor epitopes are always random.",
+                "description": "This controls how random the var genes are in each new infection.  FIXED_NEIGHBORHOOD implies that the are set when the genome is created and each infection with this genome gets the same set of var genes.  FIXED_MSP implies that the MSP var gene is fixed but the PfEMP1 Major var genes are random for every infection.  ALL_RANDOM implies that the MPS and PfEMP1 Major var genes are random with every infection.  The minor epitopes are always random.",
                 "enum": [
                     "FIXED_NEIGHBORHOOD",
                     "FIXED_MSP",
@@ -14637,6 +14797,40 @@
                 "type": "enum"
             }
         },
+        "idmType:ShreddingAlleles": {
+            "Allele_Required": {
+                "default": "UNINITIALIZED STRING",
+                "description": "The genome must have this gender allele in order for shredding to occur. If the driver is X_SHRED, then the allele must be designated as a Y chromosome. If the driver is Y_SHRED, then the allele must NOT be designated as a Y chromosome.",
+                "type": "Constrained String",
+                "value_source": "VectorSpeciesParameters.<species>.Genes"
+            },
+            "Allele_Shredding_Fraction": {
+                "default": 1,
+                "description": "This is the fraction of the Alleles_To_Shred that will be converted to Allele_To_Shred_To.  If this value is less than one, then some of the Allele_To_Shred will remain and be part of the gametes.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Allele_To_Shred": {
+                "default": "UNINITIALIZED STRING",
+                "description": "The genome must have this gender allele in order for shredding to occur. If the driver is X_SHRED, then the allele must NOT be designated as a Y chromosome. If the driver is Y_SHRED, then the allele must be designated as a Y chromosome.",
+                "type": "Constrained String",
+                "value_source": "VectorSpeciesParameters.<species>.Genes"
+            },
+            "Allele_To_Shred_To": {
+                "default": "UNINITIALIZED STRING",
+                "description": "This is a gender allele that the 'shredding' will change the Allele_To_Shred into. It can be a temporary allele that never exists in the output or could be something that appears due to resistance/failures.",
+                "type": "Constrained String",
+                "value_source": "VectorSpeciesParameters.<species>.Genes"
+            },
+            "Allele_To_Shred_To_Surviving_Fraction": {
+                "default": 0,
+                "description": "A trait modifier will automatically generated for [ Allele_To_Shred_To, * ], the trait ADJUST_FERTILE_EGGS, and this value as its modifier. A value of 0 implies perfect shredding such that no Allele_To_Shred_To survive in the eggs. A value of 1 means all of the 'shredded' alleles survive.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            }
+        },
         "idmType:TargetedDistribution": {
             "Age_Ranges_Years": {
                 "default": [],
@@ -14705,8 +14899,6 @@
                     "FEMALE_EGG_RATIO",
                     "STERILITY",
                     "TRANSMISSION_TO_HUMAN",
-                    "X_SHRED",
-                    "DRIVING_Y",
                     "ADJUST_FERTILE_EGGS",
                     "MORTALITY",
                     "INFECTED_PROGRESS"
@@ -14722,6 +14914,11 @@
                 "max": 1,
                 "min": 0,
                 "type": "float"
+            },
+            "Is_Y_Chromosome": {
+                "default": 0,
+                "description": "True implies that this allele represents the Y chromosome.  This can only be used when 'Is_Gender_Allele' is also true.",
+                "type": "bool"
             },
             "Name": {
                 "default": "",
@@ -14759,6 +14956,11 @@
                 "item_type": "idmType:VectorAllele",
                 "type": "Vector idmType:VectorAllele"
             },
+            "Is_Gender_Gene": {
+                "default": 0,
+                "description": "True implies that the alleles of this gene are for gender.  If defining the gender gene, X & Y must be defined.  One can have 4 alleles of a particular gender type.",
+                "type": "bool"
+            },
             "Mutations": {
                 "default": [],
                 "description": "(Germline Mutation) This is an array of elements that define allele mutations that occur during the creation of the gametes. An allele cannot mutate into itself.",
@@ -14770,6 +14972,9 @@
         "idmType:VectorGeneDriver": {
             "Alleles_Driven": {
                 "default": [],
+                "depends-on": {
+                    "Driver_Type": "CLASSIC,INTEGRAL_AUTONOMOUS"
+                },
                 "description": "If the drive can be activated, then these elements define the probabilities of how alleles are copied.",
                 "item_type": "idmType:AlleleDriven",
                 "type": "Vector idmType:AlleleDriven"
@@ -14779,7 +14984,9 @@
                 "description": "This indicates the type of driver.  CLASSIC-The driver can only drive if the one gamete has the driving allele and the other has a specific allele to be replaced; INTEGRAL_AUTONOMOUS-At least one of the gametes must have the driver.  Alleles can still be driven if the driving allele is in both gametes or even if the driving allele cannot replace the allele in the other gamete.",
                 "enum": [
                     "CLASSIC",
-                    "INTEGRAL_AUTONOMOUS"
+                    "INTEGRAL_AUTONOMOUS",
+                    "X_SHRED",
+                    "Y_SHRED"
                 ],
                 "type": "enum"
             },
@@ -14789,13 +14996,27 @@
                 "type": "Constrained String",
                 "value_source": "Vector_Species_Params[x].Genes"
             },
+            "Driving_Allele_Params": {
+                "depends-on": {
+                    "Driver_Type": "X_SHRED,Y_SHRED"
+                },
+                "description": "If the drive is X_SHRED or Y_SHRED and it can be activiated, then these parameters define how the driver is copied.",
+                "type": "idmType:AlleleDriven"
+            },
+            "Shredding_Alleles": {
+                "depends-on": {
+                    "Driver_Type": "X_SHRED,Y_SHRED"
+                },
+                "description": "If the drive is X_SHRED or Y_SHRED and it can be activated, then these parameters define how gender alleles are shredded.",
+                "type": "idmType:ShreddingAlleles"
+            },
             "class": "VectorGeneDriver"
         },
         "idmType:VectorHabitat": {
             "Capacity_Distribution_Number_Of_Years": {
                 "default": 1,
                 "depends-on": {
-                    "Vector_Habitat_Type": "LINEAR_SPLINE"
+                    "Habitat_Type": "LINEAR_SPLINE"
                 },
                 "description": "The total length of time in years for the scaling.  If the simulation goes longer than this time, the pattern will repeat.  Ideally, this value times 365 is the last value in 'Capacity_Distribution_Over_Time'.",
                 "max": 1000,
@@ -14804,19 +15025,12 @@
             },
             "Capacity_Distribution_Over_Time": {
                 "depends-on": {
-                    "Vector_Habitat_Type": "LINEAR_SPLINE"
+                    "Habitat_Type": "LINEAR_SPLINE"
                 },
                 "description": "This allows one to scale the larval capacity over time.  The Times and Values arrays must be the same length where Times is in days and Values are a scale factor per degrees squared.  The value is multiplied times the max capacity and 'Node_Grid_Size' squared/4. Ideally, you want the last value  to equal the first value if they are one day apart.  A point will be added if not.",
                 "type": "idmType:InterpolatedValueMap"
             },
-            "Max_Larval_Capacity": {
-                "default": 10000000000.0,
-                "description": "The maximum larval capacity.",
-                "max": 3.40282e+38,
-                "min": 0,
-                "type": "float"
-            },
-            "Vector_Habitat_Type": {
+            "Habitat_Type": {
                 "default": "NONE",
                 "description": "The type of habitat that this species of vectors use for eggs.  Each species can have at most one of each type.  You cannot use ALL_HABITATS.",
                 "enum": [
@@ -14826,11 +15040,17 @@
                     "HUMAN_POPULATION",
                     "CONSTANT",
                     "BRACKISH_SWAMP",
-                    "MARSHY_STREAM",
                     "LINEAR_SPLINE",
                     "ALL_HABITATS"
                 ],
                 "type": "enum"
+            },
+            "Max_Larval_Capacity": {
+                "default": 10000000000.0,
+                "description": "The maximum larval capacity.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
             },
             "class": "VectorHabitat"
         },
@@ -14942,6 +15162,12 @@
                 "item_type": "idmType:VectorGene",
                 "type": "Vector idmType:VectorGene"
             },
+            "Habitats": {
+                "default": [],
+                "description": "A measure of the habitat type and scale factors used to estimate larval population.  Use each element in the array to specify a habitat type and max larval capacity. LINEAR_SPLINE has a more detailed scaling configuration.  See the documentation for more information.",
+                "item_type": "idmType:VectorHabitat",
+                "type": "Vector idmType:VectorHabitat"
+            },
             "Immature_Duration": {
                 "default": 2,
                 "description": "The number of days for larvae to develop into adult mosquitoes. The value is used to calculate mosquito development rate, which equals 1 / (value of this parameter). Note that development from immature individual to adult is not dependent on temperature.",
@@ -14983,12 +15209,6 @@
                 "max": 1000,
                 "min": 0,
                 "type": "float"
-            },
-            "Larval_Habitat_Types": {
-                "default": [],
-                "description": "A measure of the habitat type and scale factors used to estimate larval population.  Use each element in the array to specify a habitat type and max larval capacity. LINEAR_SPLINE has a more detailed scaling configuration.  See the documentation for more information.",
-                "item_type": "idmType:VectorHabitat",
-                "type": "Vector idmType:VectorHabitat"
             },
             "Male_Life_Expectancy": {
                 "default": 10,
