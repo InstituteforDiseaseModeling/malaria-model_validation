@@ -72,8 +72,8 @@ def build_camp(site):
         add_treatment_seeking(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
             drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
 
-    InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
-             start_day=0, age_dependence="SURFACE_AREA_DEPENDENT")
+    camp.add(InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
+             start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
 
     return camp
 
