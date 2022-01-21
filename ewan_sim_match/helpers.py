@@ -1,7 +1,9 @@
 import ewan_sim_match.manifest as manifest
-from ewan_sim_match.site_eir_values import study_site_monthly_EIRs, mAb_vs_EIR, sites_with_interventions
+from ewan_sim_match.site_eir_values import study_site_monthly_EIRs, mAb_vs_EIR, sites_with_interventions, sites_cm_seek
 
 from functools import partial
+from typing import Dict, Any, TYPE_CHECKING
+from idmtools.entities.simulation import Simulation
 
 import emod_api.demographics.Demographics as Demographics
 
@@ -69,7 +71,7 @@ def build_camp(site):
 
     # print( f"Telling emod-api to use {manifest.schema_file} as schema." )
     if site in sites_with_interventions:
-        add_treatment_seeking(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": 0.5, "rate": 0.3}],
+        add_treatment_seeking(camp, targets=[{"trigger": "NewClinicalCase", "coverage": 1, "seek": sites_cm_seek[site], "rate": 0.3}],
             drug=['Artemether', 'Lumefantrine'], start_day=0, broadcast_event_name='Received_Treatment')
 
     camp.add(InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
@@ -104,3 +106,19 @@ def msr_config_builder(params):
 
     return params
 
+
+def ptr_config_builder(params):
+    return params
+
+def set_param(simulation: Simulation, param: str, value: Any) -> Dict[str, Any]:
+    """
+    Set specific parameter value
+    Args:
+        simulation: idmtools Simulation
+        param: parameter
+        value: new value
+
+    Returns: dict
+
+    """
+    return simulation.task.set_parameter(param, value)

@@ -10,6 +10,7 @@ eradication_path="/Users/moniqueam/Documents/malaria-model_validation/ewan_sim_m
 # Create 'Assets' directory or change to a path you prefer. idmtools will upload files found here.
 assets_input_dir="Assets"
 plugins_folder = "download/reporter_plugins"
+analyzed_ouptut_path = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output'
 
 asset_path = "/Users/moniqueam/Documents/malaria-model_validation/ewan_sim_match/input_files/demographics.json"
 

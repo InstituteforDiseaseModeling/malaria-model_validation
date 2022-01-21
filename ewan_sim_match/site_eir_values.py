@@ -16,11 +16,20 @@ study_site_monthly_EIRs = {
                      2.3805710805016487, 2.6720894266549253, 2.3689851180114783, 1.895147447566689, 1.4730660393929509,
                      1.453070342033863, 2.033218878887547, 2.201760717967919],
     # Nanoro EIR obtained from calibration to Nanoro clinical cases in infants binned every 3 months
+    'Navrongo':     [13.86770953, 1.898386789, 2.606851375, 3.874630107, 6.111886693,
+                     10.6982627, 27.14209861, 91.23949981, 158.394485, 96.27332713,
+                     36.15764605, 20.49506014],  # average of three years (2001-2003) of monthly EIRs reported in Kasasa et al. 2013. Note: fairly similar to Dapelogo EIRs
     '_constant_':   [1.0/12] * 12,
     '_pulse_':      [1] + [0] * 11
     }
 
-sites_with_interventions = ['Dielmo', 'Ndiop']
+sites_with_interventions = ['Dielmo', 'Ndiop', 'Navrongo']
+
+sites_cm_seek = {
+    'Dielmo': 0.5,
+    'Ndiop': 0.5,
+    'Navrongo': 0.2
+}
 
 
 def mAb_vs_EIR(EIR):
