@@ -24,7 +24,7 @@ def general_sim(sites=None):
 
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform("Calculon")
+    platform = Platform("Calculon", priority='normal')  # , node_group='idm_48cores')
 
     # create EMODTask 
     print("Creating EMODTask (from files)...")
@@ -56,7 +56,7 @@ def general_sim(sites=None):
     # Add reporter
     reporter = MalariaSummaryReport()  # Create the reporter
     reporter.config(msr_config_builder, manifest)  # Config the reporter
-    task.reporters.add_reporter(reporter)  # Add thre reporter
+    task.reporters.add_reporter(reporter)  # Add the reporter
 
     # create experiment from builder
     print( f"Prompting for COMPS creds if necessary..." )

@@ -13,7 +13,7 @@ from emodpy.emod_task import EMODTask
 from emodpy_malaria.reporters.builtin import MalariaSummaryReport, MalariaPatientJSONReport
 
 from ewan_sim_match.helpers import *
-import ewan_sim_match.params as params
+import infection_duration_navrongo.params as params
 import ewan_sim_match.manifest as manifest
 
 
@@ -25,7 +25,7 @@ def general_sim(sites=None):
 
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform("Calculon", priority='abovenormal')  # , node_group='idm_48cores')
+    platform = Platform("Calculon", priority='normal')  # , node_group='idm_48cores')
 
     # create EMODTask 
     print("Creating EMODTask (from files)...")
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     # get_model_files( plan, manifest )
     # print("...done.")
 
-    sites = ['Navrongo_x01', 'Navrongo_x012', 'Navrongo_x008', 'Navrongo_x005', 'Navrongo_x001']
+    sites = ['Navrongo_x01']#, 'Navrongo_x012', 'Navrongo_x008', 'Navrongo_x005', 'Navrongo_x001']
     general_sim(sites)
