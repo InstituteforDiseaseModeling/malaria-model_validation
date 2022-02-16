@@ -20,7 +20,7 @@ mpl.use('Agg')
 
 class SummaryReportAnalyzer(BaseAnalyzer):
 
-    def __init__(self, title='idm', tags=['Run_Number']):
+    def __init__(self, title='idm', tags=['Run_Number', 'Site']):
         super().__init__(filenames=["output\\MalariaSummaryReport_Annual_Report.json"])
         self.tags = tags
         print(title)
@@ -53,7 +53,7 @@ class SummaryReportAnalyzer(BaseAnalyzer):
         incidence = datatemp['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin']
         incidence = np.array(np.array([i for i in incidence]))
         incidence[incidence == 0] = np.nan
-        incidence = np.nanmean(incidence, axis=1)
+        incidence = np.nanmean(incidence, axis=0)
 
         df = pd.DataFrame(list(zip(age_bins, prevalence, incidence)),
                           columns=['Age', 'Prevalence', 'Incidence'])
@@ -80,8 +80,8 @@ class SummaryReportAnalyzer(BaseAnalyzer):
 
         groupby_tags = self.tags
         groupby_tags.remove('Run_Number')
-        df_summarized = df_final.groupby('Age')['Prevalence', 'Incidence'].apply(np.mean).reset_index()
-        df_summarized_std = df_final.groupby('Age')['Prevalence', 'Incidence'].apply(np.std)
+        df_summarized = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.mean).reset_index()
+        df_summarized_std = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.std)
         for c in ['Prevalence', 'Incidence']:
             df_summarized[c + '_std'] = list(df_summarized_std[c])
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         analyzers = [SummaryReportAnalyzer()]
 
         # Set the experiment id you want to analyze
-        experiment_id = 'ab7487a1-6405-ec11-a9ed-b88303911bc1'
+        experiment_id = '6c1728b9-988b-ec11-a9f3-9440c9be2c51'
 
         # Specify the id Type, in this case an Experiment on COMPS
         manager = AnalyzeManager(partial_analyze_ok=True, ids=[(experiment_id, ItemType.EXPERIMENT)],
