@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-import pathlib # for a join
-import os
-
 # idmtools ...
 from idmtools.builders import SimulationBuilder
 from idmtools.core.platform_factory import Platform
@@ -12,9 +9,11 @@ from idmtools.entities.experiment import Experiment
 from emodpy.emod_task import EMODTask
 from emodpy_malaria.reporters.builtin import MalariaSummaryReport, MalariaPatientJSONReport
 
-from ewan_sim_match.helpers import *
+from infection_duration_navrongo.helpers_site import *
+from general.helpers import *
 import infection_duration_navrongo.params as params
-import ewan_sim_match.manifest as manifest
+from general import manifest as manifest
+from infection_duration_navrongo import manifest_asset as manifest_asset
 
 
 def general_sim(sites=None):
@@ -47,7 +46,7 @@ def general_sim(sites=None):
     builder = SimulationBuilder()
 
     # Add asset
-    task.common_assets.add_asset(manifest.asset_path)
+    task.common_assets.add_asset(manifest_asset.asset_path)
 
     # Sweep run number
     builder.add_sweep_definition(update_sim_random_seed, range(params.nSims))
@@ -56,11 +55,6 @@ def general_sim(sites=None):
     builder.add_sweep_definition(update_camp_type, sites)
 
     exp_name = params.exp_name
-
-    # Add reporter
-    reporter = MalariaSummaryReport()  # Create the reporter
-    reporter.config(msr_config_builder, manifest)  # Config the reporter
-    task.reporters.add_reporter(reporter)  # Add the reporter
 
     # Add patient report
     patient_report = MalariaPatientJSONReport()  # Create the reporter
@@ -97,5 +91,4 @@ if __name__ == "__main__":
     # get_model_files( plan, manifest )
     # print("...done.")
 
-    sites = ['Navrongo_x01']#, 'Navrongo_x012', 'Navrongo_x008', 'Navrongo_x005', 'Navrongo_x001']
-    general_sim(sites)
+    general_sim(params.sites)

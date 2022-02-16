@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import pathlib # for a join
-
 # idmtools ...
 from idmtools.builders import SimulationBuilder
 from idmtools.core.platform_factory import Platform
@@ -11,9 +9,11 @@ from idmtools.entities.experiment import Experiment
 from emodpy.emod_task import EMODTask
 from emodpy_malaria.reporters.builtin import MalariaSummaryReport
 
-from ewan_sim_match.helpers import *
+from ewan_sim_match.helpers_site import *
+from general.helpers import *
 import ewan_sim_match.params as params
-import ewan_sim_match.manifest as manifest
+from ewan_sim_match import manifest_asset as manifest_asset
+from general import manifest as manifest
 
 
 def general_sim(sites=None):
@@ -38,18 +38,15 @@ def general_sim(sites=None):
             param_custom_cb=set_param_fn,
             demog_builder=None,
         )
+    # Update simulation duration
+    task.config.parameters.Simulation_Duration = params.simulation_duration
 
     # Create simulation sweep with builder
     builder = SimulationBuilder()
 
     # Add asset
-    task.common_assets.add_asset(manifest.asset_path)
+    task.common_assets.add_asset(manifest_asset.asset_path)
 
-    # Sweep run number
-    builder.add_sweep_definition(update_sim_random_seed, range(params.nSims))
-
-    # Sweep sites
-    builder.add_sweep_definition(update_camp_type, sites)
 
     exp_name = params.exp_name
 
@@ -57,6 +54,12 @@ def general_sim(sites=None):
     reporter = MalariaSummaryReport()  # Create the reporter
     reporter.config(msr_config_builder, manifest)  # Config the reporter
     task.reporters.add_reporter(reporter)  # Add the reporter
+
+    # Sweep run number
+    builder.add_sweep_definition(update_sim_random_seed, range(params.nSims))
+
+    # Sweep sites - includes updating report age groups
+    builder.add_sweep_definition(update_camp_type, sites)
 
     # create experiment from builder
     print( f"Prompting for COMPS creds if necessary..." )
@@ -86,5 +89,5 @@ if __name__ == "__main__":
     # get_model_files( plan, manifest )
     # print("...done.")
 
-    sites = ['Ndiop', 'Dielmo']
-    general_sim(sites)
+
+    general_sim(sites=params.sites)

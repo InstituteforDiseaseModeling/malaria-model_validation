@@ -5,7 +5,7 @@ import numpy as np
 from idmtools.entities import IAnalyzer
 from idmtools.entities.simulation import Simulation
 from idmtools.analysis.platform_anaylsis import PlatformAnalysis
-from idmtools.assets import AssetCollection, Asset
+from idmtools.assets import AssetCollection
 
 from logging import getLogger
 logger = getLogger()
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     from idmtools.analysis.analyze_manager import AnalyzeManager
     from idmtools.core import ItemType
     from idmtools.core.platform_factory import Platform
-    from ewan_sim_match.manifest import analyzed_ouptut_path
+    from general.manifest import analyzed_ouptut_path
 
     use_ssmt = True
 

@@ -1,17 +1,15 @@
-import ewan_sim_match.manifest as manifest
-from ewan_sim_match.site_eir_values import study_site_monthly_EIRs, mAb_vs_EIR, sites_with_interventions, sites_cm_seek
-
 from functools import partial
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Dict, Any
 from idmtools.entities.simulation import Simulation
 
-import emod_api.demographics.Demographics as Demographics
 
 from emodpy_malaria import malaria_config as malconf
 from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 from emodpy_malaria.interventions.inputeir import InputEIR
 
 import emod_api.campaign as camp
+import general.manifest as manifest
+from general.site_eir_values import study_site_monthly_EIRs, mAb_vs_EIR, sites_with_interventions, sites_cm_seek
 
 
 def update_sim_random_seed(simulation, value):
@@ -78,33 +76,6 @@ def build_camp(site):
              start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
 
     return camp
-
-
-def build_demog():
-    """
-    Build a demographics input file for the DTK using emod_api.
-    Right now this function creates the file and returns the filename. If calling code just needs an asset that's fine.
-    Also right now this function takes care of the config updates that are required as a result of specific demog settings. We do NOT want the emodpy-disease developers to have to know that. It needs to be done automatically in emod-api as much as possible.
-    TBD: Pass the config (or a 'pointer' thereto) to the demog functions or to the demog class/module.
-
-    """
-    demog = Demographics.from_file("/ewan_sim_match/input_files/demographics.json")
-
-    return demog
-
-
-def msr_config_builder(params):
-    params.Age_Bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20, 25, 30, 40, 50, 60, 100]
-    params.Duration_Days = 1000000
-    params.Infectiousness_Bins = [0, 100]
-    params.Max_Number_Reports = 2000
-    params.Nodeset_Config = {"class": "NodeSetAll"}
-    params.Parasitemia_Bins = [0, 50, 500, 5000, 5000000]
-    params.Report_Description = 'Annual_Report'
-    params.Reporting_Interval = 365
-    params.Start_Day = 0
-
-    return params
 
 
 def ptr_config_builder(params):
