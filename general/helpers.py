@@ -55,6 +55,14 @@ def update_camp_type(simulation, site):
     return {"Site": site}
 
 
+
+
+def build_standard_campaign_object(manifest):
+    import emod_api.campaign as campaign
+    campaign.set_schema(manifest.schema_file)
+    return campaign
+
+# def build_camp(site, cross_sectional_surveys=False, survey_days=None):
 def build_camp(site):
     """
     Build a campaign input file for the DTK using emod_api.
@@ -62,7 +70,8 @@ def build_camp(site):
     """
 
     # This isn't desirable. Need to think about right way to provide schema (once)
-    camp.schema_path = manifest.schema_file
+    # camp.schema_path = manifest.schema_file
+    camp = build_standard_campaign_object(manifest)
 
     if site not in study_site_monthly_EIRs.keys():
         raise Exception("Don't know how to configure site: %s " % site)

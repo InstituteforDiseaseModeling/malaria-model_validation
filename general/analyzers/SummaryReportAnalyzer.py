@@ -48,7 +48,7 @@ class SummaryReportAnalyzer(BaseAnalyzer):
         prevalence = datatemp['DataByTimeAndAgeBins']['PfPR by Age Bin']
         prevalence = np.array(np.array([i for i in prevalence]))
         prevalence[prevalence == 0] = np.nan
-        prevalence = np.nanmean(prevalence, axis=1)
+        prevalence = np.nanmean(prevalence, axis=0)
 
         incidence = datatemp['DataByTimeAndAgeBins']['Annual Clinical Incidence by Age Bin']
         incidence = np.array(np.array([i for i in incidence]))
