@@ -9,7 +9,10 @@ library(RColorBrewer)
 
 
 ############################ setup: filepaths and info on simulations run #################################
-filepath_ref = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/reference_data/par_dens_extract_Laye_2007.csv"
+cur_site = "Dapelogo_2007"  # "Laye_2007"
+filepath_ref = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/reference_data/par_dens_extract_Dapelogo_2007.csv"
+# cur_site = "Laye_2007"
+# filepath_ref = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/reference_data/par_dens_extract_Laye_2007.csv"
 base_filepath_sim_output = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/par_dens_age'
 
 
@@ -64,7 +67,7 @@ plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
   colors = brewer.pal(n=num_colors, name='BrBG')
   names(colors) = sort(unique(combined_df$densitybin))
   # plot
-  ggplot(combined_df, aes(fill=densitybin, y=asexual_par_dens, x=agebin)) + 
+  gg1=ggplot(combined_df, aes(fill=densitybin, y=asexual_par_dens, x=agebin)) + 
     geom_bar(position="stack", stat="identity") + 
     # scale_fill_brewer(palette = "BrBG") +
     scale_fill_manual(values=colors, limits=names(colors)) +
@@ -97,7 +100,7 @@ plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
   }
 
   # plot
-  ggplot(combined_df0, aes(x=densitybin, y=asexual_par_dens, color=source)) + 
+  gg2=ggplot(combined_df0, aes(x=densitybin, y=asexual_par_dens, color=source)) + 
     geom_line(size=2) + 
     geom_point() +
     scale_x_continuous(trans='log10') +
@@ -112,7 +115,7 @@ plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
   # plot cumulative densities
   # = = = = = = = = = #
   
-  
+  return(list(gg1,gg2))
 }
 
 
@@ -123,7 +126,10 @@ coord_csv = read.csv(simulation_coordinator_path)
 par_dens_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
 
 # for (ss in 1:length(par_dens_sites)){}
-cur_site = "Laye_2007"
 sim_df = read.csv(paste0(base_filepath_sim_output, '/', cur_site, '/parasite_densities_by_age_month.csv'))
 age_agg_sim_df = get_age_bin_averages(sim_df)
 ref_df = read.csv(filepath_ref)
+
+gg_plots = plot_ref_sim_comparison(age_agg_sim_df, ref_df)
+# gg_plots[[1]]
+gg_plots[[2]]

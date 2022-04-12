@@ -83,7 +83,7 @@ class ParDensAgeAnalyzer(BaseAnalyzer):
 if __name__ == '__main__':
 
     # Set the experiment id you want to analyze
-    experiment_id = 'caf419fa-31b1-ec11-a9f6-9440c9be2c51'
+    experiment_id = 'b7126585-30b6-ec11-a9f6-9440c9be2c51'
     end_year = 65
 
     # Set the platform where you want to run your analysis
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     with Platform('CALCULON') as platform:
 
         # Initialize the analyser class with the path of the output csv file
-        analyzers = [ParDensAgeAnalyzer(expt_name='Laye_2007',
+        analyzers = [ParDensAgeAnalyzer(expt_name='Sugungum_1970',
                                         sweep_variables=['Run_Number', 'Site'],
                                         end_year=end_year)]
 

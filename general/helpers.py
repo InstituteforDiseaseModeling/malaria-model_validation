@@ -1,13 +1,13 @@
 from functools import partial
 from typing import Dict, Any
 from idmtools.entities.simulation import Simulation
-
+from emodpy_malaria.interventions.diag_survey import add_diagnostic_survey
 
 from emodpy_malaria import malaria_config as malconf
 from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 from emodpy_malaria.interventions.inputeir import InputEIR
-
-import emod_api.campaign as camp
+from emod_api.interventions.common import BroadcastEvent
+# import emod_api.campaign as camp
 import general.manifest as manifest
 from general.site_eir_values import study_site_monthly_EIRs, mAb_vs_EIR, sites_with_interventions, sites_cm_seek
 
@@ -43,6 +43,17 @@ def set_param_fn(config):
     # config.parameters.pop("Serialized_Population_Filenames")
 
     return config
+
+
+
+# def update_camp_type(simulation, site, cross_sectional_surveys=False, survey_days=None):
+#     # simulation.task.config.parameters.Run_Number = value
+#     build_camp_partial = partial(build_camp, site=site, cross_sectional_surveys=cross_sectional_surveys, survey_days=survey_days)
+#     simulation.task.create_campaign_from_callback(build_camp_partial)
+#
+#     update_mab(simulation, mAb_vs_EIR(sum(study_site_monthly_EIRs[site])))
+#
+#     return {"Site": site}
 
 
 def update_camp_type(simulation, site):
@@ -84,6 +95,11 @@ def build_camp(site):
     camp.add(InputEIR(camp, monthly_eir=study_site_monthly_EIRs[site],
              start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
 
+    # if cross_sectional_surveys:
+    #     # adding schema file, so it can be looked up when creating the campaigns
+    #     camp.schema_path = manifest.schema_file
+    #     add_broadcasting_survey(camp, survey_days=survey_days)
+
     return camp
 
 
@@ -102,3 +118,15 @@ def set_param(simulation: Simulation, param: str, value: Any) -> Dict[str, Any]:
 
     """
     return simulation.task.set_parameter(param, value)
+
+
+def add_broadcasting_survey(camp, survey_days):
+    pos_diag_cfg = BroadcastEvent(campaign=camp, Event_Trigger='parasites_on_survey_day')
+    # neg_diag_cfg = BroadcastEvent(campaign, Event_Trigger='negative_test_on_survey_day')
+    for survey_day in survey_days:
+        add_diagnostic_survey(campaign=camp, start_day=survey_day,
+                              diagnostic_type='TRUE_PARASITE_DENSITY', diagnostic_threshold=0,
+                              positive_diagnosis_configs=[pos_diag_cfg])  #, negative_diagnosis_configs=[neg_diag_cfg])
+
+    return
+
