@@ -6,7 +6,7 @@ from idmtools.core.platform_factory import Platform
 from idmtools.assets import AssetCollection
 from idmtools.analysis.platform_anaylsis import PlatformAnalysis
 from infection_duration_navrongo.manifest_asset import analyzed_ouptut_path
-from general.analyzers.PatientReportAnalyzer import PatientAnalyzer
+from simulations.analyzers.PatientReportAnalyzer import PatientAnalyzer
 
 use_ssmt = True
 

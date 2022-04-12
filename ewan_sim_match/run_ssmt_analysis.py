@@ -1,4 +1,4 @@
-from general.analyzers.SummaryReportAnalyzer import SummaryReportAnalyzer
+from simulations.analyzers.SummaryReportAnalyzer import SummaryReportAnalyzer
 from idmtools.core.platform_factory import Platform
 from idmtools.analysis.platform_anaylsis import PlatformAnalysis
 
