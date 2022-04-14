@@ -26,7 +26,8 @@ class PatientAnalyzer(IAnalyzer):
         self.start_report_day = start_report_day
 
         # make sure output folder exists
-        os.makedirs(os.path.join(self.working_dir, self.dir_name), exist_ok=True)
+        if not os.path.exists(os.path.join(self.working_dir, self.expt_name)):
+            os.mkdir(os.path.join(self.working_dir, self.expt_name))
 
     def map(self, data, simulation: Simulation):
         patients = data[self.filenames[0]]["patient_array"]

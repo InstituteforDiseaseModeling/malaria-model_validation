@@ -20,18 +20,19 @@ mpl.use('Agg')
 
 class SummaryReportAnalyzer(BaseAnalyzer):
 
-    def __init__(self, title='idm', tags=['Run_Number', 'Site']):
+    def __init__(self, expt_name, sweep_variables=None, working_dir="."):
         super().__init__(filenames=["output\\MalariaSummaryReport_Annual_Report.json"])
-        self.tags = tags
-        print(title)
+        self.expt_name = expt_name
+        self.sweep_variables = sweep_variables or ["Run_Number", "Site"]
+        self.working_dir = working_dir
 
     def initialize(self):
         """
         Initialize our Analyzer. At the moment, this just creates our output folder
         Returns:
         """
-        if not os.path.exists(os.path.join(self.working_dir, "output")):
-            os.mkdir(os.path.join(self.working_dir, "output"))
+        if not os.path.exists(os.path.join(self.working_dir, self.expt_name)):
+            os.mkdir(os.path.join(self.working_dir, self.expt_name))
 
     def map(self, data: Dict[str, Any], item: Union[IWorkflowItem, Simulation]) -> Any:
         """
@@ -68,24 +69,22 @@ class SummaryReportAnalyzer(BaseAnalyzer):
         Returns:
             None
         """
-        output_dir = os.path.join(self.working_dir, "output")
         df_final = pd.DataFrame()
         for s, v in all_data.items():
             dftemp = v.copy()
-            for t in self.tags:
+            for t in self.sweep_variables:
                 dftemp[t] = [s.tags[t]]*len(v)
             df_final = pd.concat([df_final, dftemp])
-        df_final.to_csv(os.path.join(output_dir, "summary_data_full.csv"))
-        # df_incidence.to_csv(os.path.join(output_dir, "sporozoite_reduction_incidence_full.csv"))
+        df_final.to_csv(os.path.join(self.working_dir, self.expt_name, "summary_data_full.csv"))
 
-        groupby_tags = self.tags
+        groupby_tags = self.sweep_variables
         groupby_tags.remove('Run_Number')
         df_summarized = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.mean).reset_index()
         df_summarized_std = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.std)
         for c in ['Prevalence', 'Incidence']:
             df_summarized[c + '_std'] = list(df_summarized_std[c])
 
-        df_summarized.to_csv(os.path.join(output_dir, "summary_data_final.csv"))
+        df_summarized.to_csv(os.path.join(self.working_dir, self.expt_name, "summary_data_final.csv"))
 
 
 if __name__ == '__main__':

@@ -20,14 +20,15 @@ class ParDensAgeAnalyzer(BaseAnalyzer):
         self.expt_name = expt_name
         self.start_year = start_year
         self.end_year = end_year
+        self.working_dir = working_dir
 
     def initialize(self):
         """
         Initialize our Analyzer. At the moment, this just creates our output folder
         Returns:
         """
-        if not os.path.exists(os.path.join(self.working_dir, "output")):
-            os.mkdir(os.path.join(self.working_dir, "output"))
+        if not os.path.exists(os.path.join(self.working_dir, self.expt_name)):
+            os.mkdir(os.path.join(self.working_dir, self.expt_name))
 
 
     def map(self, data, simulation):
@@ -50,8 +51,8 @@ class ParDensAgeAnalyzer(BaseAnalyzer):
                     d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:12]
                     pop = [x[age] for x in d]
                     simdata = pd.DataFrame({'month': range(1, 13),
-                                            'asexual_par_dens': par_dens,
-                                            'gametocyte_dens': gam_dens,
+                                            'asexual_par_dens_freq': par_dens,
+                                            'gametocyte_dens_freq': gam_dens,
                                             'Pop': pop,
                                             })
                     simdata['densitybin'] = par_bins[dens]
@@ -71,9 +72,6 @@ class ParDensAgeAnalyzer(BaseAnalyzer):
         if len(selected) == 0:
             print("No data have been returned... Exiting...")
             return
-
-        if not os.path.exists(os.path.join(self.working_dir, self.expt_name)):
-            os.mkdir(os.path.join(self.working_dir, self.expt_name))
 
         adf = pd.concat(selected).reset_index(drop=True)
         adf.to_csv((os.path.join(self.working_dir, self.expt_name, 'parasite_densities_by_age_month.csv')),
