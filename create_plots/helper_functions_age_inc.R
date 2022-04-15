@@ -16,7 +16,7 @@ base_filepath_sim_output = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Fou
 duplicate_sites = c(6, 7)  # remove these sites to avoid duplicating reference data
 
 # sweep of simulations across seasonalities, EIRs, and CMs
-filepath_sim = file.path(base_filepath_sim_output, 'sweepSeasonEIRCM', 'summary_data_final.csv')
+filepath_sim = file.path(base_filepath_sim_output, 'sweepSeasonEIRCM', 'inc_prev_data_final.csv')
 eirs = c(1, 3, 5, 10, 20, 30, 50, 100, 200, 400)
 
 

@@ -8,8 +8,6 @@ from simulations.analyzers.SummaryReportAnalyzer import SummaryReportAnalyzer
 from simulations.analyzers.ParDensAgeAnalyzer import ParDensAgeAnalyzer
 from simulations.analyzers.PatientReportAnalyzer import PatientAnalyzer
 
-# wi_name_base = "ssmt_validation_"
-
 exp_name_id = {
     'sugungum_1970': 'b7126585-30b6-ec11-a9f6-9440c9be2c51'
 }

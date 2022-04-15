@@ -15,7 +15,7 @@ base_filepath_sim_output = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Fou
 
 
 # sweep of simulations across seasonalities, EIRs, and CMs
-filepath_sim = file.path(base_filepath_sim_output, 'sweepSeasonEIRCM', 'summary_data_final.csv')
+filepath_sim = file.path(base_filepath_sim_output, 'sweepSeasonEIRCM', 'inc_prev_data_final.csv')
 
 
 ############################ helper functions #########################################

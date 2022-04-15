@@ -1,0 +1,46 @@
+"agebin","Village","Seasons","total_sampled","num_pos","prevalence","Site","year","month0","month"
+5,"Matsari","DC2",80,75,0.9375,"Matsari_1970",2,"DC",2
+5,"Matsari","DH2",52,44,0.846153846153846,"Matsari_1970",2,"DH",7
+5,"Matsari","W2",45,37,0.822222222222222,"Matsari_1970",2,"W",10
+5,"Rafin Marke","DC2",37,30,0.810810810810811,"Rafin_Marke_1970",2,"DC",2
+5,"Rafin Marke","DH2",76,55,0.723684210526316,"Rafin_Marke_1970",2,"DH",7
+5,"Rafin Marke","W2",38,22,0.578947368421053,"Rafin_Marke_1970",2,"W",10
+5,"Sugungum","DC2",180,155,0.861111111111111,"Sugungum_1970",2,"DC",2
+5,"Sugungum","DH2",83,67,0.807228915662651,"Sugungum_1970",2,"DH",7
+5,"Sugungum","W2",171,138,0.807017543859649,"Sugungum_1970",2,"W",10
+15,"Matsari","DC2",96,90,0.9375,"Matsari_1970",2,"DC",2
+15,"Matsari","DH2",71,64,0.901408450704225,"Matsari_1970",2,"DH",7
+15,"Matsari","W2",65,59,0.907692307692308,"Matsari_1970",2,"W",10
+15,"Rafin Marke","DC2",74,69,0.932432432432432,"Rafin_Marke_1970",2,"DC",2
+15,"Rafin Marke","DH2",126,109,0.865079365079365,"Rafin_Marke_1970",2,"DH",7
+15,"Rafin Marke","W2",69,57,0.826086956521739,"Rafin_Marke_1970",2,"W",10
+15,"Sugungum","DC2",199,176,0.884422110552764,"Sugungum_1970",2,"DC",2
+15,"Sugungum","DH2",98,82,0.836734693877551,"Sugungum_1970",2,"DH",7
+15,"Sugungum","W2",220,182,0.827272727272727,"Sugungum_1970",2,"W",10
+30,"Matsari","DC2",155,98,0.632258064516129,"Matsari_1970",2,"DC",2
+30,"Matsari","DH2",102,47,0.46078431372549,"Matsari_1970",2,"DH",7
+30,"Matsari","W2",133,64,0.481203007518797,"Matsari_1970",2,"W",10
+30,"Rafin Marke","DC2",58,38,0.655172413793103,"Rafin_Marke_1970",2,"DC",2
+30,"Rafin Marke","DH2",93,27,0.290322580645161,"Rafin_Marke_1970",2,"DH",7
+30,"Rafin Marke","W2",68,32,0.470588235294118,"Rafin_Marke_1970",2,"W",10
+30,"Sugungum","DC2",228,89,0.390350877192982,"Sugungum_1970",2,"DC",2
+30,"Sugungum","DH2",112,37,0.330357142857143,"Sugungum_1970",2,"DH",7
+30,"Sugungum","W2",238,92,0.38655462184874,"Sugungum_1970",2,"W",10
+50,"Matsari","DC2",216,99,0.458333333333333,"Matsari_1970",2,"DC",2
+50,"Matsari","DH2",159,43,0.270440251572327,"Matsari_1970",2,"DH",7
+50,"Matsari","W2",149,34,0.228187919463087,"Matsari_1970",2,"W",10
+50,"Rafin Marke","DC2",93,34,0.365591397849462,"Rafin_Marke_1970",2,"DC",2
+50,"Rafin Marke","DH2",177,36,0.203389830508475,"Rafin_Marke_1970",2,"DH",7
+50,"Rafin Marke","W2",101,27,0.267326732673267,"Rafin_Marke_1970",2,"W",10
+50,"Sugungum","DC2",276,100,0.36231884057971,"Sugungum_1970",2,"DC",2
+50,"Sugungum","DH2",144,30,0.208333333333333,"Sugungum_1970",2,"DH",7
+50,"Sugungum","W2",295,91,0.308474576271186,"Sugungum_1970",2,"W",10
+76,"Matsari","DC2",74,31,0.418918918918919,"Matsari_1970",2,"DC",2
+76,"Matsari","DH2",52,18,0.346153846153846,"Matsari_1970",2,"DH",7
+76,"Matsari","W2",42,11,0.261904761904762,"Matsari_1970",2,"W",10
+76,"Rafin Marke","DC2",34,6,0.176470588235294,"Rafin_Marke_1970",2,"DC",2
+76,"Rafin Marke","DH2",64,13,0.203125,"Rafin_Marke_1970",2,"DH",7
+76,"Rafin Marke","W2",34,6,0.176470588235294,"Rafin_Marke_1970",2,"W",10
+76,"Sugungum","DC2",101,30,0.297029702970297,"Sugungum_1970",2,"DC",2
+76,"Sugungum","DH2",50,16,0.32,"Sugungum_1970",2,"DH",7
+76,"Sugungum","W2",93,31,0.333333333333333,"Sugungum_1970",2,"W",10

@@ -9,19 +9,11 @@ library(RColorBrewer)
 
 
 ############################ setup: filepaths and info on simulations run #################################
-cur_site = "Dapelogo_2007"  # "Laye_2007"
-filepath_ref = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/reference_data/par_dens_extract_Dapelogo_2007.csv"
-# cur_site = "Laye_2007"
-# filepath_ref = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/reference_data/par_dens_extract_Laye_2007.csv"
-base_filepath_sim_output = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/par_dens_age'
-
-
-# # sweep of simulations across seasonalities, EIRs, and CMs
-# filepath_sim = file.path(base_filepath_sim_output, 'sweepSeasonEIRCM', 'summary_data_final.csv')
-
 # coordinator csv - get site names for parasite density simulations
 simulation_coordinator_path = "/Users/moniqueam/Documents/malaria-model_validation/simulation_inputs/simulation_coordinator.csv"
-
+base_reference_filepath = "/Users/moniqueam/Documents/malaria-model_validation/reference_datasets"
+simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output"
+plot_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/_plots"
 
 
 ############################ helper functions #########################################
@@ -33,8 +25,8 @@ get_age_bin_averages = function(sim_df){
   sim_df = sim_df[sim_df$Pop > 0,]
   # get average across all years in age bins and across simulation run seeds
   age_agg_sim_df = sim_df %>% group_by(month, agebin, densitybin, Site) %>%
-    summarise(asexual_par_dens = mean(asexual_par_dens), 
-              gametocyte_dens = mean(gametocyte_dens), 
+    summarise(asexual_par_dens_freq = mean(asexual_par_dens_freq), 
+              gametocyte_dens_freq = mean(gametocyte_dens_freq), 
               Pop = mean(Pop))
   return(age_agg_sim_df)
 }
@@ -42,7 +34,7 @@ get_age_bin_averages = function(sim_df){
 
 
 # stacked barplots of parasite density bins by age
-plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
+plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
   
   # subset simulation output to months in reference dataset
   months = sort(unique(ref_df$month))
@@ -67,7 +59,7 @@ plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
   colors = brewer.pal(n=num_colors, name='BrBG')
   names(colors) = sort(unique(combined_df$densitybin))
   # plot
-  gg1=ggplot(combined_df, aes(fill=densitybin, y=asexual_par_dens, x=agebin)) + 
+  gg1=ggplot(combined_df, aes(fill=densitybin, y=asexual_par_dens_freq, x=agebin)) + 
     geom_bar(position="stack", stat="identity") + 
     # scale_fill_brewer(palette = "BrBG") +
     scale_fill_manual(values=colors, limits=names(colors)) +
@@ -100,7 +92,7 @@ plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
   }
 
   # plot
-  gg2=ggplot(combined_df0, aes(x=densitybin, y=asexual_par_dens, color=source)) + 
+  gg2=ggplot(combined_df0, aes(x=densitybin, y=asexual_par_dens_freq, color=source)) + 
     geom_line(size=2) + 
     geom_point() +
     scale_x_continuous(trans='log10') +
@@ -122,14 +114,33 @@ plot_ref_sim_comparison = function(age_agg_sim_df, ref_df){
 
 ############################ read in data and create plots #########################################
 
-coord_csv = read.csv(simulation_coordinator_path)
-par_dens_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
+# runs only when script is run by itself
+if (sys.nframe() == 0){
+  
+  coord_csv = read.csv(simulation_coordinator_path)
+  par_dens_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
+  
+  # determine which of the parasite-density sites have the relevant simulation output
+  available_sites = c()
+  for (ii in 1:length(par_dens_sites)){
+    if (file.exists(paste0(simulation_output_filepath, '/', par_dens_sites[ii], '/parasite_densities_by_age_month.csv'))){
+      available_sites = c(available_sites, par_dens_sites[ii])
+    }
+  }
+  
+  
+  for (ss in 1:length(available_sites)){
+    cur_site = available_sites[ss]
+    sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/parasite_densities_by_age_month.csv'))
+    age_agg_sim_df = get_age_bin_averages(sim_df)
+    
+    filepath_ref = paste0(base_reference_filepath, '/', coord_csv$age_parasite_density_ref[which(coord_csv$site == cur_site)])
+    ref_df = read.csv(filepath_ref)
+    
+    gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
+    ggsave(filename=paste0(plot_output_filepath, '/par_dens_age_', cur_site, '.pdf'), plot=gg_plots[[2]])
+  }
+  
+}
 
-# for (ss in 1:length(par_dens_sites)){}
-sim_df = read.csv(paste0(base_filepath_sim_output, '/', cur_site, '/parasite_densities_by_age_month.csv'))
-age_agg_sim_df = get_age_bin_averages(sim_df)
-ref_df = read.csv(filepath_ref)
 
-gg_plots = plot_ref_sim_comparison(age_agg_sim_df, ref_df)
-# gg_plots[[1]]
-gg_plots[[2]]

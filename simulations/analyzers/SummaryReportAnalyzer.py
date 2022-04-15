@@ -75,7 +75,7 @@ class SummaryReportAnalyzer(BaseAnalyzer):
             for t in self.sweep_variables:
                 dftemp[t] = [s.tags[t]]*len(v)
             df_final = pd.concat([df_final, dftemp])
-        df_final.to_csv(os.path.join(self.working_dir, self.expt_name, "summary_data_full.csv"))
+        df_final.to_csv(os.path.join(self.working_dir, self.expt_name, "inc_prev_data_full.csv"))
 
         groupby_tags = self.sweep_variables
         groupby_tags.remove('Run_Number')
@@ -84,7 +84,7 @@ class SummaryReportAnalyzer(BaseAnalyzer):
         for c in ['Prevalence', 'Incidence']:
             df_summarized[c + '_std'] = list(df_summarized_std[c])
 
-        df_summarized.to_csv(os.path.join(self.working_dir, self.expt_name, "summary_data_final.csv"))
+        df_summarized.to_csv(os.path.join(self.working_dir, self.expt_name, "inc_prev_data_final.csv"))
 
 
 if __name__ == '__main__':
