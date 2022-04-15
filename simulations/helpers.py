@@ -192,16 +192,29 @@ def add_hs_from_file(camp, row):
     severe_cases = row['severe_coverage']
     start_day = row['simday']
     duration = row['duration']
+    if 'drug_code' in row.index:
+        drug_code = row['drug_code']
+    else:
+        drug_code = 'AL'
+    if drug_code == 'AL':
+        drug = ['Artemether', 'Lumefantrine']
+    elif drug_code == 'SP':
+        drug = ['Sulfadoxine', 'Pyrimethamine']
+    elif drug_code == 'CQ':
+        drug = ['Chloroquine']
+    else:
+        warnings.warn('Drug code not recognized. Assuming AL.')
+        drug = ['Artemether', 'Lumefantrine']
 
     add_treatment_seeking(camp, start_day=start_day,
                           targets=[{'trigger': 'NewClinicalCase', 'coverage': hs_child, 'agemin': 0, 'agemax': 5,
                                    'seek': 1, 'rate': 0.3},
                                    {'trigger': 'NewClinicalCase', 'coverage': hs_adult, 'agemin': 5, 'agemax': 100,
-                                    'seek': 1, 'rate': 0.3},],
-                          drug=['Artemether', 'Lumefantrine'], duration=duration)
+                                    'seek': 1, 'rate': 0.3}],
+                          drug=drug, duration=duration)
     add_treatment_seeking(camp, start_day=start_day,
                           targets=[{'trigger': 'NewSevereCase', 'coverage': severe_cases, 'seek': 1, 'rate': 0.5}], #change by adding column and reviewing literature
-                          drug=['Artemether', 'Lumefantrine'], duration=duration)  # , broadcast_event_name='Received_Severe_Treatment')
+                          drug=drug, duration=duration)  # , broadcast_event_name='Received_Severe_Treatment')
 
 
 def add_nmf_hs(camp, hs_df, nmf_df):
@@ -222,6 +235,10 @@ def add_nmf_hs_from_file(camp, row, nmf_row):
     hs_adult = row['adult_coverage']
     start_day = row['simday']
     duration = row['duration']
+    if 'drug_code' in row.index:
+        drug_code = row['drug_code']
+    else:
+        drug_code = 'AL'
     if start_day == 0:  # due to dtk diagnosis/treatment configuration, a start day of 0 is not supported
         start_day = 1  # start looking for NMFs on day 1 (not day 0) of simulation
         if duration > 1:
@@ -229,18 +246,20 @@ def add_nmf_hs_from_file(camp, row, nmf_row):
     nmf_child = nmf_row['U5_nmf']
     nmf_adult = nmf_row['adult_nmf']
 
-    add_drug_campaign(camp, 'MSAT', 'AL', start_days=[start_day],
-                      target_group={'agemin': 0, 'agemax': 5},
-                      coverage=nmf_child * hs_child,
-                      repetitions=duration, tsteps_btwn_repetitions=1,
-                      diagnostic_type='PF_HRP2', diagnostic_threshold=5,
-                      receiving_drugs_event_name='Received_NMF_Treatment')
-    add_drug_campaign(camp, 'MSAT', 'AL', start_days=[start_day],
-                      target_group={'agemin': 5, 'agemax': 120},
-                      coverage=nmf_adult * hs_adult,
-                      repetitions=duration, tsteps_btwn_repetitions=1,
-                      diagnostic_type='PF_HRP2', diagnostic_threshold=5,
-                      receiving_drugs_event_name='Received_NMF_Treatment')
+    if nmf_child * hs_child > 0:
+        add_drug_campaign(camp, 'MSAT', drug_code=drug_code, start_days=[start_day],
+                          target_group={'agemin': 0, 'agemax': 5},
+                          coverage=nmf_child * hs_child,
+                          repetitions=duration, tsteps_btwn_repetitions=1,
+                          diagnostic_type='PF_HRP2', diagnostic_threshold=5,
+                          receiving_drugs_event_name='Received_NMF_Treatment')
+    if nmf_adult * hs_adult > 0:
+        add_drug_campaign(camp, 'MSAT', drug_code=drug_code, start_days=[start_day],
+                          target_group={'agemin': 5, 'agemax': 120},
+                          coverage=nmf_adult * hs_adult,
+                          repetitions=duration, tsteps_btwn_repetitions=1,
+                          diagnostic_type='PF_HRP2', diagnostic_threshold=5,
+                          receiving_drugs_event_name='Received_NMF_Treatment')
 
 
 def ptr_config_builder(params):
