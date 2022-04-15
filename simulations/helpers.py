@@ -46,7 +46,6 @@ def set_param_fn(config):
     config.parameters.Enable_Disease_Mortality = 0
     config.parameters.Enable_Vector_Species_Report = 0
     config.parameters.Enable_Vital_Dynamics = 0
-    config.parameters.Demographics_Filenames = ['demographics.json']
     config.parameters.Simulation_Duration = 70*365
     config.parameters.Enable_Initial_Prevalence = 1
     config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_SIMPLE'
@@ -76,7 +75,11 @@ def set_simulation_scenario(simulation, site):
     # simulation duration
     simulation_duration = coord_df.at[site, 'simulation_duration'].tolist()
     simulation.task.config.parameters.Simulation_Duration = simulation_duration
-    # set whether there are births and deaths
+    # add demographics and set whether there are births and deaths
+    # TODO: !!! switch add_asset to here (currently has error for asset when added here instead of in main run script):
+    simulation.task.common_assets.add_asset(manifest.asset_path)
+    # simulation.task.common_assets.add_asset(os.path.join(manifest.input_files_path, coord_df.at[site, 'demographics_filepath']))
+    simulation.task.config.parameters.Demographics_Filenames = [coord_df.at[site, 'demographics_filepath'].rsplit('/',1)[-1]]
     simulation.task.config.parameters.Enable_Vital_Dynamics = coord_df.at[site, 'enable_vital_dynamics'].tolist()
     # maternal antibodies - use first 12 months of data frame to get annual EIR from monthly eir
     monthly_eirs = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'EIR_filepath']))

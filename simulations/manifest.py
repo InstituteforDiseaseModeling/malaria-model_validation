@@ -12,7 +12,9 @@ assets_input_dir="Assets"
 plugins_folder = "download/reporter_plugins"
 analyzed_ouptut_path = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output'
 
-asset_path = "/Users/moniqueam/Documents/malaria-model_validation/ewan_sim_match/input_files/demographics.json"
+# TODO: remove following lines
+asset_path = "/Users/moniqueam/Documents/malaria-model_validation/simulation_inputs/demographics_files/demographics_vital_1000.json"
+# asset_path = "/Users/moniqueam/Documents/malaria-model_validation/ewan_sim_match/input_files/demographics.json"
 input_files_path = "/Users/moniqueam/Documents/malaria-model_validation/simulation_inputs"
 simulation_coordinator_path = "/Users/moniqueam/Documents/malaria-model_validation/simulation_inputs/simulation_coordinator.csv"
 

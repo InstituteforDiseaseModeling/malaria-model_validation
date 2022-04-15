@@ -38,9 +38,9 @@ def general_sim(sites=None):
 
     # Create simulation sweep with builder
     builder = SimulationBuilder()
-
+    # TODO: remove following add asset (do in helpers instead)
     # Add asset
-    task.common_assets.add_asset(manifest.asset_path)
+    # task.common_assets.add_asset(manifest.asset_path)
 
     exp_name = params.exp_name
 
