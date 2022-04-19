@@ -13,16 +13,16 @@ logger = getLogger()
 
 class PatientAnalyzer(IAnalyzer):
 
-    def __init__(self, dir_name, working_dir='.', start_report_day=0):
+    def __init__(self, expt_name, working_dir='.', start_report_day=0):
         super(PatientAnalyzer, self).__init__(working_dir=working_dir,
                                               filenames=['output/MalariaPatientReport.json']
                                               )
 
-        self.dir_name = dir_name
+        self.expt_name = expt_name
         self.sweep_variables = ['Run_Number', 'x_Temp_LH_values', 'Site']
         self.channels = ['true_gametocytes', 'true_asexual_parasites', 'temps']
         self.fields = ['id', 'initial_age'] + self.channels
-        self.output_fname = os.path.join(self.working_dir, self.dir_name, "patient_reports.csv")
+        self.output_fname = os.path.join(self.working_dir, self.expt_name, "patient_reports.csv")
         self.start_report_day = start_report_day
 
         # make sure output folder exists
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         start_report_day = 365*25
 
         if use_ssmt:
-            for dirname, exp_id in experiments.items():
+            for expt_name, exp_id in experiments.items():
                 # Initialize the SSMT PlatformAnalysis class with all parameters
                 # first add files needed for prevalence_analyzer.py to assetcollection in ssmt
                 ac = AssetCollection()
@@ -112,8 +112,7 @@ if __name__ == '__main__':
                 analysis = PlatformAnalysis(platform=platform,
                                             experiment_ids=[exp_id],
                                             analyzers=[PatientAnalyzer],
-                                            analyzers_args=[{'working_dir': 'outputs',
-                                                             'dir_name': dirname,
+                                            analyzers_args=[{'expt_name': expt_name,
                                                              'start_report_day': start_report_day}],
                                             analysis_name=os.path.split(sys.argv[0])[1],
                                             tags={'WorkItem type': 'Docker'},
@@ -122,9 +121,9 @@ if __name__ == '__main__':
                 # Run analysis on COMPS
                 analysis.analyze(check_status=True)
         else:
-            for dirname, exp_id in experiments.items():
+            for expt_name, exp_id in experiments.items():
                 # Initialize the analyser class with the path of the output csv file
-                analyzers = [PatientAnalyzer(working_dir=analyzed_ouptut_path, dir_name=dirname, start_report_day=start_report_day)]
+                analyzers = [PatientAnalyzer(working_dir=analyzed_ouptut_path, expt_name=expt_name, start_report_day=start_report_day)]
 
                 # Create AnalyzerManager with required parameters
                 manager = AnalyzeManager(ids=[(exp_id, ItemType.EXPERIMENT)],

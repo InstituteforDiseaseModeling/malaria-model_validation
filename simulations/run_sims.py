@@ -21,7 +21,7 @@ def general_sim(sites=None):
 
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform("Calculon", priority='abovenormal')  # , node_group='idm_48cores')
+    platform = Platform("Calculon", priority='normal')  # , node_group='idm_48cores')
 
     # create EMODTask 
     print("Creating EMODTask (from files)...")
@@ -38,9 +38,7 @@ def general_sim(sites=None):
 
     # Create simulation sweep with builder
     builder = SimulationBuilder()
-    # TODO: remove following add asset (do in helpers instead)
-    # Add asset
-    # task.common_assets.add_asset(manifest.asset_path)
+
 
     exp_name = params.exp_name
 

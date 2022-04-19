@@ -1,6 +1,7 @@
 import os
 import warnings
 import pandas as pd
+import numpy as np
 from functools import partial
 import emod_api.demographics.Demographics as Demographics
 import params as parameters
@@ -76,9 +77,7 @@ def set_simulation_scenario(simulation, site):
     simulation_duration = coord_df.at[site, 'simulation_duration'].tolist()
     simulation.task.config.parameters.Simulation_Duration = simulation_duration
     # add demographics and set whether there are births and deaths
-    # TODO: !!! switch add_asset to here (currently has error for asset when added here instead of in main run script):
-    simulation.task.common_assets.add_asset(manifest.asset_path)
-    # simulation.task.common_assets.add_asset(os.path.join(manifest.input_files_path, coord_df.at[site, 'demographics_filepath']))
+    simulation.task.transient_assets.add_asset(os.path.join(manifest.input_files_path, coord_df.at[site, 'demographics_filepath']))
     simulation.task.config.parameters.Demographics_Filenames = [coord_df.at[site, 'demographics_filepath'].rsplit('/',1)[-1]]
     simulation.task.config.parameters.Enable_Vital_Dynamics = coord_df.at[site, 'enable_vital_dynamics'].tolist()
     # maternal antibodies - use first 12 months of data frame to get annual EIR from monthly eir
@@ -90,6 +89,7 @@ def set_simulation_scenario(simulation, site):
     simulation.task.create_campaign_from_callback(build_camp_partial)
 
     # === set up reporters === #
+    report_start_day = int(coord_df.at[site, 'report_start_day'])
     if coord_df.at[site, 'include_AnnualMalariaSummaryReport']:
         if (not pd.isna(coord_df.at[site, 'annual_summary_report_age_bins_filepath'])) and (not (coord_df.at[site, 'annual_summary_report_age_bins_filepath'] == '')):
             summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'annual_summary_report_age_bins_filepath']))
@@ -97,7 +97,7 @@ def set_simulation_scenario(simulation, site):
         else:
             summary_report_age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 19, 39, 59, 85]
 
-        add_malaria_summary_report(simulation.task, manifest=manifest, start_day=0, duration_days=1000000,
+        add_malaria_summary_report(simulation.task, manifest=manifest, start_day=report_start_day, duration_days=1000000,
                                    reporting_interval=365, age_bins=summary_report_age_bins,
                                    infectiousness_bins=[0, 100], max_number_reports=2000,
                                    parasitemia_bins=[0, 50, 500, 5000, 5000000], report_description='Annual_Report')
@@ -109,11 +109,11 @@ def set_simulation_scenario(simulation, site):
         else:
             summary_report_age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 19, 39, 59, 85]
 
-        for yy in range(round(simulation_duration/365)):
-            add_malaria_summary_report(simulation.task, manifest=manifest, start_day=(yy * 365), duration_days=365,
+        for yy in range(report_start_day, simulation_duration, 365):
+            add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, duration_days=365,
                                        reporting_interval=30, age_bins=summary_report_age_bins,
                                        infectiousness_bins=[0, 100], max_number_reports=1000,
-                                       parasitemia_bins=[0, 50, 500, 5000, 50000, 5000000], report_description='Monthly_Report_%i' % yy)
+                                       parasitemia_bins=[0, 50, 500, 5000, 50000, 5000000], report_description='Monthly_Report_%i' % int(round(yy/365)))
 
     if coord_df.at[site, 'include_MalariaPatientReport']:
         patient_report = MalariaPatientJSONReport()  # Create the reporter
@@ -249,20 +249,26 @@ def add_nmf_hs_from_file(camp, row, nmf_row):
     nmf_child = nmf_row['U5_nmf']
     nmf_adult = nmf_row['adult_nmf']
 
-    if nmf_child * hs_child > 0:
-        add_drug_campaign(camp, 'MSAT', drug_code=drug_code, start_days=[start_day],
-                          target_group={'agemin': 0, 'agemax': 5},
-                          coverage=nmf_child * hs_child,
-                          repetitions=duration, tsteps_btwn_repetitions=1,
-                          diagnostic_type='PF_HRP2', diagnostic_threshold=5,
-                          receiving_drugs_event_name='Received_NMF_Treatment')
-    if nmf_adult * hs_adult > 0:
-        add_drug_campaign(camp, 'MSAT', drug_code=drug_code, start_days=[start_day],
-                          target_group={'agemin': 5, 'agemax': 120},
-                          coverage=nmf_adult * hs_adult,
-                          repetitions=duration, tsteps_btwn_repetitions=1,
-                          diagnostic_type='PF_HRP2', diagnostic_threshold=5,
-                          receiving_drugs_event_name='Received_NMF_Treatment')
+    # workaround for maximum duration of 1000 days is to loop, creating a new campaign every 1000 days
+    separate_durations = [1000] * int(np.floor(duration/1000))  # create a separate campaign for each 1000 day period
+    if (duration - np.floor(duration/1000) > 0):  # add final remaining non-1000-day duration
+        separate_durations = separate_durations + [int(duration - np.floor(duration/1000) * 1000)]
+    separate_start_days = start_day + np.array([0] + list(np.cumsum(separate_durations)))
+    for dd in range(len(separate_durations)):
+        if nmf_child * hs_child > 0:
+            add_drug_campaign(camp, 'MSAT', drug_code=drug_code, start_days=[separate_start_days[dd]],
+                              target_group={'agemin': 0, 'agemax': 5},
+                              coverage=nmf_child * hs_child,
+                              repetitions=separate_durations[dd], tsteps_btwn_repetitions=1,
+                              diagnostic_type='PF_HRP2', diagnostic_threshold=5,
+                              receiving_drugs_event_name='Received_NMF_Treatment')
+        if nmf_adult * hs_adult > 0:
+            add_drug_campaign(camp, 'MSAT', drug_code=drug_code, start_days=[separate_start_days[dd]],
+                              target_group={'agemin': 5, 'agemax': 120},
+                              coverage=nmf_adult * hs_adult,
+                              repetitions=separate_durations[dd], tsteps_btwn_repetitions=1,
+                              diagnostic_type='PF_HRP2', diagnostic_threshold=5,
+                              receiving_drugs_event_name='Received_NMF_Treatment')
 
 
 def ptr_config_builder(params):

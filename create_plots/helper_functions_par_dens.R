@@ -136,6 +136,7 @@ if (sys.nframe() == 0){
     
     filepath_ref = paste0(base_reference_filepath, '/', coord_csv$age_parasite_density_ref[which(coord_csv$site == cur_site)])
     ref_df = read.csv(filepath_ref)
+    ref_df = ref_df[tolower(ref_df$Site) == tolower(cur_site),]
     
     gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
     ggsave(filename=paste0(plot_output_filepath, '/par_dens_age_', cur_site, '.pdf'), plot=gg_plots[[2]])
