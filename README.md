@@ -18,12 +18,18 @@
 ## Installation
 developer install
 ```bash
-pip install -e .
+pip install -e . -r requirements.txt
+```
+or you can run 
+```bash
+pip install -e . -i https://packages.idmod.org/api/pypi/pypi-production/simple
 ```
 
 regular install
 ```bash
-pip install .
+pip install wheel
+python3 setup.py bdist_wheel
+pip install dist/{update-this-with-the-wheel-file-name}.whl --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
 ```
 
 ## Pre-requisites
