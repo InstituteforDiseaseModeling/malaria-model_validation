@@ -5,7 +5,8 @@
 **Table of Contents**
 
 - .[User Installation](#user-installation)
-  - .[Installation](#installation)
+  - .[Developer Installation](#developer-installation)
+  - .[Regular Installation](#regular-installation)
   - .[Pre-requisites](#pre-requisites)
 - .[Run Simulations](#run-simulations)
 
@@ -15,8 +16,8 @@
 
 # User Installation
 
-## Installation
-developer install
+## Developer Installation
+If you want to install this project in a editable mode('develop' mode), run the following command: 
 ```bash
 pip install -e . -r requirements.txt
 ```
@@ -25,7 +26,7 @@ or you can run
 pip install -e . -i https://packages.idmod.org/api/pypi/pypi-production/simple
 ```
 
-regular install
+## Regular Installation
 ```bash
 pip install wheel
 python3 setup.py bdist_wheel
