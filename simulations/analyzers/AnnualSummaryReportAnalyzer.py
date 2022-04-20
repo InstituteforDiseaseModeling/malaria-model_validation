@@ -18,7 +18,7 @@ from idmtools.core.platform_factory import Platform
 mpl.use('Agg')
 
 
-class SummaryReportAnalyzer(BaseAnalyzer):
+class AnnualSummaryReportAnalyzer(BaseAnalyzer):
 
     def __init__(self, expt_name, sweep_variables=None, working_dir="."):
         super().__init__(filenames=["output\\MalariaSummaryReport_Annual_Report.json"])
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     with Platform('CALCULON') as platform:
 
         # Initialize the analyser class with the path of the output csv file
-        analyzers = [SummaryReportAnalyzer()]
+        analyzers = [AnnualSummaryReportAnalyzer()]
 
         # Set the experiment id you want to analyze
         experiment_id = '6c1728b9-988b-ec11-a9f3-9440c9be2c51'

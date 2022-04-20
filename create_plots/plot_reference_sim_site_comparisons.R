@@ -23,7 +23,7 @@ plot_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundat
 
 
 source(file.path(base_script_plot_filepath, 'helper_functions_par_dens.R'))
-source(file.path(base_script_plot_filepath, 'helper_functions_age_inc.R'))
+source(file.path(base_script_plot_filepath, 'helper_functions_age_inc_prev.R'))
 
 
 ####################################################################################################
@@ -103,14 +103,12 @@ ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.pdf'),
 #                         age - prevalence                        #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 
-# TODO: finish age-prevalence section - NOT DONE!!
-
 age_prev_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_prevalence==1))]
 
 # determine which of the age-incidence sites have the relevant simulation output
 available_sites = c()
 for (ii in 1:length(age_prev_sites)){
-  if (file.exists(paste0(simulation_output_filepath, '/', age_prev_sites[ii], '/inc_prev_data_final.csv'))){
+  if (file.exists(paste0(simulation_output_filepath, '/', age_prev_sites[ii], '/prev_inc_by_age_month.csv'))){
     available_sites = c(available_sites, age_prev_sites[ii])
   }
 }
@@ -118,20 +116,47 @@ for (ii in 1:length(age_prev_sites)){
 # aggregate all age-incidence simulation data into one dataframe and reference data into a second dataframe (for the relevant sites)
 for (ss in 1:length(available_sites)){
   cur_site = available_sites[ss]
-  sim_df_cur = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/inc_prev_data_final.csv'))
-  upper_ages = sort(unique(sim_df_cur$Age))
-  sim_df_cur$mean_age = sapply(sim_df_cur$Age, get_mean_from_upper_age, upper_ages = upper_ages)
-  sim_df_cur$p_detect_case = coord_csv$p_detect_case[which(coord_csv$site == cur_site)]
   
+  # read in and format reference data for this site
   filepath_ref = paste0(base_reference_filepath, '/', coord_csv$age_prevalence_ref[which(coord_csv$site == cur_site)])
   ref_df_cur = read.csv(filepath_ref)
   ref_df_cur = ref_df_cur[which(tolower(ref_df_cur$Site) == tolower(cur_site)),]
   if('agebin' %in% colnames(ref_df_cur)){
     upper_ages = sort(unique(ref_df_cur$agebin))
     ref_df_cur$mean_age = sapply(ref_df_cur$agebin, get_mean_from_upper_age, upper_ages = upper_ages)
+  } else if (('PR_LAR' %in% colnames(ref_df_cur)) & ('PR_UAR' %in% colnames(ref_df_cur))){
+    ref_df_cur$mean_age = (ref_df_cur$PR_LAR + ref_df_cur$PR_UAR)/2
   }
-  ref_df_cur[,c("Site", "mean_age", 'month', 'START_YEAR', 'PR')]
+  colnames(ref_df_cur)[colnames(ref_df_cur) == 'PR_MONTH'] = 'month'
+  colnames(ref_df_cur)[colnames(ref_df_cur) == 'PR'] = 'prevalence'
+  colnames(ref_df_cur)[colnames(ref_df_cur) == 'N'] = 'total_sampled'
+  colnames(ref_df_cur)[colnames(ref_df_cur) == 'N_POS'] = 'num_pos'
+  ref_df_cur = ref_df_cur[,c("Site", "mean_age", 'month', 'total_sampled', 'num_pos', 'prevalence')]
+  # remove reference rows without prevalence values
+  ref_df_cur = ref_df_cur[!is.na(ref_df_cur$prevalence),]
   
+  # read in and format data from simulations to match reference dataset
+  sim_df_cur = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/prev_inc_by_age_month.csv'))
+  colnames(sim_df_cur)[colnames(sim_df_cur) == 'PfPR'] = 'prevalence'
+  upper_ages = sort(unique(sim_df_cur$agebin))
+  sim_df_cur$mean_age = sapply(sim_df_cur$agebin, get_mean_from_upper_age, upper_ages = upper_ages)
+  # determine whether reference is for a single month or averaged over multiple months - subset from simulations to match
+  if((length(unique(ref_df_cur$month))==1) & (is.character(ref_df_cur$month[1]))){  # check whether multiple months are listed in a character string
+    included_months = as.numeric(unlist(strsplit(ref_df_cur$month[1],",")))
+    sim_df_cur = sim_df_cur[sim_df_cur$month %in% included_months,]
+    if(length(included_months)>1){
+      sim_df_cur$month = 'multiple'
+      ref_df_cur$month = 'multiple'
+    }
+  }else if (all(is.numeric(ref_df_cur$month))){
+    included_months = unique(ref_df_cur$month)
+    sim_df_cur = sim_df_cur[sim_df_cur$month %in% included_months,]
+  } else{
+    warning(paste0('The month format in the ', cur_site, ' reference dataset was not recognized.'))
+  }
+  sim_df_cur = sim_df_cur[,c("Site", "mean_age", 'month', 'prevalence', 'year', 'Run_Number')]
+  
+  # merge into dataset with all sites
   if(ss == 1){
     sim_df = sim_df_cur
     ref_df = ref_df_cur
@@ -140,6 +165,6 @@ for (ss in 1:length(available_sites)){
     ref_df = rbind(ref_df, ref_df_cur)
   }
 }
-gg_plot = plot_inc_ref_sim_comparison(sim_df, ref_df)
-ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.pdf'), plot=gg_plot)
+gg_plot = plot_prev_ref_sim_comparison(sim_df, ref_df)
+ggsave(filename=paste0(plot_output_filepath, '/site_compare_prevalence_age.pdf'), plot=gg_plot)
 

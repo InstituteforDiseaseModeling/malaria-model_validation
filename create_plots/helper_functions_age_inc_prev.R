@@ -25,21 +25,17 @@ get_mean_from_upper_age = function(cur_age, upper_ages){
 plot_inc_ref_sim_comparison = function(sim_df, ref_df){
   # scale down incidence in simulation according to probability of detecting a case
   sim_df$Incidence = sim_df$Incidence * sim_df$p_detect_case
-  
+
   # set up reference and simulation dataset columns
   ref_df$Incidence = ref_df$INC / 1000
   ref_df$mean_age = (ref_df$INC_LAR + ref_df$INC_UAR)/2
-  ref_df = data.frame('Incidence'=ref_df$Incidence, 'mean_age'=ref_df$mean_age, 'Site'=ref_df$Site)
-  sim_df = data.frame('Incidence'=sim_df$Incidence, 'mean_age'=sim_df$mean_age, 'Site'=sim_df$Site)
+  ref_df = data.frame('Incidence'=ref_df$Incidence, 'mean_age'=ref_df$mean_age, 'Site'=ref_df$Site, 'Pop_size'=ref_df$POP)
+  sim_df = data.frame('Incidence'=sim_df$Incidence, 'mean_age'=sim_df$mean_age, 'Site'=sim_df$Site, 'Pop_size'=NA)
   ref_df$source = 'reference'
   sim_df$source = 'simulation'
 
-
-  
   df_combined = rbind(sim_df, ref_df)
   df_combined$source = factor(df_combined$source, levels=c('reference', 'simulation'))
-  
-  
   
   gg = ggplot(df_combined, aes(x=mean_age, y=Incidence, color=source)) +
     geom_line() +
@@ -60,33 +56,29 @@ plot_inc_ref_sim_comparison = function(sim_df, ref_df){
 
 
 ########################## plot age-prevalence comparisons with reference without sweep background ####################
-plot_inc_ref_sim_comparison = function(sim_df, ref_df){
-  # scale down incidence in simulation according to probability of detecting a case
-  sim_df$Incidence = sim_df$Incidence * sim_df$p_detect_case
+plot_prev_ref_sim_comparison = function(sim_df, ref_df){
+  # get simulation average across seeds
+  sim_df = sim_df %>% group_by(Site, mean_age, month) %>%
+    summarise(prev_sd = sd(prevalence),
+              prevalence = mean(prevalence))
   
-  # set up reference and simulation dataset columns
-  ref_df$Incidence = ref_df$INC / 1000
-  ref_df$mean_age = (ref_df$INC_LAR + ref_df$INC_UAR)/2
-  ref_df = data.frame('Incidence'=ref_df$Incidence, 'mean_age'=ref_df$mean_age, 'Site'=ref_df$Site)
-  sim_df = data.frame('Incidence'=sim_df$Incidence, 'mean_age'=sim_df$mean_age, 'Site'=sim_df$Site)
+  ref_df$Site = tolower(ref_df$Site)
+  sim_df$Site = tolower(sim_df$Site)
   ref_df$source = 'reference'
   sim_df$source = 'simulation'
-  
-  
-  
-  df_combined = rbind(sim_df, ref_df)
+  df_combined = merge(sim_df, ref_df, all=TRUE)
   df_combined$source = factor(df_combined$source, levels=c('reference', 'simulation'))
+  df_combined$site_month = paste0(df_combined$Site, '_month', df_combined$month)
   
   
-  
-  gg = ggplot(df_combined, aes(x=mean_age, y=Incidence, color=source)) +
+  gg = ggplot(df_combined, aes(x=mean_age, y=prevalence, color=source)) +
     geom_line() +
     geom_point() +
     scale_color_manual(values = c("reference" = "red",
                                   "simulation"="blue")) +
     xlab('age (midpoint of age bin)') +
-    ylab('incidence') +
-    facet_wrap('Site', ncol=4) +
+    ylab('prevalence') +
+    facet_wrap('site_month', ncol=4) +
     theme_bw()  
   
   return(gg)
