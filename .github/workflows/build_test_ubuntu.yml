@@ -23,6 +23,8 @@ jobs:
       - name: Install python pre-reqs
         run: |
             echo "upgrade pip"
+            python3 --version
+            python --version
             python3 -m pip install --upgrade pip
         shell: bash
       - id: build
