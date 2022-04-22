@@ -57,8 +57,9 @@ setuptools.setup(
         "Operating System :: OS Independent"
     ],
     include_package_data=True,
+    exclude_package_data={'': ['tests']},
     package_dir={},
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=['*tests*']),
     setup_requires=['wheel'],
     python_requires=">=3.9",
 )
