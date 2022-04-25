@@ -1,0 +1,4 @@
+simday,duration,U5_coverage,adult_coverage,severe_coverage,drug_code
+0,7300,0,0,0.3,SP
+7300,2555,0.5,0.5,0.8,SP
+9855,-1,0.8,0.8,0.9,SP
