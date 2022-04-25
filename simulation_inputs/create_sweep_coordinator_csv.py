@@ -1,8 +1,12 @@
+# specify site information for sweep over EIR, CM, seasonality and add to existing coordinator csv
+
 import pandas as pd
 import numpy as np
 import os
 import simulations.manifest as manifest
 
+# read in existing coordinator csv
+coord_csv = pd.read_csv(manifest.simulation_coordinator_path)
 
 # commission simulations with a sweep across different EIRs, CM rates, and seasonalities
 highSeason = [xx/322 for xx in [1, 1, 1, 1, 1, 3, 27, 70, 130, 57, 29, 1]]  # Dapelogo
@@ -34,16 +38,22 @@ for ss in range(len(seasonality_names)):
 sweep_coord_df = pd.DataFrame({
     'site': site,
     'simulation_duration': [simulation_duration] * len(site),
+    'report_start_day': [0] * len(site),
     'enable_vital_dynamics': [0] * len(site),
+    'demographics_filepath': ['demographics_files/demographics_cohort_1000.json'] * len(site),
     'CM_filepath': cm_filepath,
-    'include_AnnualMalariaSummaryReport': ['summary_report_age_bins/age_bins_set4.csv'] * len(site),
+    'NMF_filepath': ['nonmalarial_fevers/nmf_rates_generic.csv'] * len(site),
+    'EIR_filepath': ['monthly_eirs/eir_by_sweep_site.csv'] * len(site),
+    'include_AnnualMalariaSummaryReport': [True] * len(site),
+    'annual_summary_report_age_bins': ['age_bin_set4'] * len(site),
     'include_MonthlyMalariaSummaryReport': [False] * len(site),
     'monthly_summary_report_age_bins_filepath': [None] * len(site),
+    'include_parDensSurveys': [False] * len(site),
     'include_MalariaPatientReport': [False] * len(site),
-    'NMF_filepath': ['nonmalarial_fevers/nmf_rates_generic.csv'] * len(site),
-    'EIR_filepath': ['monthly_eirs/eir_by_sweep_site.csv'] * len(site)
+
 })
-sweep_coord_df.to_csv(os.path.join(manifest.input_files_path, 'sweep_sim_coordinator.csv'))
+combined_df = pd.concat([coord_csv, sweep_coord_df], join='outer')
+combined_df.to_csv(os.path.join(manifest.simulation_coordinator_path))
 all_monthly_EIRs.to_csv(os.path.join(manifest.input_files_path, 'monthly_eirs/eir_by_sweep_site.csv'))
 
 
