@@ -49,7 +49,6 @@ def set_param_fn(config):
     config.parameters.Enable_Vital_Dynamics = 0
     config.parameters.Simulation_Duration = 70*365
     config.parameters.Enable_Initial_Prevalence = 1
-    config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_SIMPLE'
     config.parameters.Vector_Species_Params = []
     config.parameters.Start_Time = 0
     # config.parameters.pop("Serialized_Population_Filenames")
@@ -80,6 +79,10 @@ def set_simulation_scenario(simulation, site):
     simulation.task.transient_assets.add_asset(os.path.join(manifest.input_files_path, coord_df.at[site, 'demographics_filepath']))
     simulation.task.config.parameters.Demographics_Filenames = [coord_df.at[site, 'demographics_filepath'].rsplit('/',1)[-1]]
     simulation.task.config.parameters.Enable_Vital_Dynamics = coord_df.at[site, 'enable_vital_dynamics'].tolist()
+    if coord_df.at[site, 'enable_vital_dynamics'] == 1:
+        simulation.task.config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_COMPLEX'
+    else:
+        simulation.task.config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_SIMPLE'
     # maternal antibodies - use first 12 months of data frame to get annual EIR from monthly eir
     monthly_eirs = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'EIR_filepath']))
     update_mab(simulation, mAb_vs_EIR(sum(monthly_eirs.loc[monthly_eirs.index[0:12], site])))
@@ -91,9 +94,10 @@ def set_simulation_scenario(simulation, site):
     # === set up reporters === #
     report_start_day = int(coord_df.at[site, 'report_start_day'])
     if coord_df.at[site, 'include_AnnualMalariaSummaryReport']:
-        if (not pd.isna(coord_df.at[site, 'annual_summary_report_age_bins_filepath'])) and (not (coord_df.at[site, 'annual_summary_report_age_bins_filepath'] == '')):
-            summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'annual_summary_report_age_bins_filepath']))
-            summary_report_age_bins = summary_report_age_bins_df['age'].tolist()
+        if (not pd.isna(coord_df.at[site, 'annual_summary_report_age_bins'])) and (not (coord_df.at[site, 'annual_summary_report_age_bins'] == '')):
+            summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path, 'summary_report_age_bins', 'age_bin_sets.csv'))
+            summary_report_age_bins = summary_report_age_bins_df[coord_df.at[site, 'annual_summary_report_age_bins']].tolist()
+            summary_report_age_bins = [x for x in summary_report_age_bins if pd.notnull(x)]
         else:
             summary_report_age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 19, 39, 59, 85]
 
@@ -103,9 +107,10 @@ def set_simulation_scenario(simulation, site):
                                    parasitemia_bins=[0, 50, 500, 5000, 5000000], report_description='Annual_Report')
 
     if coord_df.at[site, 'include_MonthlyMalariaSummaryReport']:
-        if (not pd.isna(coord_df.at[site, 'monthly_summary_report_age_bins_filepath'])) and (not (coord_df.at[site, 'monthly_summary_report_age_bins_filepath'] == '')):
-            summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'monthly_summary_report_age_bins_filepath']))
-            summary_report_age_bins = summary_report_age_bins_df['age'].tolist()
+        if (not pd.isna(coord_df.at[site, 'monthly_summary_report_age_bins'])) and (not (coord_df.at[site, 'monthly_summary_report_age_bins'] == '')):
+            summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path,  'summary_report_age_bins', 'age_bin_sets.csv'))
+            summary_report_age_bins = summary_report_age_bins_df[coord_df.at[site, 'monthly_summary_report_age_bins']].tolist()
+            summary_report_age_bins = [x for x in summary_report_age_bins if pd.notnull(x)]
         else:
             summary_report_age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 19, 39, 59, 85]
 
