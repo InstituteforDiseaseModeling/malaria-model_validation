@@ -47,7 +47,7 @@ class IDMTestImportTest(unittest.TestCase):
         self.verify_expected_items_present(namespace=InsetChartAnalyzer)
         pass
 
-    def ParDensAgeAnalyzer(self):
+    def test_ParDensAgeAnalyzer_import(self):
         self.expected_items = [
             'ParDensAgeAnalyzer'
         ]
@@ -71,12 +71,12 @@ class IDMTestImportTest(unittest.TestCase):
         self.verify_expected_items_present(namespace=PatientReportAnalyzer_laterDays)
         pass
 
-    def test_SummaryReportAnalyzer_import(self):
+    def test_AnnualSummaryReportAnalyzer_import(self):
         self.expected_items = [
-            'SummaryReportAnalyzer'
+            'AnnualSummaryReportAnalyzer'
         ]
-        import simulations.analyzers.SummaryReportAnalyzer as SummaryReportAnalyzer
-        self.verify_expected_items_present(namespace=SummaryReportAnalyzer)
+        import simulations.analyzers.AnnualSummaryReportAnalyzer as AnnualSummaryReportAnalyzer
+        self.verify_expected_items_present(namespace=AnnualSummaryReportAnalyzer)
         pass
 
 
