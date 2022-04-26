@@ -18,8 +18,8 @@ library(RColorBrewer)
 simulation_coordinator_path = "/Users/moniqueam/Documents/malaria-model_validation/simulation_inputs/simulation_coordinator.csv"
 base_script_plot_filepath = "/Users/moniqueam/Documents/malaria-model_validation/create_plots"
 base_reference_filepath = "/Users/moniqueam/Documents/malaria-model_validation/reference_datasets"
-simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/s220418"
-plot_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/_plots"
+simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/s220425"
+plot_output_filepath = paste0(simulation_output_filepath, "/_plots")
 
 
 source(file.path(base_script_plot_filepath, 'helper_functions_par_dens.R'))
@@ -31,6 +31,8 @@ source(file.path(base_script_plot_filepath, 'helper_functions_age_inc_prev.R'))
 ####################################################################################################
 
 coord_csv = read.csv(simulation_coordinator_path)
+
+if(!dir.exists(plot_output_filepath)) dir.create(plot_output_filepath)
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 #                      age - parasite density                     #
@@ -95,7 +97,7 @@ for (ss in 1:length(available_sites)){
   }
 }
 gg_plot = plot_inc_ref_sim_comparison(sim_df, ref_df)
-ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.pdf'), plot=gg_plot)
+ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.png'), plot=gg_plot)
 
 
 
@@ -131,7 +133,8 @@ for (ss in 1:length(available_sites)){
   colnames(ref_df_cur)[colnames(ref_df_cur) == 'PR'] = 'prevalence'
   colnames(ref_df_cur)[colnames(ref_df_cur) == 'N'] = 'total_sampled'
   colnames(ref_df_cur)[colnames(ref_df_cur) == 'N_POS'] = 'num_pos'
-  ref_df_cur = ref_df_cur[,c("Site", "mean_age", 'month', 'total_sampled', 'num_pos', 'prevalence')]
+  colnames(ref_df_cur)[colnames(ref_df_cur) == 'PR_YEAR'] = 'year'
+  ref_df_cur = ref_df_cur[,c("Site", "mean_age", 'month', 'total_sampled', 'num_pos', 'prevalence', 'year')]
   # remove reference rows without prevalence values
   ref_df_cur = ref_df_cur[!is.na(ref_df_cur$prevalence),]
   
@@ -166,5 +169,20 @@ for (ss in 1:length(available_sites)){
   }
 }
 gg_plot = plot_prev_ref_sim_comparison(sim_df, ref_df)
-ggsave(filename=paste0(plot_output_filepath, '/site_compare_prevalence_age.pdf'), plot=gg_plot)
+ggsave(filename=paste0(plot_output_filepath, '/site_compare_prevalence_age.png'), plot=gg_plot)
+
+
+
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+#                    age - infection duration                     #
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+
+
+
+
+
+
 

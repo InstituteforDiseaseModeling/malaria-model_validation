@@ -21,7 +21,7 @@ get_mean_from_upper_age = function(cur_age, upper_ages){
 
 
 
-########################## plot age-incidence comparisons with reference without sweep background ####################
+########################## plot age-incidence comparisons with reference ####################
 plot_inc_ref_sim_comparison = function(sim_df, ref_df){
   # scale down incidence in simulation according to probability of detecting a case
   sim_df$Incidence = sim_df$Incidence * sim_df$p_detect_case
@@ -29,15 +29,15 @@ plot_inc_ref_sim_comparison = function(sim_df, ref_df){
   # set up reference and simulation dataset columns
   ref_df$Incidence = ref_df$INC / 1000
   ref_df$mean_age = (ref_df$INC_LAR + ref_df$INC_UAR)/2
-  ref_df = data.frame('Incidence'=ref_df$Incidence, 'mean_age'=ref_df$mean_age, 'Site'=ref_df$Site, 'Pop_size'=ref_df$POP)
-  sim_df = data.frame('Incidence'=sim_df$Incidence, 'mean_age'=sim_df$mean_age, 'Site'=sim_df$Site, 'Pop_size'=NA)
+  ref_df = data.frame('Incidence'=ref_df$Incidence, 'mean_age'=ref_df$mean_age, 'Site'=ref_df$Site, 'Pop_size'=ref_df$POP, 'year'=ref_df$START_YEAR)
+  sim_df = data.frame('Incidence'=sim_df$Incidence, 'mean_age'=sim_df$mean_age, 'Site'=sim_df$Site, 'Pop_size'=NA, 'year'=NA)
   ref_df$source = 'reference'
   sim_df$source = 'simulation'
 
   df_combined = rbind(sim_df, ref_df)
   df_combined$source = factor(df_combined$source, levels=c('reference', 'simulation'))
   
-  gg = ggplot(df_combined, aes(x=mean_age, y=Incidence, color=source)) +
+  gg = ggplot(df_combined, aes(x=mean_age, y=Incidence, color=source, group=year)) +
     geom_line() +
     geom_point() +
     scale_color_manual(values = c("reference" = "red",
@@ -71,7 +71,7 @@ plot_prev_ref_sim_comparison = function(sim_df, ref_df){
   df_combined$site_month = paste0(df_combined$Site, '_month', df_combined$month)
   
   
-  gg = ggplot(df_combined, aes(x=mean_age, y=prevalence, color=source)) +
+  gg = ggplot(df_combined, aes(x=mean_age, y=prevalence, color=source, group=year)) +
     geom_line() +
     geom_point() +
     scale_color_manual(values = c("reference" = "red",
