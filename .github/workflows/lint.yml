@@ -1,0 +1,31 @@
+name: Lint
+
+on:
+  push:
+    paths:
+      - '**.py'
+      - '**.yml'
+  pull_request:
+    paths:
+      - '**.py'
+  workflow_dispatch:
+    
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Install Python dependencies
+        run: pip install black flake8
+
+      - name: Run linters
+        run: flake8 --ignore=E114,E115,E116,E126,E127,E128,E201,E202,E203,E222,E225,E226,E231,E241,E251,E261,E262,E265,E301,E302,E303,E306,E501,E502,W291,W292,W293,W391 --exclude=./tests

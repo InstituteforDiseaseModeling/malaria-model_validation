@@ -1,0 +1,54 @@
+name: build_test_uhuntu
+
+on:
+  push:
+    branches: 
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '***SKIPBUILD***')"
+    strategy:
+      max-parallel: 1
+      matrix:
+        python-version: [ '3.9']
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - name: Install python pre-reqs
+        run: |
+            echo "upgrade pip"
+            python3 --version
+            python --version
+            python3 -m pip install --upgrade pip
+        shell: bash
+      - id: build
+        name: Build package
+        run: |
+            python3 setup.py bdist_wheel
+      - id: wheel
+        run: python3 ./.github/scripts/get_wheel_filename.py --package-file setup.py --set-gh-actions-var wheel-file
+        shell: bash
+      - id: install
+        name: install package
+        run: |
+            pip install ${{ steps.wheel.outputs.wheel-file }} --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
+            pip freeze
+      - name: run tests
+        run: python3 -m unittest discover .
+        working-directory: ./tests
+      - name: Add wheel to artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: idm_test.wheel
+          path: ${{ steps.wheel.outputs.wheel-file }}
