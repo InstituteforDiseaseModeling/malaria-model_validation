@@ -51,6 +51,8 @@ def set_param_fn(config):
     config.parameters.Enable_Initial_Prevalence = 1
     config.parameters.Vector_Species_Params = []
     config.parameters.Start_Time = 0
+    # config.parameters.Clinical_Fever_Threshold_High = 0.1
+    # config.parameters.Clinical_Fever_Threshold_Low = 0.1
     # config.parameters.pop("Serialized_Population_Filenames")
 
     return config

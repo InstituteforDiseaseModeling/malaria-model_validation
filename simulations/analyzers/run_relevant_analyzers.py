@@ -9,17 +9,22 @@ from simulations.analyzers.ParDensAgeAnalyzer import ParDensAgeAnalyzer
 from simulations.analyzers.PatientReportAnalyzer import PatientAnalyzer
 from simulations.analyzers.MonthlySummaryReportAnalyzer import MonthlySummaryReportAnalyzer
 
+
+# TODO: replace manual specification of exp ids once we are using a single thread to track experiments
 exp_name_id = {
-    # 'validation_chonyi_1999': '6a0f4f7c-0ec0-ec11-a9f6-9440c9be2c51',
-    # 'validation_ngerenya_1999': '810f4f7c-0ec0-ec11-a9f6-9440c9be2c51',
-    # 'validation_dielmo_1990': '11fcc282-0ec0-ec11-a9f6-9440c9be2c51',
-    # 'validation_ndiop_1993': '28f5218b-0ec0-ec11-a9f6-9440c9be2c51',
+    'validation_navrongo_2000': '05741b4b-85c2-ec11-a9f6-9440c9be2c51',
+    'validation_sotuba_1999': 'ab993a49-84c2-ec11-a9f6-9440c9be2c51',
+    'validation_dongubougou_1999': 'fb3f7607-84c2-ec11-a9f6-9440c9be2c51',
+    'validation_dapelogo_2007': '5c935898-78c2-ec11-a9f6-9440c9be2c51',
+    'validation_sugungum_1970': '37cf618d-78c2-ec11-a9f6-9440c9be2c51',
+    'validation_ebolakounou_1997': 'de036687-78c2-ec11-a9f6-9440c9be2c51',
+    'validation_dielmo_1990': 'c9036687-78c2-ec11-a9f6-9440c9be2c51',
+    'validation_chonyi_1999': '19324580-78c2-ec11-a9f6-9440c9be2c51',
+    'validation_ndiop_1993': '335fce1a-77c2-ec11-a9f6-9440c9be2c51',
+    'validation_ngerenya_1999': '810f4f7c-0ec0-ec11-a9f6-9440c9be2c51',
     'validation_matsari_1970': '26ebf0ce-70bf-ec11-a9f6-9440c9be2c51',
     'validation_rafin_marke_1970': '83c662c8-70bf-ec11-a9f6-9440c9be2c51',
-    'validation_sugungum_1970': 'f20c83bb-70bf-ec11-a9f6-9440c9be2c51',
-    # 'validation_navrongo_2000_dur': 'ce0827ae-70bf-ec11-a9f6-9440c9be2c51',
-    # 'validation_laye_2007': 'cce16da7-70bf-ec11-a9f6-9440c9be2c51',
-    # 'validation_dapelogo_2007': '464baba0-70bf-ec11-a9f6-9440c9be2c51',
+    'validation_laye_2007': 'cce16da7-70bf-ec11-a9f6-9440c9be2c51',
 }
 
 if __name__ == "__main__":
@@ -50,7 +55,7 @@ if __name__ == "__main__":
             analyzers.append(AnnualSummaryReportAnalyzer)
             analyzer_args.append({'expt_name': site,
                                   'sweep_variables': ['Run_Number', 'Site']})
-        if coord_df.at[site, 'include_MalariaPatientReport']:
+        if coord_df.at[site, 'include_MalariaPatientReport']:  # infection duration
             analyzers.append(PatientAnalyzer)
             analyzer_args.append({'expt_name': site,
                                   'start_report_day': report_start_day})
