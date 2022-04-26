@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 from functools import partial
 import emod_api.demographics.Demographics as Demographics
-import params as parameters
 from typing import Dict, Any
 from idmtools.entities.simulation import Simulation
 from emodpy_malaria.interventions.diag_survey import add_diagnostic_survey
@@ -17,6 +16,7 @@ from emodpy_malaria.interventions.inputeir import InputEIR
 from emod_api.interventions.common import BroadcastEvent
 # import emod_api.campaign as camp
 import simulations.manifest as manifest
+import simulations.params as parameters
 
 
 def update_sim_random_seed(simulation, value):
@@ -73,7 +73,7 @@ def set_simulation_scenario(simulation, site):
 
     # === set up config === #
     # simulation duration
-    simulation_duration = coord_df.at[site, 'simulation_duration'].tolist()
+    simulation_duration = int(coord_df.at[site, 'simulation_duration'])
     simulation.task.config.parameters.Simulation_Duration = simulation_duration
     # add demographics and set whether there are births and deaths
     simulation.task.transient_assets.add_asset(os.path.join(manifest.input_files_path, coord_df.at[site, 'demographics_filepath']))
