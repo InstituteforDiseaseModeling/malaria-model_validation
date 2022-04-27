@@ -39,6 +39,14 @@ class IDMTestImportTest(unittest.TestCase):
         self.verify_expected_items_present(namespace=helpers)
         pass
 
+    def test_wait_for_experiment_import(self):
+        self.expected_items = [
+            'check_experiment'
+        ]
+        import simulations.wait_for_experiment as wait_for_experiment
+        self.verify_expected_items_present(namespace=wait_for_experiment)
+        pass
+
     def test_InsetChartAnalyzer_import(self):
         self.expected_items = [
             'InsetChartAnalyzer'
