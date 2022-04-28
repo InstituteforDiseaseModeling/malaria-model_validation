@@ -66,9 +66,9 @@ def set_param_fn(config):
 #     return {"Site": site}
 
 
-def set_simulation_scenario(simulation, site):
+def set_simulation_scenario(simulation, site, csv_path):
     # get information on this simulation setup from coordinator csv
-    coord_df = pd.read_csv(manifest.simulation_coordinator_path)
+    coord_df = pd.read_csv(csv_path)
     coord_df = coord_df.set_index('site')
 
     # === set up config === #
@@ -130,7 +130,11 @@ def set_simulation_scenario(simulation, site):
         simulation.task.config.parameters.Report_Event_Recorder_Events = ['parasites_on_survey_day']
         simulation.task.config.parameters.Custom_Individual_Events = ['parasites_on_survey_day']
 
-    return {"Site": site}
+    return {"Site": site, 'csv_path': csv_path}
+
+
+#set_simulation_scenario_for_matched_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
+#set_simulation_scenario_for_sweep_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
 
 
 def build_standard_campaign_object(manifest):
