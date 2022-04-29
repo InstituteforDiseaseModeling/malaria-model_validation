@@ -17,7 +17,14 @@ analyzed_ouptut_path = PROJECT_DIR / 'EMOD_validation_recalibration/simulation_o
 # TODO: remove following lines
 input_files_path = PROJECT_DIR / "simulation_inputs"
 asset_path = input_files_path / "demographics_files/demographics_vital_1000.json"
+# todo: add path for the csv file for site charatistic sweeps
 simulation_coordinator_path = input_files_path / "simulation_coordinator.csv"
 
 my_ep4_assets = None
 requirements = PROJECT_DIR / "requirements.txt"
+
+# Define Comps platform
+platform_name = "Calculon"
+priority = 'Normal'
+node_group_private = 'idm_48cores'
+node_group = 'idm_abcd'
