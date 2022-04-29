@@ -130,11 +130,12 @@ def set_simulation_scenario(simulation, site, csv_path):
         simulation.task.config.parameters.Report_Event_Recorder_Events = ['parasites_on_survey_day']
         simulation.task.config.parameters.Custom_Individual_Events = ['parasites_on_survey_day']
 
-    return {"Site": site, 'csv_path': csv_path}
+    return {"Site": site, 'csv_path': str(csv_path)}
 
 
-#set_simulation_scenario_for_matched_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
-#set_simulation_scenario_for_sweep_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
+set_simulation_scenario_for_matched_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
+# TODO: update csv filename in manifest.py and next line
+set_simulation_scenario_for_characteristic_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
 
 
 def build_standard_campaign_object(manifest):

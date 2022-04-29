@@ -14,7 +14,7 @@ import simulations.params as params
 from simulations import manifest as manifest
 
 
-def general_sim(site=None, nSims=2):
+def general_sim(site=None, nSims=2, characteristic=False, priority=manifest.priority):
     """
     This function is designed to be a parameterized version of the sequence of things we do 
     every time we run an emod experiment. 
@@ -22,7 +22,7 @@ def general_sim(site=None, nSims=2):
 
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform("Calculon", priority='normal')  # , node_group='idm_48cores')
+    platform = Platform(manifest.platform_name, priority=priority, node_group=manifest.node_group)
 
     # create EMODTask 
     print("Creating EMODTask (from files)...")
@@ -48,9 +48,11 @@ def general_sim(site=None, nSims=2):
 
     # Sweep sites and seeds - based on values in simulation_coordinator csv
     # builder.add_sweep_definition(set_simulation_scenario, [site])
-    # set_simulation_scenario_for_matched_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
-    #set_simulation_scenario_for_sweep_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
-    builder.add_sweep_definition(partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path), [site])
+
+    if characteristic:
+        builder.add_sweep_definition(set_simulation_scenario_for_characteristic_site, [site])
+    else:
+        builder.add_sweep_definition(set_simulation_scenario_for_matched_site, [site])
 
     # create experiment from builder
     print( f"Prompting for COMPS creds if necessary..." )
@@ -75,8 +77,13 @@ if __name__ == "__main__":
     # print("...done.")
     
     parser = argparse.ArgumentParser(description='Process site name')
-    parser.add_argument('--site', '-s', type=str, help='site name', default='sugungum_1970')#params.sites[0]) # not sure if we want to make this required argument
-    parser.add_argument('--nSims', '-n', type=int, help='number of simulations', default=2)#params.nSims)
+    parser.add_argument('--site', '-s', type=str, help='site name', default=params.sites[0]) # todo: not sure if we want to make this required argument
+    parser.add_argument('--nSims', '-n', type=int, help='number of simulations', default=params.nSims)
+    parser.add_argument('--characteristic', '-c', action='store_true', help='site-characteristic sweeps')
+    parser.add_argument('--priority', '-p', type=str,
+                        choices=['Lowest', 'BelowNormal', 'Normal', 'AboveNormal', 'Highest'],
+                        help='Comps priority', default=manifest.priority)
+
     args = parser.parse_args()
 
-    general_sim(site=args.site, nSims=args.nSims)
+    general_sim(site=args.site, nSims=args.nSims, characteristic=args.characteristic, priority=args.priority)
