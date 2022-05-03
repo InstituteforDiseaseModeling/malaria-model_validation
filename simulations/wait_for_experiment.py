@@ -8,7 +8,9 @@ from idmtools.core import ItemType
 import simulations.params as params
 
 def check_experiment(site):
-    compid_file = site + '_COMPS_ID_submit'
+    foldername = "COMPS_ID/"
+    compid_file = foldername + site + '_COMPS_ID_submit'
+    compid_file_done = foldername + site + '_COMPS_ID_done'
     with open(compid_file, 'r') as id_file:
         exp_id = id_file.readline()
 
@@ -23,7 +25,7 @@ def check_experiment(site):
         print(f"Experiment {experiment.uid} failed.\n")
     else:
         print(f"Experiment {experiment.uid} succeeded.")
-        shutil.copy('COMPS_ID/COMPS_ID_submit', 'COMPS_ID/COMPS_ID_done')
+        shutil.copy(compid_file, compid_file_done)
 
     return experiment.succeeded
 

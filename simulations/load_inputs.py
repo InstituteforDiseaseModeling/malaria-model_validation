@@ -11,7 +11,7 @@ def load_sites():
     unfiltered_sites = coord_df.index.tolist()
     for site in unfiltered_sites:
         eir_df = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'EIR_filepath'])
-        if site not in eir_df.columns:
+        if site not in eir_df.columns or "?" in site:
             skipped_sites.append(site)
     coord_df = coord_df[~coord_df.index.isin(skipped_sites)]
 

@@ -1,6 +1,7 @@
 
 # This is a user-modifiable Python file designed to be a set of simple input file and directory settings that you can choose and change.
 from pathlib import Path
+
 CURRENT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = CURRENT_DIR.parent
 
@@ -28,3 +29,4 @@ platform_name = "Calculon"
 priority = 'Normal'
 node_group_private = 'idm_48cores'
 node_group = 'idm_abcd'
+
