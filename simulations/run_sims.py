@@ -14,7 +14,7 @@ import simulations.params as params
 from simulations import manifest as manifest
 
 
-def general_sim(site=None, nSims=2, characteristic=False, priority=manifest.priority):
+def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.priority):
     """
     This function is designed to be a parameterized version of the sequence of things we do 
     every time we run an emod experiment. 
@@ -62,7 +62,7 @@ def general_sim(site=None, nSims=2, characteristic=False, priority=manifest.prio
     experiment.run(wait_until_done=False, platform=platform)
 
     # Save experiment id to file
-    with open(f"{site}_COMPS_ID_submit", "w") as fd:
+    with open(f"COMPS_ID/{site}_COMPS_ID_submit", "w") as fd:
         fd.write(experiment.uid.hex)
     print()
     print(experiment.uid.hex)
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     # print("...done.")
     
     parser = argparse.ArgumentParser(description='Process site name')
-    parser.add_argument('--site', '-s', type=str, help='site name', default=params.sites[0]) # todo: not sure if we want to make this required argument
+    parser.add_argument('--site', '-s', type=str, help='site name', default="siaya_2009")#params.sites[0]) # todo: not sure if we want to make this required argument
     parser.add_argument('--nSims', '-n', type=int, help='number of simulations', default=params.nSims)
     parser.add_argument('--characteristic', '-c', action='store_true', help='site-characteristic sweeps')
     parser.add_argument('--priority', '-p', type=str,

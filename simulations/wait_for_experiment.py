@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import shutil
 from idmtools.core.platform_factory import Platform
 from idmtools.core import ItemType
 # from idmtools.entities.experiment import Experiment
@@ -22,9 +23,10 @@ def check_experiment(site):
         print(f"Experiment {experiment.uid} failed.\n")
     else:
         print(f"Experiment {experiment.uid} succeeded.")
-        shutil.copy('COMPS_ID_submit', 'COMPS_ID_done')
+        shutil.copy('COMPS_ID/COMPS_ID_submit', 'COMPS_ID/COMPS_ID_done')
 
     return experiment.succeeded
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process site name')
