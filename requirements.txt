@@ -4,3 +4,4 @@ emodpy-malaria~=1.0
 seaborn
 sklearn
 scipy
+snakemake
