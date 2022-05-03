@@ -7,8 +7,9 @@ schema_file="/Users/moniqueam/Documents/malaria-model_validation/simulations/dow
 # The script is going to use this to store the downloaded Eradication binary. Create 'download' directory or change to your preferred (existing) location.
 #eradication_path="download/Eradication"
 eradication_path="/Users/moniqueam/Documents/malaria-model_validation/simulations/download/Eradication"
+intervention_visualizer_path = "/Users/moniqueam/Documents/malaria-model_validation/simulations/download/index.html"
 # Create 'Assets' directory or change to a path you prefer. idmtools will upload files found here.
-assets_input_dir="Assets"
+assets_input_dir = "Assets"
 plugins_folder = "download/reporter_plugins"
 analyzed_ouptut_path = '/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output'
 
