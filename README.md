@@ -42,6 +42,7 @@ pip install dist/{update-this-with-the-wheel-file-name}.whl --index-url=https://
 # Run Simulations
 
 ## Login to Comps
+If you haven't login to Comps for a while, you can run the following script to login and cache your credential:
 ```bash
 cd simulations
 python3 create_auth_token_args.py -u {your-comps-username}
