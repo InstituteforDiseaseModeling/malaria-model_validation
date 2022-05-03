@@ -11,7 +11,7 @@
 - .[Run Simulations](#run-simulations)
   - .[Login to Comps](#login-to-comps)
   - .[Option 1_Run One Site with Python Scripts](#option-1_run-one-site-with-python-scripts)
-  - .[Option 2_Run all Sites with Snakemake (Recommended)](option-2_run-all-sites-with-snakemake-(recommended))
+  - .[Option 2_Run all Sites with Snakemake (Recommended)](option-2_run-all-sites-with-snakemake-recommended)
 
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
