@@ -10,8 +10,8 @@
   - .[Pre-requisites](#pre-requisites)
 - .[Run Simulations](#run-simulations)
   - .[Login to Comps](#login-to-comps)
-  - .[Option 1: Run One Site with Python Scripts](#option-1: run-one-site-with-python-scripts)
-  - .[Option 2: Run all Sites with Snakemake (Recommended)](option-2: run-all-sites-with-snakemake-(recommended))
+  - .[Option 1: Run One Site with Python Scripts](#option-1:-run-one-site-with-python-scripts)
+  - .[Option 2: Run all Sites with Snakemake (Recommended)](option-2:-run-all-sites-with-snakemake-(recommended))
 
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
