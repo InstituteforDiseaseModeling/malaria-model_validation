@@ -10,6 +10,7 @@ library(gridExtra)
 library(reshape2)
 library(dplyr)
 library(RColorBrewer)
+library(ggpubr)
 
 
 ####################################################################################################
@@ -24,15 +25,17 @@ plot_output_filepath = paste0(simulation_output_filepath, "/_plots")
 
 source(file.path(base_script_plot_filepath, 'helper_functions_par_dens.R'))
 source(file.path(base_script_plot_filepath, 'helper_functions_age_inc_prev.R'))
+source(file.path(base_script_plot_filepath, 'helper_functions_infection_duration.R'))
+source(file.path(base_script_plot_filepath, 'helper_functions_infectiousness.R'))
 
 
 ####################################################################################################
 ############################ read in data and create plots #########################################
 ####################################################################################################
-
 coord_csv = read.csv(simulation_coordinator_path)
-
 if(!dir.exists(plot_output_filepath)) dir.create(plot_output_filepath)
+
+
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 #                      age - parasite density                     #
@@ -179,10 +182,69 @@ ggsave(filename=paste0(plot_output_filepath, '/site_compare_prevalence_age.png')
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 #                    age - infection duration                     #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+# set positive threshold density for sampled parasites in simulation output (to match PCR threshold in reference)
+pos_thresh_dens = 0.5  # (39=min(ref_df$DENSITY[ref_df$DENSITY>0], na.rm=TRUE) - 1)
+# specify binning for duration of infection
+duration_bins=c(seq(0,350,50), 500)
+
+
+age_duration_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
+
+# determine which of the parasite-density sites have the relevant simulation output
+available_sites = c()
+for (ii in 1:length(age_duration_sites)){
+  if (file.exists(paste0(simulation_output_filepath, '/', age_duration_sites[ii], '/patient_reports.csv'))){
+    available_sites = c(available_sites, age_duration_sites[ii])
+  }
+}
+
+for (ss in 1:length(available_sites)){
+  cur_site = available_sites[ss]
+  sim_dir = paste0(simulation_output_filepath, '/', cur_site)
+
+  filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infection_duration_ref[which(coord_csv$site == cur_site)])
+  ref_df = read.csv(filepath_ref)
+  ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
+  
+  gg_plots = plot_duration_ref_sim_comparison(sim_dir, ref_df)
+  
+  ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_', cur_site, '.png'), plot=gg_plots[[1]])
+  ggsave(filename=paste0(plot_output_filepath, '/site_compare_age_infect_duration_', cur_site, '.png'), plot=gg_plots[[2]])
+  ggsave(filename=paste0(plot_output_filepath, '/site_compare_duration_measures_', cur_site, '.png'), plot=gg_plots[[3]])
+}
 
 
 
 
 
+
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+#                   infectiouness to vectors                        #
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+
+infectiousness_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$infectiousness_to_mosquitos==1))]
+
+# determine which of the parasite-density sites have the relevant simulation output
+available_sites = c()
+for (ii in 1:length(infectiousness_sites)){
+  if (file.exists(paste0(simulation_output_filepath, '/', infectiousness_sites[ii], '/infectiousness_by_age_density_month.csv'))){
+    available_sites = c(available_sites, infectiousness_sites[ii])
+  }
+}
+
+for (ss in 1:length(available_sites)){
+  cur_site = available_sites[ss]
+  sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/infectiousness_by_age_density_month.csv'))
+
+  filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infectiousness_to_mosquitos_ref[which(coord_csv$site == cur_site)])
+  ref_df = read.csv(filepath_ref)
+  ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
+  
+  gg_plot = plot_infectiousness_ref_sim_comparison(sim_df, ref_df)
+  ggsave(filename=paste0(plot_output_filepath, '/site_compare_infectiousness_', cur_site, '.png'), plot=gg_plot)
+}
 
 
