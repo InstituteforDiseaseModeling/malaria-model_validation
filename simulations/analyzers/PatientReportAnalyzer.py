@@ -89,7 +89,6 @@ if __name__ == '__main__':
     from idmtools.analysis.analyze_manager import AnalyzeManager
     from idmtools.core import ItemType
     from idmtools.core.platform_factory import Platform
-    from general.manifest import analyzed_ouptut_path
 
     use_ssmt = True
 
@@ -123,7 +122,7 @@ if __name__ == '__main__':
         else:
             for expt_name, exp_id in experiments.items():
                 # Initialize the analyser class with the path of the output csv file
-                analyzers = [PatientAnalyzer(working_dir=analyzed_ouptut_path, expt_name=expt_name, start_report_day=start_report_day)]
+                analyzers = [PatientAnalyzer(working_dir=".", expt_name=expt_name, start_report_day=start_report_day)]
 
                 # Create AnalyzerManager with required parameters
                 manager = AnalyzeManager(ids=[(exp_id, ItemType.EXPERIMENT)],

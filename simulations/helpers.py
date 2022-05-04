@@ -51,6 +51,8 @@ def set_param_fn(config):
     config.parameters.Enable_Initial_Prevalence = 1
     config.parameters.Vector_Species_Params = []
     config.parameters.Start_Time = 0
+    # config.parameters.Clinical_Fever_Threshold_High = 0.1
+    # config.parameters.Clinical_Fever_Threshold_Low = 0.1
     # config.parameters.pop("Serialized_Population_Filenames")
 
     return config
@@ -119,6 +121,14 @@ def set_simulation_scenario(simulation, site):
                                        reporting_interval=30, age_bins=summary_report_age_bins,
                                        infectiousness_bins=[0, 100], max_number_reports=1000,
                                        parasitemia_bins=[0, 50, 500, 5000, 50000, 5000000], report_description='Monthly_Report_%i' % int(round(yy/365)))
+
+        if coord_df.at[site, 'infectiousness_to_mosquitos']:
+            for yy in range(report_start_day, simulation_duration, 365):
+                add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, duration_days=365,
+                                           reporting_interval=30, age_bins=summary_report_age_bins,
+                                           infectiousness_bins=[0, 5, 20, 50, 80, 100], max_number_reports=1000,
+                                           parasitemia_bins=[0, 0.5, 5, 50, 500, 5000, 50000, 5000000],
+                                           report_description='Infectiousness_Monthly_Report_%i' % int(round(yy / 365)))
 
     if coord_df.at[site, 'include_MalariaPatientReport']:
         patient_report = MalariaPatientJSONReport()  # Create the reporter

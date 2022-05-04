@@ -5,9 +5,6 @@ import numpy as np
 import os
 import simulations.manifest as manifest
 
-# read in existing coordinator csv
-coord_csv = pd.read_csv(manifest.simulation_coordinator_path)
-
 # commission simulations with a sweep across different EIRs, CM rates, and seasonalities
 highSeason = [xx/322 for xx in [1, 1, 1, 1, 1, 3, 27, 70, 130, 57, 29, 1]]  # Dapelogo
 midSeason = [xx/45 for xx in [1, 1, 1, 1, 1, 7, 8, 9, 5, 4, 6, 1]]  # Laye
@@ -52,8 +49,7 @@ sweep_coord_df = pd.DataFrame({
     'include_MalariaPatientReport': [False] * len(site),
 
 })
-combined_df = pd.concat([coord_csv, sweep_coord_df], join='outer')
-combined_df.to_csv(os.path.join(manifest.simulation_coordinator_path))
+sweep_coord_df.to_csv(os.path.join(manifest.input_files_path, 'sweep_sim_coordinator.csv'))
 all_monthly_EIRs.to_csv(os.path.join(manifest.input_files_path, 'monthly_eirs/eir_by_sweep_site.csv'))
 
 
