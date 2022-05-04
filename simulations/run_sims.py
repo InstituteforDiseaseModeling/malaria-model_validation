@@ -8,6 +8,7 @@ from idmtools.entities.experiment import Experiment
 
 # emodpy
 from emodpy.emod_task import EMODTask
+from emodpy_malaria.reporters.builtin import add_report_intervention_pop_avg
 
 from simulations.helpers import *
 import simulations.params as params
@@ -36,6 +37,12 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
             param_custom_cb=set_param_fn,
             demog_builder=None,
         )
+
+    # add html intervention-visualizer asset to COMPS
+    add_inter_visualizer = False
+    if add_inter_visualizer:
+        task.common_assets.add_asset(manifest.intervention_visualizer_path)
+        add_report_intervention_pop_avg(task, manifest)
 
     # Create simulation sweep with builder
     builder = SimulationBuilder()
