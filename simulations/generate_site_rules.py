@@ -8,6 +8,7 @@ def generate_rule(site, n):
 rule {site}_run_sim:
     input: 
     output: "COMPS_ID/{site}_COMPS_ID_submit"
+    priority: 50
     run:
         shell(get_command("{site}", script="run_sims.py", n={n}))
         
