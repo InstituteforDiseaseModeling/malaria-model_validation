@@ -1,0 +1,49 @@
+import os
+import pathlib
+from sys import platform
+from pathlib import Path
+from simulations.load_inputs import load_sites
+
+sites, nSims = load_sites()
+
+input_files = list()
+experiment_files = list()
+
+
+def get_command(site: str=None, script="run_sims.py", python_version: str=None, n: int=0):
+    extra_arguments = ''
+    if n:
+        extra_arguments = ' -n ' + str(n)
+    if python_version:
+        command = python_version + " " + script + " -s " + site + extra_arguments
+    elif platform == "linux":
+        command = "python3 " + script + " -s " + site + extra_arguments
+    elif platform == "win32":
+        command = "python " + script + " -s " + site + extra_arguments
+    else:
+        print("Unknown OS")
+        raise Exception  
+    return command
+
+for site in sites:
+    experiment_files.append(f'COMPS_ID/{site}_COMPS_ID_submit')
+    input_files.append(f'COMPS_ID/{site}_COMPS_ID_done')
+
+print( input_files )
+
+rule run:
+    input: input_files
+    output:
+    shell: ""
+
+rule clean:
+    input: 
+    output: 
+    run:
+        for input_file in input_files:
+            if os.path.exists( input_file ):
+                os.remove(input_file)
+        for input_file in experiment_files:
+            if os.path.exists( input_file ):
+                os.remove(input_file)
+

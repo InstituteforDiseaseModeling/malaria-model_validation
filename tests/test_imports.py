@@ -39,6 +39,14 @@ class IDMTestImportTest(unittest.TestCase):
         self.verify_expected_items_present(namespace=helpers)
         pass
 
+    def test_wait_for_experiment_import(self):
+        self.expected_items = [
+            'check_experiment'
+        ]
+        import simulations.wait_for_experiment as wait_for_experiment
+        self.verify_expected_items_present(namespace=wait_for_experiment)
+        pass
+
     def test_InsetChartAnalyzer_import(self):
         self.expected_items = [
             'InsetChartAnalyzer'
@@ -77,6 +85,22 @@ class IDMTestImportTest(unittest.TestCase):
         ]
         import simulations.analyzers.AnnualSummaryReportAnalyzer as AnnualSummaryReportAnalyzer
         self.verify_expected_items_present(namespace=AnnualSummaryReportAnalyzer)
+        pass
+
+    def test_run_sims_import(self):
+        self.expected_items = [
+            'general_sim'
+        ]
+        import simulations.run_sims as run_sims
+        self.verify_expected_items_present(namespace=run_sims)
+        pass
+
+    def test_run_sims_import(self):
+        self.expected_items = [
+            'check_experiment'
+        ]
+        import simulations.wait_for_experiment as wait_for_experiment
+        self.verify_expected_items_present(namespace=wait_for_experiment)
         pass
 
 

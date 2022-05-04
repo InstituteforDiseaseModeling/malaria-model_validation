@@ -1,10 +1,6 @@
 name: build_test_uhuntu
 
-on:
-  push:
-    branches: 
-      - '*'
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build_test:

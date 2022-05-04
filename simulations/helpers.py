@@ -1,11 +1,12 @@
+import math
 import os
 import warnings
 import pandas as pd
 import numpy as np
 from functools import partial
+from pathlib import Path
 import emod_api.demographics.Demographics as Demographics
-from typing import Dict, Any
-from idmtools.entities.simulation import Simulation
+
 from emodpy_malaria.interventions.diag_survey import add_diagnostic_survey
 
 from emodpy_malaria.reporters.builtin import add_malaria_summary_report, MalariaPatientJSONReport
@@ -14,9 +15,7 @@ from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
 from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
 from emodpy_malaria.interventions.inputeir import InputEIR
 from emod_api.interventions.common import BroadcastEvent
-# import emod_api.campaign as camp
 import simulations.manifest as manifest
-import simulations.params as parameters
 
 
 def update_sim_random_seed(simulation, value):
@@ -68,9 +67,9 @@ def set_param_fn(config):
 #     return {"Site": site}
 
 
-def set_simulation_scenario(simulation, site):
+def set_simulation_scenario(simulation, site, csv_path):
     # get information on this simulation setup from coordinator csv
-    coord_df = pd.read_csv(manifest.simulation_coordinator_path)
+    coord_df = pd.read_csv(csv_path)
     coord_df = coord_df.set_index('site')
 
     # === set up config === #
@@ -78,15 +77,17 @@ def set_simulation_scenario(simulation, site):
     simulation_duration = int(coord_df.at[site, 'simulation_duration'])
     simulation.task.config.parameters.Simulation_Duration = simulation_duration
     # add demographics and set whether there are births and deaths
-    simulation.task.transient_assets.add_asset(os.path.join(manifest.input_files_path, coord_df.at[site, 'demographics_filepath']))
-    simulation.task.config.parameters.Demographics_Filenames = [coord_df.at[site, 'demographics_filepath'].rsplit('/',1)[-1]]
+    demographics_filename = str(coord_df.at[site, 'demographics_filepath'])
+    if demographics_filename and demographics_filename != 'nan':
+        simulation.task.transient_assets.add_asset(manifest.input_files_path / demographics_filename)
+        simulation.task.config.parameters.Demographics_Filenames = [demographics_filename.rsplit('/',1)[-1]]
     simulation.task.config.parameters.Enable_Vital_Dynamics = coord_df.at[site, 'enable_vital_dynamics'].tolist()
     if coord_df.at[site, 'enable_vital_dynamics'] == 1:
         simulation.task.config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_COMPLEX'
     else:
         simulation.task.config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_SIMPLE'
     # maternal antibodies - use first 12 months of data frame to get annual EIR from monthly eir
-    monthly_eirs = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'EIR_filepath']))
+    monthly_eirs = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'EIR_filepath'])
     update_mab(simulation, mAb_vs_EIR(sum(monthly_eirs.loc[monthly_eirs.index[0:12], site])))
 
     # === set up campaigns === #
@@ -97,7 +98,7 @@ def set_simulation_scenario(simulation, site):
     report_start_day = int(coord_df.at[site, 'report_start_day'])
     if coord_df.at[site, 'include_AnnualMalariaSummaryReport']:
         if (not pd.isna(coord_df.at[site, 'annual_summary_report_age_bins'])) and (not (coord_df.at[site, 'annual_summary_report_age_bins'] == '')):
-            summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path, 'summary_report_age_bins', 'age_bin_sets.csv'))
+            summary_report_age_bins_df = pd.read_csv(manifest.input_files_path / 'summary_report_age_bins' / 'age_bin_sets.csv')
             summary_report_age_bins = summary_report_age_bins_df[coord_df.at[site, 'annual_summary_report_age_bins']].tolist()
             summary_report_age_bins = [x for x in summary_report_age_bins if pd.notnull(x)]
         else:
@@ -110,7 +111,7 @@ def set_simulation_scenario(simulation, site):
 
     if coord_df.at[site, 'include_MonthlyMalariaSummaryReport']:
         if (not pd.isna(coord_df.at[site, 'monthly_summary_report_age_bins'])) and (not (coord_df.at[site, 'monthly_summary_report_age_bins'] == '')):
-            summary_report_age_bins_df = pd.read_csv(os.path.join(manifest.input_files_path,  'summary_report_age_bins', 'age_bin_sets.csv'))
+            summary_report_age_bins_df = pd.read_csv(manifest.input_files_path / 'summary_report_age_bins' / 'age_bin_sets.csv')
             summary_report_age_bins = summary_report_age_bins_df[coord_df.at[site, 'monthly_summary_report_age_bins']].tolist()
             summary_report_age_bins = [x for x in summary_report_age_bins if pd.notnull(x)]
         else:
@@ -140,7 +141,12 @@ def set_simulation_scenario(simulation, site):
         simulation.task.config.parameters.Report_Event_Recorder_Events = ['parasites_on_survey_day']
         simulation.task.config.parameters.Custom_Individual_Events = ['parasites_on_survey_day']
 
-    return {"Site": site}
+    return {"Site": site, 'csv_path': str(csv_path)}
+
+
+set_simulation_scenario_for_matched_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
+# TODO: update csv filename in manifest.py and next line
+set_simulation_scenario_for_characteristic_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
 
 
 def build_standard_campaign_object(manifest):
@@ -161,7 +167,7 @@ def build_camp(site, coord_df):
     # === EIR === #
 
     # set monthly eir for site - TODO - change to daily EIR
-    monthly_eirs = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'EIR_filepath']))
+    monthly_eirs = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'EIR_filepath'])
     # TODO - currently recycles first 12 values; should update to use multiple years if provided
     camp.add(InputEIR(camp, monthly_eir=monthly_eirs.loc[monthly_eirs.index[0:12], site].tolist(),
              start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
@@ -171,12 +177,12 @@ def build_camp(site, coord_df):
 
     # health-seeking
     if (not pd.isna(coord_df.at[site, 'CM_filepath'])) and (not (coord_df.at[site, 'CM_filepath'] == '')):
-        hs_df = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'CM_filepath']))
+        hs_df = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'CM_filepath'])
     else:
         hs_df = pd.DataFrame()
     # NMFs
     if (not pd.isna(coord_df.at[site, 'NMF_filepath'])) and (not (coord_df.at[site, 'NMF_filepath'] == '')):
-        nmf_df = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'NMF_filepath']))
+        nmf_df = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'NMF_filepath'])
     else:
         nmf_df = pd.DataFrame()
 
@@ -190,10 +196,10 @@ def build_camp(site, coord_df):
     # === SURVEYS === #
 
     # add parasite density surveys among individuals with parasitemia
-    if coord_df.at[site, 'include_parDensSurveys']:
+    if coord_df.at[site, 'include_parDensSurveys'] and (not pd.isna(coord_df.at[site, 'include_parDensSurveys'])):
         # adding schema file, so it can be looked up when creating the campaigns
         camp.schema_path = manifest.schema_file
-        survey_days = pd.read_csv(os.path.join(manifest.input_files_path, coord_df.at[site, 'survey_days_filepath'])).loc['days']
+        survey_days = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'survey_days_filepath']).loc['days']
         add_broadcasting_survey(camp, survey_days=survey_days)
 
     return camp

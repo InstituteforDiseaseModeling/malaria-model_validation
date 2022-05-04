@@ -1,0 +1,258 @@
+import os
+import pathlib
+from sys import platform
+from pathlib import Path
+from simulations.load_inputs import load_sites
+
+sites, nSims = load_sites()
+
+input_files = list()
+experiment_files = list()
+
+
+def get_command(site: str=None, script="run_sims.py", python_version: str=None, n: int=0):
+    extra_arguments = ''
+    if n:
+        extra_arguments = ' -n ' + str(n)
+    if python_version:
+        command = python_version + " " + script + " -s " + site + extra_arguments
+    elif platform == "linux":
+        command = "python3 " + script + " -s " + site + extra_arguments
+    elif platform == "win32":
+        command = "python " + script + " -s " + site + extra_arguments
+    else:
+        print("Unknown OS")
+        raise Exception  
+    return command
+
+for site in sites:
+    experiment_files.append(f'COMPS_ID/{site}_COMPS_ID_submit')
+    input_files.append(f'COMPS_ID/{site}_COMPS_ID_done')
+
+print( input_files )
+
+rule run:
+    input: input_files
+    output:
+    shell: ""
+
+rule clean:
+    input: 
+    output: 
+    run:
+        for input_file in input_files:
+            if os.path.exists( input_file ):
+                os.remove(input_file)
+        for input_file in experiment_files:
+            if os.path.exists( input_file ):
+                os.remove(input_file)
+
+
+rule test_site_run_sim:
+    input: 
+    output: "COMPS_ID/test_site_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("test_site", script="run_sims.py", n=2))
+        
+rule test_site_analyzer:
+    input: "COMPS_ID/test_site_COMPS_ID_submit"
+    output: "COMPS_ID/test_site_COMPS_ID_done"
+    run:
+        shell(get_command("test_site", script="wait_for_experiment.py"))
+    
+rule chonyi_1999_run_sim:
+    input: 
+    output: "COMPS_ID/chonyi_1999_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("chonyi_1999", script="run_sims.py", n=3))
+        
+rule chonyi_1999_analyzer:
+    input: "COMPS_ID/chonyi_1999_COMPS_ID_submit"
+    output: "COMPS_ID/chonyi_1999_COMPS_ID_done"
+    run:
+        shell(get_command("chonyi_1999", script="wait_for_experiment.py"))
+    
+rule ngerenya_1999_run_sim:
+    input: 
+    output: "COMPS_ID/ngerenya_1999_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("ngerenya_1999", script="run_sims.py", n=4))
+        
+rule ngerenya_1999_analyzer:
+    input: "COMPS_ID/ngerenya_1999_COMPS_ID_submit"
+    output: "COMPS_ID/ngerenya_1999_COMPS_ID_done"
+    run:
+        shell(get_command("ngerenya_1999", script="wait_for_experiment.py"))
+    
+rule dielmo_1990_run_sim:
+    input: 
+    output: "COMPS_ID/dielmo_1990_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("dielmo_1990", script="run_sims.py", n=5))
+        
+rule dielmo_1990_analyzer:
+    input: "COMPS_ID/dielmo_1990_COMPS_ID_submit"
+    output: "COMPS_ID/dielmo_1990_COMPS_ID_done"
+    run:
+        shell(get_command("dielmo_1990", script="wait_for_experiment.py"))
+    
+rule ndiop_1993_run_sim:
+    input: 
+    output: "COMPS_ID/ndiop_1993_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("ndiop_1993", script="run_sims.py", n=6))
+        
+rule ndiop_1993_analyzer:
+    input: "COMPS_ID/ndiop_1993_COMPS_ID_submit"
+    output: "COMPS_ID/ndiop_1993_COMPS_ID_done"
+    run:
+        shell(get_command("ndiop_1993", script="wait_for_experiment.py"))
+    
+rule ebolakounou_1997_run_sim:
+    input: 
+    output: "COMPS_ID/ebolakounou_1997_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("ebolakounou_1997", script="run_sims.py", n=9))
+        
+rule ebolakounou_1997_analyzer:
+    input: "COMPS_ID/ebolakounou_1997_COMPS_ID_submit"
+    output: "COMPS_ID/ebolakounou_1997_COMPS_ID_done"
+    run:
+        shell(get_command("ebolakounou_1997", script="wait_for_experiment.py"))
+    
+rule koundou_1997_run_sim:
+    input: 
+    output: "COMPS_ID/koundou_1997_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("koundou_1997", script="run_sims.py", n=10))
+        
+rule koundou_1997_analyzer:
+    input: "COMPS_ID/koundou_1997_COMPS_ID_submit"
+    output: "COMPS_ID/koundou_1997_COMPS_ID_done"
+    run:
+        shell(get_command("koundou_1997", script="wait_for_experiment.py"))
+    
+rule dongubougou_1999_run_sim:
+    input: 
+    output: "COMPS_ID/dongubougou_1999_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("dongubougou_1999", script="run_sims.py", n=11))
+        
+rule dongubougou_1999_analyzer:
+    input: "COMPS_ID/dongubougou_1999_COMPS_ID_submit"
+    output: "COMPS_ID/dongubougou_1999_COMPS_ID_done"
+    run:
+        shell(get_command("dongubougou_1999", script="wait_for_experiment.py"))
+    
+rule sotuba_1999_run_sim:
+    input: 
+    output: "COMPS_ID/sotuba_1999_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("sotuba_1999", script="run_sims.py", n=12))
+        
+rule sotuba_1999_analyzer:
+    input: "COMPS_ID/sotuba_1999_COMPS_ID_submit"
+    output: "COMPS_ID/sotuba_1999_COMPS_ID_done"
+    run:
+        shell(get_command("sotuba_1999", script="wait_for_experiment.py"))
+    
+rule matsari_1970_run_sim:
+    input: 
+    output: "COMPS_ID/matsari_1970_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("matsari_1970", script="run_sims.py", n=15))
+        
+rule matsari_1970_analyzer:
+    input: "COMPS_ID/matsari_1970_COMPS_ID_submit"
+    output: "COMPS_ID/matsari_1970_COMPS_ID_done"
+    run:
+        shell(get_command("matsari_1970", script="wait_for_experiment.py"))
+    
+rule rafin_marke_1970_run_sim:
+    input: 
+    output: "COMPS_ID/rafin_marke_1970_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("rafin_marke_1970", script="run_sims.py", n=16))
+        
+rule rafin_marke_1970_analyzer:
+    input: "COMPS_ID/rafin_marke_1970_COMPS_ID_submit"
+    output: "COMPS_ID/rafin_marke_1970_COMPS_ID_done"
+    run:
+        shell(get_command("rafin_marke_1970", script="wait_for_experiment.py"))
+    
+rule sugungum_1970_run_sim:
+    input: 
+    output: "COMPS_ID/sugungum_1970_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("sugungum_1970", script="run_sims.py", n=17))
+        
+rule sugungum_1970_analyzer:
+    input: "COMPS_ID/sugungum_1970_COMPS_ID_submit"
+    output: "COMPS_ID/sugungum_1970_COMPS_ID_done"
+    run:
+        shell(get_command("sugungum_1970", script="wait_for_experiment.py"))
+    
+rule navrongo_2000_run_sim:
+    input: 
+    output: "COMPS_ID/navrongo_2000_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("navrongo_2000", script="run_sims.py", n=18))
+        
+rule navrongo_2000_analyzer:
+    input: "COMPS_ID/navrongo_2000_COMPS_ID_submit"
+    output: "COMPS_ID/navrongo_2000_COMPS_ID_done"
+    run:
+        shell(get_command("navrongo_2000", script="wait_for_experiment.py"))
+    
+rule laye_2007_run_sim:
+    input: 
+    output: "COMPS_ID/laye_2007_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("laye_2007", script="run_sims.py", n=19))
+        
+rule laye_2007_analyzer:
+    input: "COMPS_ID/laye_2007_COMPS_ID_submit"
+    output: "COMPS_ID/laye_2007_COMPS_ID_done"
+    run:
+        shell(get_command("laye_2007", script="wait_for_experiment.py"))
+    
+rule dapelogo_2007_run_sim:
+    input: 
+    output: "COMPS_ID/dapelogo_2007_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("dapelogo_2007", script="run_sims.py", n=20))
+        
+rule dapelogo_2007_analyzer:
+    input: "COMPS_ID/dapelogo_2007_COMPS_ID_submit"
+    output: "COMPS_ID/dapelogo_2007_COMPS_ID_done"
+    run:
+        shell(get_command("dapelogo_2007", script="wait_for_experiment.py"))
+    
+rule siaya_2009_run_sim:
+    input: 
+    output: "COMPS_ID/siaya_2009_COMPS_ID_submit"
+    priority: 50
+    run:
+        shell(get_command("siaya_2009", script="run_sims.py", n=32))
+        
+rule siaya_2009_analyzer:
+    input: "COMPS_ID/siaya_2009_COMPS_ID_submit"
+    output: "COMPS_ID/siaya_2009_COMPS_ID_done"
+    run:
+        shell(get_command("siaya_2009", script="wait_for_experiment.py"))
+    
