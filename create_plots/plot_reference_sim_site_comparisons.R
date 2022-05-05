@@ -27,6 +27,7 @@ source(file.path(base_script_plot_filepath, 'helper_functions_par_dens.R'))
 source(file.path(base_script_plot_filepath, 'helper_functions_age_inc_prev.R'))
 source(file.path(base_script_plot_filepath, 'helper_functions_infection_duration.R'))
 source(file.path(base_script_plot_filepath, 'helper_functions_infectiousness.R'))
+source(file.path(base_script_plot_filepath, 'calculate_comparison_metrics.R'))
 
 
 ####################################################################################################
@@ -49,6 +50,8 @@ for (ii in 1:length(par_dens_sites)){
     available_sites = c(available_sites, par_dens_sites[ii])
   }
 }
+
+generate_parasite_density_outputs(available_sites, coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath)
 
 for (ss in 1:length(available_sites)){
   cur_site = available_sites[ss]
@@ -101,6 +104,26 @@ for (ss in 1:length(available_sites)){
 }
 gg_plot = plot_inc_ref_sim_comparison(sim_df, ref_df)
 ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.png'), plot=gg_plot)
+
+# additional quantitative comparisons and metrics
+combined_df = prepare_inc_df(sim_df, ref_df)
+
+correlation_output = corr_ref_sim_points(combined_df)
+correlation_df = correlation_output[[2]]
+slope_correlation_output = corr_ref_deriv_sim_points(combined_df)
+slope_correlation_df = slope_correlation_output[[2]]
+ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_incidence_age.png'), plot=correlation_output[[1]])
+ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_slope_incidence_age.png'), plot=slope_correlation_output[[1]])
+
+mean_diff_df = calc_mean_rel_diff(combined_df)
+correlation_df$corr_slope = correlation_df$slope
+correlation_df$corr_r_squared = correlation_df$r.squared
+slope_correlation_df$derivative_corr_slope = slope_correlation_df$slope
+slope_correlation_df$derivative_corr_r_squared = slope_correlation_df$r.squared
+quantitative_comparison_df = merge(mean_diff_df, correlation_df[,c('Site', 'corr_slope','corr_r_squared')], all=TRUE)
+quantitative_comparison_df = merge(mean_diff_df, slope_correlation_df[,c('Site', 'derivative_corr_slope','derivative_corr_r_squared')], all=TRUE)
+
+write.csv(quantitative_comparison_df, paste0(plot_output_filepath, '/comparison_metric_table_incidence_age.csv'))
 
 
 

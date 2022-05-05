@@ -104,6 +104,29 @@ plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
 
 
 
+
+########################### main coordinator function  ##################################
+generate_parasite_density_outputs = function(available_sites, coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath){
+  
+  # combine dataframes across sites
+  
+  for (ss in 1:length(available_sites)){
+    cur_site = available_sites[ss]
+    sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/parasite_densities_by_age_month.csv'))
+    age_agg_sim_df = get_age_bin_averages(sim_df)
+    
+    filepath_ref = paste0(base_reference_filepath, '/', coord_csv$age_parasite_density_ref[which(coord_csv$site == cur_site)])
+    ref_df = read.csv(filepath_ref)
+    ref_df = ref_df[tolower(ref_df$Site) == tolower(cur_site),]
+    
+    gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_par_dens_age_', cur_site, '.png'), plot=gg_plots[[2]])
+  }
+  
+}
+
+
+
 ############################ only execute when script run on its own #########################################
 
 if (sys.nframe() == 0){
