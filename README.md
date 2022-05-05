@@ -39,6 +39,10 @@ pip install dist/{update-this-with-the-wheel-file-name}.whl --index-url=https://
 ## Pre-requisites
 - Python 3.9 x64
 
+If you see the following error during installation:
+![alt text](./datrie_error.png?raw=true)
+You may need to install C++ Build Tools from this link: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
 # Run Simulations
 
 ## Login to Comps
