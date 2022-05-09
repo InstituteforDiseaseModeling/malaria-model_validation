@@ -67,19 +67,19 @@ Run the whole pipeline with all sites in simulation_coordinator.csv:
 snakemake -j
 ```
 
-If you want to re-run the whole workflow, clean up your environment with "snakemake clean -j" and run "snakemake -j" again:
+- If you want to re-run the whole workflow, clean up your environment with "snakemake clean -j" and run "snakemake -j" again:
 ```bash
 snakemake clean -j
 snakemake -j
 ```
 
-If you make change locally in simulation_coordinator.csv, run the generate_site_rules.py to regenerate snakemake rules(run this script every time you update your simulation_coordinator.csv):
+- If you make change locally in simulation_coordinator.csv, run the generate_site_rules.py to regenerate snakemake rules(run this script every time you update your simulation_coordinator.csv):
 ```bash
 python3 generate_site_rules.py
 snakemake -j
 ```
 
-If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run(/simulations/COMPS_ID/{site_name}_COMPS_ID_submit and _done files) and run "snakemake -j" again.
+- If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run(/simulations/COMPS_ID/{site_name}_COMPS_ID_submit and _done files) and run "snakemake -j" again.
 
-If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_done files only and re-run "snakemake -j".
+- If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_done files only and re-run "snakemake -j".
 
