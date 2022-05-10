@@ -1,7 +1,12 @@
 from fpdf import FPDF, TitleStyle, XPos, YPos
+from datetime import datetime
+
+now = datetime.now()
+now_str = now.strftime("%c")
+date, time = now.strftime("%d-%m-%Y %H-%M-%S").split(' ')
 
 title = 'Malaria Model Doc'
-pdf_name = 'Malaria_model_validation_output.pdf'
+pdf_name = f'Malaria_model_validation_output_{date}_{time}.pdf'
 
 
 def new_section(pdf: FPDF, text: str, image_name: str = None, new_x: int = XPos.LMARGIN, new_y: int = YPos.NEXT, **kwargs):
@@ -75,7 +80,8 @@ class PDF(FPDF):
         # Arial italic 8
         self.set_font('Arial', 'I', 8)
         # Page number
-        self.cell(0, txt='Page ' + str(self.page_no()) + '/{nb}')
+        self.cell(0, txt='Page ' + str(self.page_no()) + '/{nb}' + f'\t\t{now_str}')
+
 
     def new_section(self, section_name, section_content, image_name):
         pdf.set_font('Times', '', 24)
@@ -121,7 +127,7 @@ pdf.set_section_title_styles(
 pdf.add_page()
 pdf.set_y(50)
 pdf.set_font(size=40)
-p(pdf, "Doc Title", align="C")
+new_section(pdf, "Doc Title", align="C")
 pdf.set_font(size=12)
 pdf.insert_toc_placeholder(render_toc)
 
