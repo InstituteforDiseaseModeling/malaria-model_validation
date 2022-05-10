@@ -39,6 +39,10 @@ pip install dist/{update-this-with-the-wheel-file-name}.whl --index-url=https://
 ## Pre-requisites
 - Python 3.9 x64
 
+If you see the following error during installation:
+![alt text](./datrie_error.png?raw=true)
+You may need to install C++ Build Tools from this link: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+
 # Run Simulations
 
 ## Login to Comps
@@ -58,17 +62,24 @@ python3 wait_for_experiment.py -s {site_name}
 ```
 
 ## Option 2_Run all Sites with Snakemake (Recommended)
-Run the generate_site_rules.py to generate snakemake rules based on information in simulation_coordinator.csv(run this script every time you update your simulation_coordinator.csv):
-```bash
-python3 generate_site_rules.py
-```
-
-Run "snakemake clean" to clean up your environment:
-```bash
-snakemake clean -j
-```
-
 Run the whole pipeline with all sites in simulation_coordinator.csv:
 ```bash
 snakemake -j
 ```
+
+- If you want to re-run the whole workflow, clean up your environment with "snakemake clean -j" and run "snakemake -j" again:
+```bash
+snakemake clean -j
+snakemake -j
+```
+
+- If you make change locally in simulation_coordinator.csv, run the generate_site_rules.py to regenerate snakemake rules(run this script every time you update your simulation_coordinator.csv):
+```bash
+python3 generate_site_rules.py
+snakemake -j
+```
+
+- If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run(/simulations/COMPS_ID/{site_name}_COMPS_ID_submit and _done files) and run "snakemake -j" again.
+
+- If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_done files only and re-run "snakemake -j".
+
