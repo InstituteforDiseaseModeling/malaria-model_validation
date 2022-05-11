@@ -212,8 +212,12 @@ bin_durations_all_seeds = function(days_positive, duration_bins){
     bin_w_seeds$density = apply(bin_w_seeds[,which(grepl('seed_', colnames(bin_w_seeds)))], 1, mean)
     bin_w_seeds$quant_low = apply(bin_w_seeds[,which(grepl('seed_', colnames(bin_w_seeds)))], 1, quantile, probs=0.0)  # 0.1
     bin_w_seeds$quant_high = apply(bin_w_seeds[,which(grepl('seed_', colnames(bin_w_seeds)))], 1, quantile, probs=1)  # 0.9
-  } else{
+  } else if(length(which(grepl('seed_', colnames(bin_w_seeds)))) == 1){
     bin_w_seeds$density = bin_w_seeds[,which(grepl('seed_', colnames(bin_w_seeds)))]
+    bin_w_seeds$quant_low = NA
+    bin_w_seeds$quant_high = NA
+  } else{ # no data present for this binning
+    bin_w_seeds$density = NA
     bin_w_seeds$quant_low = NA
     bin_w_seeds$quant_high = NA
   }
@@ -297,6 +301,10 @@ create_barplot_frac_comparison = function(ref_df, sim_data, pos_thresh_dens, sim
   
   gg = ggplot(df, aes(x=measure, y=value, fill=source, color=source)) + 
     geom_bar(stat="identity", position = "dodge", alpha=.3) +
+    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
+    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
     labs(title='general dataset properties', y='fraction of samples', x='')
   
   return(gg)
@@ -328,6 +336,10 @@ plot_infection_duration_dist = function(ref_df, sim_data, pos_thresh_dens, sim_d
     geom_bar(stat="identity",position = "identity", alpha=.3)+
     geom_errorbar(aes(ymin=quant_low, ymax=quant_high), width=.2,
                   position=position_dodge(.9)) +
+    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
+    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
     # ylim(NA,max_y) +
     labs(title=paste0('infection duration'), x='infection duration (days)') + 
     facet_wrap(scales='fixed', facets='censor_type')
@@ -349,6 +361,10 @@ plot_infection_duration_dist_ref_only = function(ref_df, sim_dir, duration_bins=
   # max_y=0.8
   gg = ggplot(bin_df, aes(x=bin_mid, y=density, color=dataset, fill=dataset)) +
     geom_bar(stat="identity",position = "identity", alpha=.3)+
+    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
+    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
     # ylim(NA,max_y) +
     labs(title=paste0('infection duration - reference'), x='infection duration (days)') + 
     facet_wrap(scales='fixed', facets='censor_type')
@@ -384,6 +400,10 @@ plot_infection_duration_dist_by_age = function(ref_df, sim_data, pos_thresh_dens
     geom_bar(stat="identity",position = "identity", alpha=.3)+
     geom_errorbar(aes(ymin=quant_low, ymax=quant_high), width=.2,
                   position=position_dodge(.9)) +
+    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
+    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
     # ylim(NA,max_y) +
     labs(title=paste0('infection duration'), x='infection duration (days)') + 
     facet_grid(scales='fixed', facets=c('censor_type', 'age_group'))
@@ -404,6 +424,10 @@ plot_infection_duration_dist_by_age_ref_only = function(ref_df, sim_dir, age_bin
   # max_y=0.9
   gg = ggplot(bin_df, aes(x=bin_mid, y=density, color=dataset, fill=dataset)) +
     geom_bar(stat="identity", position = "identity", alpha=.3)+
+    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
+    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
     # ylim(NA,max_y) +
     labs(title=paste0('infection duration - reference'), x='infection duration (days)') + 
     facet_grid(scales='fixed', facets=c('censor_type', 'age_group'))
@@ -433,5 +457,39 @@ plot_duration_ref_sim_comparison = function(sim_dir, ref_df){
   return(list(gg1, gg2, gg3))
 }
 
+
+
+
+#########################################################################
+# Main function to generate all infection-duration outputs
+#########################################################################
+
+generate_age_infection_duration_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, pos_thresh_dens=0.5, duration_bins=c(seq(0,350,50), 500)){
+  
+  age_duration_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
+  
+  # determine which of the parasite-density sites have the relevant simulation output
+  available_sites = c()
+  for (ii in 1:length(age_duration_sites)){
+    if (file.exists(paste0(simulation_output_filepath, '/', age_duration_sites[ii], '/patient_reports.csv'))){
+      available_sites = c(available_sites, age_duration_sites[ii])
+    }
+  }
+  
+  for (ss in 1:length(available_sites)){
+    cur_site = available_sites[ss]
+    sim_dir = paste0(simulation_output_filepath, '/', cur_site)
+    
+    filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infection_duration_ref[which(coord_csv$site == cur_site)])
+    ref_df = read.csv(filepath_ref)
+    ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
+    
+    gg_plots = plot_duration_ref_sim_comparison(sim_dir, ref_df)
+    
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_', cur_site, '.png'), plot=gg_plots[[1]])
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_age_infect_duration_', cur_site, '.png'), plot=gg_plots[[2]])
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_duration_measures_', cur_site, '.png'), plot=gg_plots[[3]])
+  }
+}
 
 

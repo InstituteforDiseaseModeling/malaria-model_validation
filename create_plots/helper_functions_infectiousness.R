@@ -1,6 +1,11 @@
 # helper_functions_infectiousness.R
 library(ggplot2)
 
+
+
+
+########################### create plots  ##################################
+
 plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
   
   # remove simulation rows with zero pop
@@ -62,9 +67,38 @@ plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
   gg = ggplot(data=combined_df, aes(y=fraction_infected_bin, x=densitybin, size=infectiousness_bin_freq, color=source, fill=source))+
     geom_point(alpha=0.5) +
     scale_x_log10() +
-    ylab('fraction of individuals (in each age-density group) who fall in each infectiousness bin') +
+    ylab('percent of individuals (in each age-density group) who fall in each infectiousness bin') +
     xlab('gametocyte density') +
     facet_grid(agebin~month)
   return(gg)
 }
 
+
+
+
+########################### main coordinator function  ##################################
+
+generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath){
+  
+  infectiousness_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$infectiousness_to_mosquitos==1))]
+  
+  # determine which of the parasite-density sites have the relevant simulation output
+  available_sites = c()
+  for (ii in 1:length(infectiousness_sites)){
+    if (file.exists(paste0(simulation_output_filepath, '/', infectiousness_sites[ii], '/infectiousness_by_age_density_month.csv'))){
+      available_sites = c(available_sites, infectiousness_sites[ii])
+    }
+  }
+  
+  for (ss in 1:length(available_sites)){
+    cur_site = available_sites[ss]
+    sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/infectiousness_by_age_density_month.csv'))
+    
+    filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infectiousness_to_mosquitos_ref[which(coord_csv$site == cur_site)])
+    ref_df = read.csv(filepath_ref)
+    ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
+    
+    gg_plot = plot_infectiousness_ref_sim_comparison(sim_df, ref_df)
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infectiousness_', cur_site, '.png'), plot=gg_plot, width=7.5, height=6, units='in')
+  }
+}
