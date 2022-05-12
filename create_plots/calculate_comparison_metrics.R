@@ -120,6 +120,7 @@ prepare_prev_df = function(sim_df, ref_df){
 # mean relative difference between reference and matched simulation values across ages
 #   for a given age, calculate (reference - simulation)/reference. Report the mean across all ages
 calc_mean_rel_diff = function(combined_df){
+  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
   combined_df$rel_diff = (combined_df$reference_value - combined_df$simulation_value) / combined_df$reference_value
   combined_df$abs_diff = abs(combined_df$reference_value - combined_df$simulation_value)
   mean_diff_df = combined_df %>% group_by(Site) %>%
@@ -127,7 +128,15 @@ calc_mean_rel_diff = function(combined_df){
               mean_abs_diff = mean(abs_diff))
   return(mean_diff_df)
 }
-
+calc_mean_rel_slope_diff = function(combined_df){
+  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
+  combined_df$rel_diff = (combined_df$ref_slope_to_next - combined_df$sim_slope_to_next) / combined_df$ref_slope_to_next
+  combined_df$abs_diff = abs(combined_df$ref_slope_to_next - combined_df$sim_slope_to_next)
+  mean_slope_diff_df = combined_df %>% group_by(Site) %>%
+    summarise(mean_rel_slope_diff = mean(rel_diff, na.rm=TRUE),
+              mean_abs_slpe_diff = mean(abs_diff, na.rm=TRUE))
+  return(mean_slope_diff_df)
+}
 
 # correlation between reference and matched simulation data points
 corr_ref_sim_points = function(combined_df){
@@ -190,7 +199,7 @@ corr_ref_deriv_sim_points = function(combined_df){
     ggtitle('Ref versus sim slopes') +
     coord_fixed(ratio=1, xlim=c(min_value, max_value), ylim=c(min_value, max_value))+
     geom_abline(slope=1,intercept=0, color='grey', alpha=0.5) + 
-    geom_smooth(method = "lm", fill = NA, se=FALSE, alpha=0.5, size=0.5) +
+    # geom_smooth(method = "lm", fill = NA, se=FALSE, alpha=0.5, size=0.5) +
     theme_classic() +
     theme(plot.title = element_text(size=12))
   
@@ -201,7 +210,7 @@ corr_ref_deriv_sim_points = function(combined_df){
   lm_summary = merge(lm_fit[c('Site', 'term', 'estimate')], lm_info[c('Site', 'r.squared', 'p.value', 'nobs')], by='Site', all=TRUE)
   lm_summary = lm_summary[lm_summary$term!='(Intercept)',]
   colnames(lm_summary)[colnames(lm_summary)=='estimate'] = 'slope'
-  return(list(gg, lm_summary))
+  return(list(gg, lm_summary, combined_df))
 }
 
 

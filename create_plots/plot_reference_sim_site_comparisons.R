@@ -40,12 +40,6 @@ if(!dir.exists(plot_output_filepath)) dir.create(plot_output_filepath)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-#                      age - parasite density                     #
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-generate_parasite_density_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath)
-
-
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 #                         age - incidence                         #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath)
@@ -55,6 +49,12 @@ generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_refer
 #                         age - prevalence                        #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath)
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+#                      age - parasite density                     #
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+generate_parasite_density_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath)
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #

@@ -188,8 +188,10 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     ref_df$Site = tolower(ref_df$Site)
     
     gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_par_dens_age_', cur_site, '.png'), plot=gg_plots[[2]], width=7, height=7, units='in')
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_gamet_dens_age_', cur_site, '.png'), plot=gg_plots[[3]], width=7, height=7, units='in')
+    gg_plots[[2]] = gg_plots[[2]] + ggtitle(available_sites[ss])
+    gg_plots[[3]] = gg_plots[[3]] + ggtitle(available_sites[ss])
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_par_dens_age_', cur_site, '.png'), plot=gg_plots[[2]], width=8, height=6, units='in')
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_gamet_dens_age_', cur_site, '.png'), plot=gg_plots[[3]], width=8, height=6, units='in')
   }
 }
 
@@ -230,6 +232,7 @@ if (sys.nframe() == 0){
     ref_df = ref_df[tolower(ref_df$Site) == tolower(cur_site),]
     
     gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
+    gg_plots[[2]] = gg_plots[[2]] + ggtitle(available_sites[ss])
     ggsave(filename=paste0(plot_output_filepath, '/par_dens_age_', cur_site, '.pdf'), plot=gg_plots[[2]])
   }
   

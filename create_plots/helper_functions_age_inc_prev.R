@@ -122,7 +122,7 @@ generate_age_incidence_outputs = function(coord_csv, simulation_output_filepath,
     }
   }
   gg_plot = plot_inc_ref_sim_comparison(sim_df, ref_df)
-  ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.png'), plot=gg_plot, height=4, width=6.5, units='in')
+  ggsave(filename=paste0(plot_output_filepath, '/site_compare_incidence_age.png'), plot=gg_plot, height=2*ceiling(length(available_sites)/4), width=7.5, units='in')
   
   # additional quantitative comparisons and metrics
   combined_df = prepare_inc_df(sim_df, ref_df)
@@ -131,6 +131,7 @@ generate_age_incidence_outputs = function(coord_csv, simulation_output_filepath,
   correlation_df = correlation_output[[2]]
   slope_correlation_output = corr_ref_deriv_sim_points(combined_df)
   slope_correlation_df = slope_correlation_output[[2]]
+  combined_df_with_slopes = slope_correlation_output[[3]]
   correlation_plots = ggarrange(correlation_output[[1]], slope_correlation_output[[1]], nrow=1, ncol=2, 
                                 common.legend=TRUE)  #, legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
   ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_incidence_age.png'), plot=correlation_plots, height=4.5, width=8, units='in')
@@ -138,13 +139,19 @@ generate_age_incidence_outputs = function(coord_csv, simulation_output_filepath,
   # ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_incidence_age.png'), plot=correlation_output[[1]])
   # ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_slope_incidence_age.png'), plot=slope_correlation_output[[1]])
   
+  # metrics comparing simulation to reference VALUE
   mean_diff_df = calc_mean_rel_diff(combined_df)
   correlation_df$corr_slope = correlation_df$slope
   correlation_df$corr_r_squared = correlation_df$r.squared
+  # metrics comparing simulation to reference SLOPE
+  mean_slope_diff_df = calc_mean_rel_slope_diff(combined_df=combined_df_with_slopes)
   slope_correlation_df$derivative_corr_slope = slope_correlation_df$slope
   slope_correlation_df$derivative_corr_r_squared = slope_correlation_df$r.squared
+  # combine metrics and save csv
   quantitative_comparison_df = merge(mean_diff_df, correlation_df[,c('Site', 'corr_slope','corr_r_squared')], all=TRUE)
-  quantitative_comparison_df = merge(mean_diff_df, slope_correlation_df[,c('Site', 'derivative_corr_slope','derivative_corr_r_squared')], all=TRUE)
+  # quantitative_comparison_slope_df = merge(mean_slope_diff_df, slope_correlation_df[,c('Site', 'derivative_corr_r_squared')], all=TRUE)
+  # quantitative_comparison_df = merge(quantitative_comparison_df, quantitative_comparison_slope_df, all=TRUE)
+  quantitative_comparison_df = merge(quantitative_comparison_df, mean_slope_diff_df, all=TRUE)
   
   write.csv(quantitative_comparison_df, paste0(plot_output_filepath, '/comparison_metric_table_incidence_age.csv'), row.names=FALSE)
 }
@@ -221,7 +228,7 @@ generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath
     }
   }
   gg_plot = plot_prev_ref_sim_comparison(sim_df, ref_df)
-  ggsave(filename=paste0(plot_output_filepath, '/site_compare_prevalence_age.png'), plot=gg_plot)
+  ggsave(filename=paste0(plot_output_filepath, '/site_compare_prevalence_age.png'), plot=gg_plot, height=9, width=8, units='in')
   
   
   # additional quantitative comparisons and metrics
@@ -231,6 +238,7 @@ generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath
   correlation_df = correlation_output[[2]]
   slope_correlation_output = corr_ref_deriv_sim_points(combined_df)
   slope_correlation_df = slope_correlation_output[[2]]
+  combined_df_with_slopes = slope_correlation_output[[3]]
   correlation_plots = ggarrange(correlation_output[[1]], slope_correlation_output[[1]], nrow=1, ncol=2, 
                                 common.legend=TRUE)  #, legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
   ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_prevalence_age.png'), plot=correlation_plots, height=4.5, width=8, units='in')
@@ -238,14 +246,20 @@ generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath
   # ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_incidence_age.png'), plot=correlation_output[[1]])
   # ggsave(filename=paste0(plot_output_filepath, '/scatter_regression_slope_incidence_age.png'), plot=slope_correlation_output[[1]])
   
+  
+  # metrics comparing simulation to reference VALUE
   mean_diff_df = calc_mean_rel_diff(combined_df)
   correlation_df$corr_slope = correlation_df$slope
   correlation_df$corr_r_squared = correlation_df$r.squared
+  # metrics comparing simulation to reference SLOPE
+  mean_slope_diff_df = calc_mean_rel_slope_diff(combined_df=combined_df_with_slopes)
   slope_correlation_df$derivative_corr_slope = slope_correlation_df$slope
   slope_correlation_df$derivative_corr_r_squared = slope_correlation_df$r.squared
+  # combine metrics and save csv
   quantitative_comparison_df = merge(mean_diff_df, correlation_df[,c('Site', 'corr_slope','corr_r_squared')], all=TRUE)
-  quantitative_comparison_df = merge(mean_diff_df, slope_correlation_df[,c('Site', 'derivative_corr_slope','derivative_corr_r_squared')], all=TRUE)
-  
+  # quantitative_comparison_slope_df = merge(mean_slope_diff_df, slope_correlation_df[,c('Site', 'derivative_corr_r_squared')], all=TRUE)
+  # quantitative_comparison_df = merge(quantitative_comparison_df, quantitative_comparison_slope_df, all=TRUE)
+  quantitative_comparison_df = merge(quantitative_comparison_df, mean_slope_diff_df, all=TRUE)
   write.csv(quantitative_comparison_df, paste0(plot_output_filepath, '/comparison_metric_table_prevalence_age.csv'), row.names=FALSE)
   
 }

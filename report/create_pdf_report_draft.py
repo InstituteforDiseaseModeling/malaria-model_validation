@@ -240,7 +240,7 @@ pdf.cell(0, 10, 'Gametocyte density by age', 0, 1)
 pdf.set_font('Times', '', body_text_size)
 pdf.set_text_color(0, 0, 0)
 pdf.multi_cell(0, 10, 'Each plot panel corresponds to a site.', 0, 1)
-files = [f for f in os.listdir('./_plots') if re.match(r'site_compare_par_dens_age.*\.', f)]
+files = [f for f in os.listdir('./_plots') if re.match(r'site_compare_gamet_dens_age.*\.', f)]
 for ff in files:
     site_name = ff.replace('.png', '')
     site_name = site_name.replace('site_compare_gamet_dens_age_', '')

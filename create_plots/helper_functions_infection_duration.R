@@ -486,9 +486,9 @@ generate_age_infection_duration_outputs = function(coord_csv, simulation_output_
     
     gg_plots = plot_duration_ref_sim_comparison(sim_dir, ref_df)
     
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_', cur_site, '.png'), plot=gg_plots[[1]])
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_age_infect_duration_', cur_site, '.png'), plot=gg_plots[[2]])
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_duration_measures_', cur_site, '.png'), plot=gg_plots[[3]])
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_', cur_site, '.png'), plot=gg_plots[[1]], height=4, width=8, units='in')
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_age_infect_duration_', cur_site, '.png'), plot=gg_plots[[2]], height=5, width=8, units='in')
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_duration_measures_', cur_site, '.png'), plot=gg_plots[[3]], height=4, width=8, units='in')
   }
 }
 
