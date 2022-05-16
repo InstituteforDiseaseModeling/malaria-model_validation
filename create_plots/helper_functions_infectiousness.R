@@ -1,7 +1,13 @@
 # helper_functions_infectiousness.R
 library(ggplot2)
 
+
+
+
+########################### create plots  ##################################
+
 plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
+  months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
   
   # remove simulation rows with zero pop
   sim_df = sim_df[sim_df$Pop>0,]
@@ -57,14 +63,62 @@ plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
   combined_df = merge(sim_df_agg2, ref_df, all=TRUE)
   combined_df$source = factor(combined_df$source, levels=c('reference', 'simulation'))
   
+  # change facet values to intuitive labels
+  combined_df$month = months_of_year[combined_df$month]
+  combined_df$month = factor(combined_df$month, levels=months_of_year)
+  all_age_bins = sort(unique(combined_df$agebin))
+  age_bin_labels = paste0('<=', all_age_bins[1], ' years')
+  for(aa in 1:(length(all_age_bins)-1)){
+    age_bin_labels = c(age_bin_labels, paste0(all_age_bins[aa], '-', all_age_bins[aa+1], ' years'))
+  }
+  combined_df$agebin_index = match(combined_df$agebin, all_age_bins)
+  combined_df$agebin = age_bin_labels[combined_df$agebin_index]
+  combined_df$agebin = factor(combined_df$agebin, levels = age_bin_labels)
+  
   # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
   # create plot
   gg = ggplot(data=combined_df, aes(y=fraction_infected_bin, x=densitybin, size=infectiousness_bin_freq, color=source, fill=source))+
     geom_point(alpha=0.5) +
     scale_x_log10() +
-    ylab('fraction of individuals (in each age-density group) who fall in each infectiousness bin') +
+    ylab('percent of mosquitoes infected upon feeding') + #('percent of individuals (in each age-density group) who fall in each infectiousness bin') +
     xlab('gametocyte density') +
+    labs(size = 'fraction of individuals') +
+    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
+    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
     facet_grid(agebin~month)
   return(gg)
 }
 
+
+
+
+########################### main coordinator function  ##################################
+
+generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath){
+  
+  infectiousness_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$infectiousness_to_mosquitos==1))]
+  
+  # determine which of the parasite-density sites have the relevant simulation output
+  available_sites = c()
+  for (ii in 1:length(infectiousness_sites)){
+    if (file.exists(paste0(simulation_output_filepath, '/', infectiousness_sites[ii], '/infectiousness_by_age_density_month.csv'))){
+      available_sites = c(available_sites, infectiousness_sites[ii])
+    }
+  }
+  
+  for (ss in 1:length(available_sites)){
+    cur_site = available_sites[ss]
+    sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/infectiousness_by_age_density_month.csv'))
+    
+    filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infectiousness_to_mosquitos_ref[which(coord_csv$site == cur_site)])
+    ref_df = read.csv(filepath_ref)
+    ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
+    
+    gg_plot = plot_infectiousness_ref_sim_comparison(sim_df, ref_df)
+    gg_plot = gg_plot + ggtitle(available_sites[ss])
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infectiousness_', cur_site, '.png'), plot=gg_plot, width=7.5, height=6, units='in')
+  }
+  
+}

@@ -99,7 +99,7 @@ ref_gamet_sum$gametocyte_dens_freq = ref_gamet_sum$count_gamet / ref_gamet_sum$n
 colnames(ref_gamet_sum)[which(colnames(ref_gamet_sum) =='gamet_dens_bin')] = 'densitybin'
 colnames(ref_gamet_sum)[which(colnames(ref_gamet_sum) =='num_in_age')] = 'bin_total_gamet'
 
-ref_dens_agg = merge(ref_asex_sum, ref_gamet_sum)
+ref_dens_agg = merge(ref_asex_sum, ref_gamet_sum, all=TRUE)
 
 
 # add site name used for simulations
@@ -115,5 +115,10 @@ ref_dens_agg_subset = ref_dens_agg[ref_dens_agg$year %in% include_years,]
 
 write.csv(ref_dens_agg_subset, paste0(output_dir,'/garki_par_dens_by_age_bin.csv'), row.names = FALSE)
 
+# 
+# # debugging
+# View(ref_df[ref_df$Village == 'Matsari' & ref_df$age_bin_year == 5 & ref_df$Seasons =='DC2',])
+# View(ref_asex_sum[ref_asex_sum$Village == 'Matsari' & ref_asex_sum$age_bin_year == 5 & ref_asex_sum$Seasons =='DC2',])
+# View(ref_dens_agg_subset[ref_dens_agg_subset$Village == 'Matsari' & ref_dens_agg_subset$agebin == 5 & ref_dens_agg_subset$Seasons =='DC2',])
 
 
