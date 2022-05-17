@@ -96,6 +96,12 @@ def set_simulation_scenario(simulation, site, csv_path):
 
     # === set up reporters === #
     report_start_day = int(coord_df.at[site, 'report_start_day'])
+    if (not pd.isna(coord_df.at[site, 'par_dens_bins'])) and (not (coord_df.at[site, 'par_dens_bins'] == '')):
+        density_bins_df = pd.read_csv(manifest.input_files_path / 'report_density_bins' / 'density_bin_sets.csv')
+        density_bins_df = density_bins_df[coord_df.at[site, 'par_dens_bins']].tolist()
+        density_bins_df = [x for x in density_bins_df if pd.notnull(x)]
+    else:
+        density_bins_df = [0, 50, 500, 5000, 5000000]
     if coord_df.at[site, 'include_AnnualMalariaSummaryReport']:
         if (not pd.isna(coord_df.at[site, 'annual_summary_report_age_bins'])) and (not (coord_df.at[site, 'annual_summary_report_age_bins'] == '')):
             summary_report_age_bins_df = pd.read_csv(manifest.input_files_path / 'summary_report_age_bins' / 'age_bin_sets.csv')
@@ -107,7 +113,7 @@ def set_simulation_scenario(simulation, site, csv_path):
         add_malaria_summary_report(simulation.task, manifest=manifest, start_day=report_start_day, duration_days=1000000,
                                    reporting_interval=365, age_bins=summary_report_age_bins,
                                    infectiousness_bins=[0, 100], max_number_reports=2000,
-                                   parasitemia_bins=[0, 50, 500, 5000, 5000000], report_description='Annual_Report')
+                                   parasitemia_bins=density_bins_df, report_description='Annual_Report')
 
     if coord_df.at[site, 'include_MonthlyMalariaSummaryReport']:
         if (not pd.isna(coord_df.at[site, 'monthly_summary_report_age_bins'])) and (not (coord_df.at[site, 'monthly_summary_report_age_bins'] == '')):
@@ -121,14 +127,14 @@ def set_simulation_scenario(simulation, site, csv_path):
             add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, duration_days=365,
                                        reporting_interval=30, age_bins=summary_report_age_bins,
                                        infectiousness_bins=[0, 100], max_number_reports=1000,
-                                       parasitemia_bins=[0, 50, 500, 5000, 50000, 5000000], report_description='Monthly_Report_%i' % int(round(yy/365)))
+                                       parasitemia_bins=density_bins_df, report_description='Monthly_Report_%i' % int(round(yy/365)))
 
         if coord_df.at[site, 'infectiousness_to_mosquitos']:
             for yy in range(report_start_day, simulation_duration, 365):
                 add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, duration_days=365,
                                            reporting_interval=30, age_bins=summary_report_age_bins,
                                            infectiousness_bins=[0, 5, 20, 50, 80, 100], max_number_reports=1000,
-                                           parasitemia_bins=[0, 0.5, 5, 50, 500, 5000, 50000, 5000000],
+                                           parasitemia_bins=density_bins_df,
                                            report_description='Infectiousness_Monthly_Report_%i' % int(round(yy / 365)))
 
     if coord_df.at[site, 'include_MalariaPatientReport']:
