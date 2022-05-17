@@ -24,9 +24,9 @@ exp_name_id = {
     # 'validation_ndiop_1993': '69cb33c9-e5cc-ec11-a9f8-b88303911bc1',
     # 'validation_matsari_1970': '6dcb33c9-e5cc-ec11-a9f8-b88303911bc1',
     # 'validation_rafin_marke_1970': '6fcb33c9-e5cc-ec11-a9f8-b88303911bc1',
-    # 'validation_laye_2007': '72cb33c9-e5cc-ec11-a9f8-b88303911bc1',
-    # 'validation_dapelogo_2007': '',  # 6bcb33c9-e5cc-ec11-a9f8-b88303911bc1
-    'validation_koundou_1997': '67cb33c9-e5cc-ec11-a9f8-b88303911bc1',
+    'validation_laye_2007': 'ee4df6e2-5ed5-ec11-a9f8-b88303911bc1',
+    'validation_dapelogo_2007': 'f24df6e2-5ed5-ec11-a9f8-b88303911bc1',  # 6bcb33c9-e5cc-ec11-a9f8-b88303911bc1
+    # 'validation_koundou_1997': '67cb33c9-e5cc-ec11-a9f8-b88303911bc1',
 }
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ sites = ['matsari_1970']
 # sites = ['dongubougou_1999']
 # sites = ['sotuba_1999']
 exp_name = "validation_%s" % sites[0]
-nSims = 5
+nSims = 10
 
 
 # # sweep over site characteristics
