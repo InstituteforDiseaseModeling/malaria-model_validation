@@ -4,7 +4,7 @@ from sys import platform
 from pathlib import Path
 from simulations.load_inputs import load_sites
 
-sites, nSims = load_sites()
+sites, nSims, script_names = load_sites()
 
 input_files = list()
 experiment_files = list()

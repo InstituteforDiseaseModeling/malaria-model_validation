@@ -55,13 +55,13 @@ def render_toc(pdf, outline):
     new_section(pdf, "Table of contents")
     pdf.underline = False
     pdf.y += 5
-    pdf.set_font("Helvetica", size=12)
+    pdf.set_font("Courier", size=10)
     for section in outline:
         link = pdf.add_link()
         pdf.set_link(link, page=section.page_number)
         text = f'{" " * section.level * 2} {section.name}'
         text += (
-            f' {"." * (60 - section.level*2 - len(section.name))} {section.page_number}'
+            f' {"." * (70 - section.level*2 - len(section.name))} {section.page_number}'
         )
         pdf.multi_cell(
             w=pdf.epw,
