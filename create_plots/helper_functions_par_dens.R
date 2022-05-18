@@ -192,7 +192,12 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     gg_plots[[3]] = gg_plots[[3]] + ggtitle(available_sites[ss])
     ggsave(filename=paste0(plot_output_filepath, '/site_compare_par_dens_age_', cur_site, '.png'), plot=gg_plots[[2]], width=8, height=6, units='in')
     ggsave(filename=paste0(plot_output_filepath, '/site_compare_gamet_dens_age_', cur_site, '.png'), plot=gg_plots[[3]], width=8, height=6, units='in')
+    
+    all_sim_sites = merge(all_sim_sites, sim_df, all=TRUE)
+    all_ref_sites = merge(all_ref_sites, ref_df, all=TRUE)
   }
+  
+  get_dens_likelihood(sim_df=all_sim_sites, ref_df=all_ref_sites)
 }
 
 

@@ -84,7 +84,7 @@ if __name__ == "__main__":
     # print("...done.")
     
     parser = argparse.ArgumentParser(description='Process site name')
-    parser.add_argument('--site', '-s', type=str, help='site name', default="matsari_1970")#params.sites[0]) # todo: not sure if we want to make this required argument
+    parser.add_argument('--site', '-s', type=str, help='site name', default="dapelogo_2007")#params.sites[0]) # todo: not sure if we want to make this required argument
     parser.add_argument('--nSims', '-n', type=int, help='number of simulations', default=params.nSims)
     parser.add_argument('--characteristic', '-c', action='store_true', help='site-characteristic sweeps')
     parser.add_argument('--priority', '-p', type=str,

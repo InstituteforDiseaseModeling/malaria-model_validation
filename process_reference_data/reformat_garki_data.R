@@ -82,18 +82,31 @@ ref_df$asexual_field_bin = positive_field_fraction_bins[ref_df$asexual_bin_num]
 ref_df$asexual_dens_bin = parasite_density_bins[ref_df$asexual_bin_num]
 ref_df$gamet_bin_num = findInterval(ref_df$Gametocytemia, c(0, 10^-6 + positive_field_fraction_bins))
 ref_df$gamet_dens_bin = parasite_density_bins[ref_df$gamet_bin_num]
+ref_df = ref_df[ref_df$Parasitemia<=1,]
+ref_df = ref_df[ref_df$Gametocytemia<=1,]
 
+# get counts of individuals in each bin-group
 ref_asex_sum = ref_df %>% group_by(age_bin_year, asexual_dens_bin, Village, Seasons) %>%
   summarise(count_asex = n())
 ref_gamet_sum = ref_df %>% group_by(age_bin_year, gamet_dens_bin, Village, Seasons) %>%
   summarise(count_gamet = n())
 ref_age_totals = ref_df %>% group_by(age_bin_year, Village, Seasons) %>%
   summarise(num_in_age = n())
+
+# for any groupings where there are no individuals that fall in the bins, make sure 0 is included instead of skipping the group
+asex_placeholder_bins = expand.grid('Village'=unique(ref_df$Village), 'Seasons'=unique(ref_df$Seasons), 'age_bin_year'=unique(ref_df$age_bin_year), 'asexual_dens_bin'=parasite_density_bins)
+ref_asex_sum = merge(ref_asex_sum, asex_placeholder_bins, all=TRUE)
+ref_asex_sum$count_asex[is.na(ref_asex_sum$count_asex)] = 0
+if(nrow(ref_asex_sum) != nrow(asex_placeholder_bins)) warning("There appears to be an issue with the number of rows in the asexual parasite density data frame.")
+gamet_placeholder_bins = expand.grid('Village'=unique(ref_df$Village), 'Seasons'=unique(ref_df$Seasons), 'age_bin_year'=unique(ref_df$age_bin_year), 'gamet_dens_bin'=parasite_density_bins)
+ref_gamet_sum = merge(ref_gamet_sum, gamet_placeholder_bins, all=TRUE)
+ref_gamet_sum$count_gamet[is.na(ref_gamet_sum$count_gamet)] = 0
+if(nrow(ref_gamet_sum) != nrow(gamet_placeholder_bins)) warning("There appears to be an issue with the number of rows in the gametocyte density data frame.")
+# combine with the total number of individuals in a group and calculate fraction in each density bin
 ref_asex_sum = merge(ref_asex_sum, ref_age_totals)
 ref_asex_sum$asexual_par_dens_freq = ref_asex_sum$count_asex / ref_asex_sum$num_in_age
 colnames(ref_asex_sum)[which(colnames(ref_asex_sum) =='asexual_dens_bin')] = 'densitybin'
 colnames(ref_asex_sum)[which(colnames(ref_asex_sum) =='num_in_age')] = 'bin_total_asex'
-
 ref_gamet_sum = merge(ref_gamet_sum, ref_age_totals)
 ref_gamet_sum$gametocyte_dens_freq = ref_gamet_sum$count_gamet / ref_gamet_sum$num_in_age
 colnames(ref_gamet_sum)[which(colnames(ref_gamet_sum) =='gamet_dens_bin')] = 'densitybin'
