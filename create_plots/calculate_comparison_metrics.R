@@ -220,93 +220,92 @@ corr_ref_deriv_sim_points = function(combined_df){
 ######### likelihood calculations ##############
 # if the simulation mean is the true population value, what is the probability of observing the reference data (given the study sample size)?
 get_dens_likelihood = function(sim_df, ref_df){
+  sim_df = sim_df[sim_df$Pop >0,]
+  # get the simulation mean across runs
+  if (all(sim_df$Pop ==sim_df$Pop[1])){
+    sim_df_ave= sim_df %>% group_by(Site, agebin, month, densitybin) %>%
+      summarise(sim_asexual_par_dens_freq = mean(asexual_par_dens_freq),
+                sim_gametocyte_dens_freq= mean(gametocyte_dens_freq))
+  } else{
+    warning("Different population sizes found across years within an age group... need to set up weighted averaging of parasite densities.") 
+    # If this warning is triggered, use the population size to calculate the number of individuals in each density bin, then aggregate the sum, then divide by the total aggregated population
+  }
   
-}
-sim_df = sim_df[sim_df$Pop >0,]
-# get the simulation mean across runs
-if (all(sim_df$Pop ==sim_df$Pop[1])){
-  sim_df_ave= sim_df %>% group_by(Site, agebin, month, densitybin) %>%
-    summarise(sim_asexual_par_dens_freq = mean(asexual_par_dens_freq),
-              sim_gametocyte_dens_freq= mean(gametocyte_dens_freq))
-} else{
-  warning("Different population sizes found across years within an age group... need to set up weighted averaging of parasite densities.") 
-  # If this warning is triggered, use the population size to calculate the number of individuals in each density bin, then aggregate the sum, then divide by the total aggregated population
-}
-  
-# remove survey dates from simulation that aren't in reference
-sim_df_ave$site_month = paste0(sim_df_ave$Site, '_month', sim_df_ave$month)
-ref_df$site_month = paste0(ref_df$Site, '_month', ref_df$month)
-sites = intersect(unique(sim_df_ave$site_month), unique(ref_df$site_month))
-sim_df_ave = sim_df_ave[sim_df_ave$site_month %in% sites, ]
-# check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
-for(ss in sites){
-  ages_ref = sort(unique(ref_df$agebin[ref_df$site_month == ss]))
-  ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$site_month == ss]))
-  missing_ages_ref = ages_ref[which(!(ages_ref %in% ages_sim))]
-  missing_ages_sim = ages_sim[which(!(ages_sim %in% ages_ref))]
-  
-  if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
-    print(paste0('Imperfect age match between reference and simulations for site: ', ss))
-    print('...  Mismatched reference / simulation ages are:')
-    print(paste0('     ', missing_ages_ref, ' / ', missing_ages_sim, ','))
-    print('... For age thresholds that differ by less than a year, replacing simulation age with reference age.')
-    
-    # check whether the missing ages are simply off by <1 year. If so, replace simulation age with nearby reference age
-    for(mm in missing_ages_ref){
-      sim_replace_age = missing_ages_sim[which(abs(missing_ages_sim - mm)<1)]
-      if(length(sim_replace_age)==1){
-        sim_df_ave$agebin[sim_df_ave$site_month == ss & sim_df_ave$agebin == sim_replace_age] = mm
-      }
-    }
-    
-    # update sim ages
-    ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$agebin == ss]))
+  # remove survey dates from simulation that aren't in reference
+  sim_df_ave$site_month = paste0(sim_df_ave$Site, '_month', sim_df_ave$month)
+  ref_df$site_month = paste0(ref_df$Site, '_month', ref_df$month)
+  sites = intersect(unique(sim_df_ave$site_month), unique(ref_df$site_month))
+  sim_df_ave = sim_df_ave[sim_df_ave$site_month %in% sites, ]
+  # check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
+  for(ss in sites){
+    ages_ref = sort(unique(ref_df$agebin[ref_df$site_month == ss]))
+    ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$site_month == ss]))
+    missing_ages_ref = ages_ref[which(!(ages_ref %in% ages_sim))]
+    missing_ages_sim = ages_sim[which(!(ages_sim %in% ages_ref))]
     
     if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
-      print('...After adjustment, there remains an imperfect match between reference and simulation age bins.')
-      print(paste0('      Reference has ', length(ages_ref), ' age groups and simulation has ', length(ages_sim), ' age groups.'))
-    } else{
-      print('... All age bins now match.')
+      print(paste0('Imperfect age match between reference and simulations for site: ', ss))
+      print('...  Mismatched reference / simulation ages are:')
+      print(paste0('     ', missing_ages_ref, ' / ', missing_ages_sim, ','))
+      print('... For age thresholds that differ by less than a year, replacing simulation age with reference age.')
+      
+      # check whether the missing ages are simply off by <1 year. If so, replace simulation age with nearby reference age
+      for(mm in missing_ages_ref){
+        sim_replace_age = missing_ages_sim[which(abs(missing_ages_sim - mm)<1)]
+        if(length(sim_replace_age)==1){
+          sim_df_ave$agebin[sim_df_ave$site_month == ss & sim_df_ave$agebin == sim_replace_age] = mm
+        }
+      }
+      
+      # update sim ages
+      ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$agebin == ss]))
+      
+      if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
+        print('...After adjustment, there remains an imperfect match between reference and simulation age bins.')
+        print(paste0('      Reference has ', length(ages_ref), ' age groups and simulation has ', length(ages_sim), ' age groups.'))
+      } else{
+        print('... All age bins now match.')
+      }
     }
   }
-}
   
   
-# consider the simulation mean value to be 'truth,' merge it into the reference data frame
-ref_df = ref_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'count_asex', 'bin_total_asex', 'count_gamet', 'bin_total_gamet')]
-sim_df_ave = sim_df_ave[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'sim_asexual_par_dens_freq', 'sim_gametocyte_dens_freq')]
-combined_df = merge(ref_df, sim_df_ave, all=TRUE)
-combined_df$metric = 'par_dens'
-# remove rows where there is no reference data (sometimes there are different density bins in different sites, so rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
-ref_rows_na = which(is.na(combined_df$count_asex))
-sim_rows_0 = which(combined_df$sim_asexual_par_dens_freq < 0.0001)
-if(all(ref_rows_na %in% sim_rows_0)){
-  combined_df = combined_df[-ref_rows_na,]
-} else{
-  warning('There may be a mismatch in the age bins from the reference data and simulation data for at least one site. No rows were removed.')
-}
-
-# multinomial draw: likelihood of getting the observed distribution of parasite densities assuming the simulations show the true population-level frequencies
-# iterate through groups of month-age-site
-loglik_df = data.frame('site_month'= c(), 'loglikelihood_asex' = c(), 'loglikelihood_gamet' = c())
-site_months = unique(combined_df$site_month)
-for (ss in site_months){
-  loglikelihood_asex = 0
-  loglikelihood_gamet = 0
-  cur_agebins = unique(combined_df$agebin[combined_df$site_month == ss])
-  for (aa in cur_agebins){
-    cur_df = combined_df[combined_df$site_month == ss & combined_df$agebin == aa,]
-    # check that the sum of counts matches the sum column
-    if(sum(cur_df$count_asex) == cur_df$bin_total_asex[1] & sum(cur_df$count_gamet) == cur_df$bin_total_gamet[1] & length(unique(cur_df$bin_total_asex))==1 & length(unique(cur_df$bin_total_gamet))==1){
-      loglikelihood_asex = loglikelihood_asex + log(dmultinom(x=cur_df$count_asex, prob=cur_df$sim_asexual_par_dens_freq))
-      loglikelihood_gamet = loglikelihood_gamet + log(dmultinom(x=cur_df$count_gamet, prob=cur_df$sim_gametocyte_dens_freq))
-    } else{
-      warning(paste0('The sum of individuals across bins in the reference dataset does not match the reported total number of individuals included. This site and age bin is being skipped: ', ss, ' - ', aa))
-    }
+  # consider the simulation mean value to be 'truth,' merge it into the reference data frame
+  ref_df = ref_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'count_asex', 'bin_total_asex', 'count_gamet', 'bin_total_gamet')]
+  sim_df_ave = sim_df_ave[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'sim_asexual_par_dens_freq', 'sim_gametocyte_dens_freq')]
+  combined_df = merge(ref_df, sim_df_ave, all=TRUE)
+  combined_df$metric = 'par_dens'
+  # remove rows where there is no reference data (sometimes there are different density bins in different sites, so rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
+  ref_rows_na = which(is.na(combined_df$count_asex))
+  sim_rows_0 = which(combined_df$sim_asexual_par_dens_freq < 0.0001)
+  if(all(ref_rows_na %in% sim_rows_0)){
+    combined_df = combined_df[-ref_rows_na,]
+  } else{
+    warning('There may be a mismatch in the age bins from the reference data and simulation data for at least one site. No rows were removed.')
   }
-  loglik_df = rbind(loglik_df, data.frame('site_month'= ss, 'loglikelihood_asex' = loglikelihood_asex, 'loglikelihood_gamet' = loglikelihood_gamet))
+  
+  # multinomial draw: likelihood of getting the observed distribution of parasite densities assuming the simulations show the true population-level frequencies
+  # iterate through groups of month-age-site
+  loglik_df = data.frame('site_month'= c(), 'loglikelihood_asex' = c(), 'loglikelihood_gamet' = c())
+  site_months = unique(combined_df$site_month)
+  for (ss in site_months){
+    loglikelihood_asex = 0
+    loglikelihood_gamet = 0
+    cur_agebins = unique(combined_df$agebin[combined_df$site_month == ss])
+    for (aa in cur_agebins){
+      cur_df = combined_df[combined_df$site_month == ss & combined_df$agebin == aa,]
+      # check that the sum of counts matches the sum column
+      if(sum(cur_df$count_asex) == cur_df$bin_total_asex[1] & sum(cur_df$count_gamet) == cur_df$bin_total_gamet[1] & length(unique(cur_df$bin_total_asex))==1 & length(unique(cur_df$bin_total_gamet))==1){
+        loglikelihood_asex = loglikelihood_asex + log(dmultinom(x=cur_df$count_asex, prob=cur_df$sim_asexual_par_dens_freq))
+        loglikelihood_gamet = loglikelihood_gamet + log(dmultinom(x=cur_df$count_gamet, prob=cur_df$sim_gametocyte_dens_freq))
+      } else{
+        warning(paste0('The sum of individuals across bins in the reference dataset does not match the reported total number of individuals included. This site and age bin is being skipped: ', ss, ' - ', aa))
+      }
+    }
+    loglik_df = rbind(loglik_df, data.frame('site_month'= ss, 'loglikelihood_asex' = loglikelihood_asex, 'loglikelihood_gamet' = loglikelihood_gamet))
+  }
+  return(loglik_df)
 }
-
 
 
 
