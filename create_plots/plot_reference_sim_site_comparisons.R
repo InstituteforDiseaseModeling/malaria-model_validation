@@ -16,11 +16,11 @@ library(ggpubr)
 ####################################################################################################
 ##################### setup: filepaths, info on simulations run, source scripts ####################
 ####################################################################################################
+simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/s220506"
 validation_repo_filepath = "/Users/moniqueam/Documents/malaria-model_validation/"
 simulation_coordinator_path = paste0(validation_repo_filepath, "/simulation_inputs/simulation_coordinator.csv")
 base_script_plot_filepath = paste0(validation_repo_filepath, "/create_plots")
 base_reference_filepath = paste0(validation_repo_filepath, "/reference_datasets")
-simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/s220506"
 # plot_output_filepath = paste0(simulation_output_filepath, "/_plots")
 plot_output_filepath = paste0(validation_repo_filepath, "/report/_plots")
 

@@ -8,7 +8,7 @@ library(dplyr)
 library(RColorBrewer)
 
 
-############################ helper functions #########################################
+############################ helper function #########################################
 
 # get average parasite densities in each age bin, weighting all ages in bin equally (e.g., not weighted by population size)
 get_age_bin_averages = function(sim_df){
@@ -24,6 +24,8 @@ get_age_bin_averages = function(sim_df){
 }
 
 
+
+########################## plot parasite density comparisons with reference ####################
 
 # stacked barplots of parasite density bins by age
 plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
@@ -147,15 +149,8 @@ plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
     xlab('gametocyte density bin') +
     scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
                                   "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    # scale_fill_brewer(palette = "BrBG") +
-    # scale_fill_manual(values=colors, limits=names(colors)) +
     facet_grid(agebin~month)
 
-  
-  # = = = = = = = = = #
-  # plot cumulative densities
-  # = = = = = = = = = #
-  
   return(list(gg1,gg2, gg3))
 }
 
@@ -163,6 +158,7 @@ plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
 
 
 ########################### main coordinator function  ##################################
+
 generate_parasite_density_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath){
   
   par_dens_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
@@ -174,7 +170,7 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     }
   }
   
-  # TODO combine dataframes across sites
+  # iterate through sites, grabbing relevant reference and simulation data to plot; also combine data into a dataframe containing all sites
   all_sim_sites = data.frame()
   all_ref_sites = data.frame()
   for (ss in 1:length(available_sites)){
@@ -197,50 +193,8 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     all_ref_sites = merge(all_ref_sites, ref_df, all=TRUE)
   }
   
-  get_dens_likelihood(sim_df=all_sim_sites, ref_df=all_ref_sites)
-}
-
-
-
-############################ only execute when script run on its own #########################################
-
-if (sys.nframe() == 0){
-  
-  
-  ############################ setup: filepaths and info on simulations run #################################
-  # coordinator csv - get site names for parasite density simulations
-  simulation_coordinator_path = "/Users/moniqueam/Documents/malaria-model_validation/simulation_inputs/simulation_coordinator.csv"
-  base_reference_filepath = "/Users/moniqueam/Documents/malaria-model_validation/reference_datasets"
-  simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output"
-  plot_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/_plots"
-  
-  
-  coord_csv = read.csv(simulation_coordinator_path)
-  par_dens_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
-  
-  # determine which of the parasite-density sites have the relevant simulation output
-  available_sites = c()
-  for (ii in 1:length(par_dens_sites)){
-    if (file.exists(paste0(simulation_output_filepath, '/', par_dens_sites[ii], '/parasite_densities_by_age_month.csv'))){
-      available_sites = c(available_sites, par_dens_sites[ii])
-    }
-  }
-  
-  
-  for (ss in 1:length(available_sites)){
-    cur_site = available_sites[ss]
-    sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/parasite_densities_by_age_month.csv'))
-    age_agg_sim_df = get_age_bin_averages(sim_df)
-    
-    filepath_ref = paste0(base_reference_filepath, '/', coord_csv$age_parasite_density_ref[which(coord_csv$site == cur_site)])
-    ref_df = read.csv(filepath_ref)
-    ref_df = ref_df[tolower(ref_df$Site) == tolower(cur_site),]
-    
-    gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
-    gg_plots[[2]] = gg_plots[[2]] + ggtitle(available_sites[ss])
-    ggsave(filename=paste0(plot_output_filepath, '/par_dens_age_', cur_site, '.pdf'), plot=gg_plots[[2]])
-  }
-  
+  loglik_df = get_dens_likelihood(sim_df=all_sim_sites, ref_df=all_ref_sites)
+  write.csv(paste0(plot_output_filepath, '/loglikelihoods_par_dens.csv'))
 }
 
 
