@@ -50,6 +50,12 @@ def set_param_fn(config):
     config.parameters.Enable_Initial_Prevalence = 1
     config.parameters.Vector_Species_Params = []
     config.parameters.Start_Time = 0
+    # update microscopy parameters
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Gametocytes = 0  # 20
+    config.parameters.Report_Detection_Threshold_Blood_Smear_Parasites = 0  # 20
+    config.parameters.Report_Gametocyte_Smear_Sensitivity = 0.01  # 0.1
+    config.parameters.Report_Parasite_Smear_Sensitivity = 0.01  # 0.1
+
     # config.parameters.Clinical_Fever_Threshold_High = 0.1
     # config.parameters.Clinical_Fever_Threshold_Low = 0.1
     # config.parameters.pop("Serialized_Population_Filenames")
