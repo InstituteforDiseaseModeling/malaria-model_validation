@@ -13,7 +13,17 @@ from simulations.analyzers.MonthlySummaryReportAnalyzer import MonthlySummaryRep
 from simulations.wait_for_experiment import check_experiment
 
 
-def run_analyzers(site, characteristic=False):
+def run_analyzers(site: str, characteristic: bool = False) -> (bool, str):
+    """
+    Wait for experiment to be done and run relevant analyzers for site on Comps with SSMT
+    Args:
+        site ():
+        characteristic ():
+
+    Returns: If experiment is succeeded, returns analyzer work item status and id,
+             if not, return experiment status and id.
+
+    """
     platform = Platform(manifest.platform_name)
     comps_id_file = get_comps_id_filename(site=site)
     with open(comps_id_file, 'r') as id_file:

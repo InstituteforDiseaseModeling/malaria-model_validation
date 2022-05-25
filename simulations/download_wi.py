@@ -5,12 +5,19 @@ from simulations.helpers import get_comps_id_filename, get_suite_id
 
 from idmtools.core.platform_factory import Platform
 from idmtools_platform_comps.utils.download.download import DownloadWorkItem
-# from idmtools.analysis.analyze_manager import AnalyzeManager
-# from idmtools.analysis.download_analyzer import DownloadAnalyzer
 from idmtools.core import ItemType
 
 
-def download_output(site, platform=None):
+def download_output(site: str, platform: Platform = None) -> bool:
+    """
+    Download output csv files to output folder from analyzer work item for given site.
+    Args:
+        site ():
+        platform ():
+
+    Returns: status of download work item
+
+    """
     if not platform:
         platform = Platform(manifest.platform_name)
     analyzer_id_file = get_comps_id_filename(site, level=2)
@@ -39,19 +46,6 @@ def download_output(site, platform=None):
             id_file.write(dl_wi.uid.hex)
 
     return dl_wi.succeeded
-
-    #
-    # # Arg option for analyzer init are uid, working_dir, data in the method map (aka select_simulation_data),
-    # # and filenames
-    # # In this case, we want to provide a filename to analyze
-    # filenames = [f'{site}/**']
-    # # Initialize the analyser class with the path of the output files to download
-    # analyzers = [DownloadAnalyzer(filenames=filenames, output_path='download')]
-    #
-    # # Specify the id Type, in this case an Experiment
-    # manager = AnalyzeManager(ids=[(wi_id, ItemType.WORKFLOW_ITEM)],
-    #                          analyzers=analyzers)
-    # manager.analyze()
 
 
 if __name__ == '__main__':
