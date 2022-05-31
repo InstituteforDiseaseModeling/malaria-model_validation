@@ -343,7 +343,7 @@ def get_comps_id_filename(site: str, level: int = 0):
     elif level == 2:
         return folder_name + site + '_analyzers'
     else:
-        return folder_name + site + '_done'
+        return folder_name + site + '_download'
 
 
 def load_coordinator_df(characteristic=False, set_index=True):
