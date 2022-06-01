@@ -1,33 +1,42 @@
 import os
+import glob
 import pathlib
 from sys import platform
 from pathlib import Path
 from simulations.load_inputs import load_sites
+import simulations.manifest as manifest
+from simulations.helpers import get_comps_id_filename
 
 sites, nSims, script_names = load_sites()
 
-input_files = list()
+id_folder = manifest.comps_id_folder
+input_files = [manifest.suite_id_file]
 experiment_files = list()
+analyzers_files = list()
 
 
-def get_command(site: str=None, script="run_sims.py", python_version: str=None, n: int=0):
+def get_command(script="run_sims.py", python_version: str=None, site: str=None, n: int=0):
     extra_arguments = ''
+    if site:
+        extra_arguments += ' -s ' + site
     if n:
-        extra_arguments = ' -n ' + str(n)
+        extra_arguments += ' -n ' + str(n)
+
     if python_version:
-        command = python_version + " " + script + " -s " + site + extra_arguments
+        command = python_version + " " + script  + extra_arguments
     elif platform == "linux":
-        command = "python3 " + script + " -s " + site + extra_arguments
+        command = "python3 " + script + extra_arguments
     elif platform == "win32":
-        command = "python " + script + " -s " + site + extra_arguments
+        command = "python " + script + extra_arguments
     else:
         print("Unknown OS")
         raise Exception  
     return command
 
 for site in sites:
-    experiment_files.append(f'COMPS_ID/{site}_COMPS_ID_submit')
-    input_files.append(f'COMPS_ID/{site}_COMPS_ID_done')
+    experiment_files.append(get_comps_id_filename(site, level=0))
+    analyzers_files.append(get_comps_id_filename(site, level=2))
+    input_files.append(get_comps_id_filename(site, level=3)) # todo: change to a output file from plotting rules
 
 print( input_files )
 
@@ -40,10 +49,41 @@ rule clean:
     input: 
     output: 
     run:
-        for input_file in input_files:
-            if os.path.exists( input_file ):
-                os.remove(input_file)
-        for input_file in experiment_files:
-            if os.path.exists( input_file ):
-                os.remove(input_file)
+        path_all = glob.glob (id_folder + "/*")
+        extension=('trickgit')
+        path_remove=[filename for filename in path_all if not filename.endswith (extension)]
+        for filePath in path_remove:
+            if os.path.exists(filePath):
+                os.remove(filePath)
+
+rule clean_exp:
+    input:
+    output:
+    run:
+        for experiment_file in experiment_files:
+            if os.path.exists(experiment_file):
+                os.remove(experiment_file)
+
+rule clean_ana:
+    input:
+    output:
+    run:
+        for analyzers_file in analyzers_files:
+            if os.path.exists(analyzers_file):
+                os.remove(analyzers_file)
+
+rule clean_download:
+    input:
+    output:
+    run:
+        for download_file in input_files[1:]: # keep the suite_id file
+            if os.path.exists(download_file):
+                os.remove(download_file)
+
+rule save_exp_to_suite:
+    input: experiment_files
+    output: f'{manifest.suite_id_file}'
+    priority: 10
+    run:
+        shell(get_command(script="add_suite.py"))
 

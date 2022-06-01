@@ -62,14 +62,15 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
         builder.add_sweep_definition(set_simulation_scenario_for_matched_site, [site])
 
     # create experiment from builder
-    print( f"Prompting for COMPS creds if necessary..." )
+    print(f"Prompting for COMPS creds if necessary...")
     experiment = Experiment.from_builder(builder, task, name=exp_name)
 
     # The last step is to call run() on the ExperimentManager to run the simulations.
     experiment.run(wait_until_done=False, platform=platform)
 
     # Save experiment id to file
-    with open(f"COMPS_ID/{site}_COMPS_ID_submit", "w") as fd:
+    comps_id_file = get_comps_id_filename(site=site)
+    with open(comps_id_file, "w") as fd:
         fd.write(experiment.uid.hex)
     print()
     print(experiment.uid.hex)

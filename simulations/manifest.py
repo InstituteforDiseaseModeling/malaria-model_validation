@@ -12,13 +12,15 @@ eradication_path = CURRENT_DIR / "download/Eradication"
 # Create 'Assets' directory or change to a path you prefer. idmtools will upload files found here.
 assets_input_dir = CURRENT_DIR / "Assets"
 plugins_folder = CURRENT_DIR / "download/reporter_plugins"
-analyzed_ouptut_path = PROJECT_DIR / 'EMOD_validation_recalibration/simulation_output'
+analyzed_ouptut_path = PROJECT_DIR / "EMOD_validation_recalibration/simulation_output"
+comps_id_folder = "./COMPS_ID/"
+suite_id_file = comps_id_folder + 'Suite'
 
 # TODO: remove following lines
 input_files_path = PROJECT_DIR / "simulation_inputs"
 asset_path = input_files_path / "demographics_files/demographics_vital_1000.json"
-# todo: add path for the csv file for site charatistic sweeps
 simulation_coordinator_path = input_files_path / "simulation_coordinator.csv"
+sweep_sim_coordinator_path = input_files_path / "sweep_sim_coordinator.csv"
 intervention_visualizer_path = CURRENT_DIR / "download/index.html"
 
 my_ep4_assets = None
@@ -29,4 +31,3 @@ platform_name = "Calculon"
 priority = 'Normal'
 node_group_private = 'idm_48cores'
 node_group = 'idm_abcd'
-

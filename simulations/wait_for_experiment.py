@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 import argparse
-import shutil
 from idmtools.core.platform_factory import Platform
 from idmtools.core import ItemType
-# from idmtools.entities.experiment import Experiment
 
 import simulations.params as params
+import simulations.manifest as manifest
+from simulations.helpers import get_comps_id_filename
 
-def check_experiment(site):
-    foldername = "COMPS_ID/"
-    compid_file = foldername + site + '_COMPS_ID_submit'
-    compid_file_done = foldername + site + '_COMPS_ID_done'
+
+def check_experiment(site, platform=None):
+    compid_file = get_comps_id_filename(site=site)
     with open(compid_file, 'r') as id_file:
         exp_id = id_file.readline()
 
-    platform = Platform("Calculon")
+    if not platform:
+        platform = Platform(manifest.platform_name)
     experiment = platform.get_item(item_id=exp_id, item_type=ItemType.EXPERIMENT)
 
     # Wait for the experiment to be done in Comps.
@@ -25,7 +25,6 @@ def check_experiment(site):
         print(f"Experiment {experiment.uid} failed.\n")
     else:
         print(f"Experiment {experiment.uid} succeeded.")
-        shutil.copy(compid_file, compid_file_done)
 
     return experiment.succeeded
 
@@ -35,3 +34,4 @@ if __name__ == '__main__':
     parser.add_argument('--site', '-s', type=str, help='site name', default=params.sites[0]) # not sure if we want to make this required argument
     args = parser.parse_args()
     check_experiment(args.site)
+

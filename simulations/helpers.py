@@ -157,8 +157,7 @@ def set_simulation_scenario(simulation, site, csv_path):
 
 
 set_simulation_scenario_for_matched_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
-# TODO: update csv filename in manifest.py and next line
-set_simulation_scenario_for_characteristic_site = partial(set_simulation_scenario, csv_path=manifest.simulation_coordinator_path)
+set_simulation_scenario_for_characteristic_site = partial(set_simulation_scenario, csv_path=manifest.sweep_sim_coordinator_path)
 
 
 def build_standard_campaign_object(manifest):
@@ -333,5 +332,34 @@ def build_demog():
     demog = Demographics.from_file(manifest)
 
     return demog
+
+
+def get_comps_id_filename(site: str, level: int = 0):
+    folder_name = manifest.comps_id_folder
+    if level == 0:
+        return folder_name + site + '_exp_submit'
+    elif level == 1:
+        return folder_name + site + '_exp_done'
+    elif level == 2:
+        return folder_name + site + '_analyzers'
+    else:
+        return folder_name + site + '_download'
+
+
+def load_coordinator_df(characteristic=False, set_index=True):
+    csv_file = manifest.sweep_sim_coordinator_path if characteristic else manifest.simulation_coordinator_path
+    coord_df = pd.read_csv(csv_file)
+    if set_index:
+        coord_df = coord_df.set_index('site')
+    return coord_df
+
+
+def get_suite_id():
+    if os.path.exists(manifest.suite_id_file):
+        with open(manifest.suite_id_file, 'r') as id_file:
+            suite_id = id_file.readline()
+        return suite_id
+    else:
+        return 0
 
 
