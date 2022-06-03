@@ -83,7 +83,7 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     combined_df = combined_df.astype(convert_dict)
 
     # colors
-    len_density_bin = len(combined_df['densitybin'].unique())
+    # len_density_bin = len(combined_df['densitybin'].unique())
     # num_colors = len_density_bin + 1 if len_density_bin % 2 == 0 else len_density_bin
     # colors = brewer.pal(n=num_colors, name='BrBG')
     # names(colors) = sorted(combined_df['densitybin'].unique())

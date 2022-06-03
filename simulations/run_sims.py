@@ -11,7 +11,7 @@ from emodpy.emod_task import EMODTask
 from emodpy_malaria.reporters.builtin import add_report_intervention_pop_avg
 
 from simulations.helpers import set_param_fn, update_sim_random_seed, set_simulation_scenario_for_characteristic_site, \
-set_simulation_scenario_for_matched_site, get_comps_id_filename
+    set_simulation_scenario_for_matched_site, get_comps_id_filename
 
 import simulations.params as params
 from simulations import manifest as manifest
@@ -29,7 +29,7 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
 
     # create EMODTask 
     print("Creating EMODTask (from files)...")
-    
+
     task = EMODTask.from_default2(config_path="my_config.json",
                                   eradication_path=str(manifest.eradication_path),
                                   ep4_custom_cb=None,
@@ -37,7 +37,7 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
                                   schema_path=str(manifest.schema_file),
                                   param_custom_cb=set_param_fn,
                                   demog_builder=None,
-        )
+                                  )
 
     # add html intervention-visualizer asset to COMPS
     add_inter_visualizer = False
@@ -83,9 +83,10 @@ if __name__ == "__main__":
     # print("Retrieving Eradication and schema.json from Bamboo...")
     # get_model_files( plan, manifest )
     # print("...done.")
-    
+
     parser = argparse.ArgumentParser(description='Process site name')
-    parser.add_argument('--site', '-s', type=str, help='site name', default="test_site")#params.sites[0]) # todo: not sure if we want to make this required argument
+    parser.add_argument('--site', '-s', type=str, help='site name',
+                        default="test_site")  # params.sites[0]) # todo: not sure if we want to make this required argument
     parser.add_argument('--nSims', '-n', type=int, help='number of simulations', default=params.nSims)
     parser.add_argument('--characteristic', '-c', action='store_true', help='site-characteristic sweeps')
     parser.add_argument('--priority', '-p', type=str,
