@@ -146,22 +146,22 @@ section_and_content = {'Vector model overview':
                                  ],
                             'Model implementation structure':
                                 ['There are two categories of possible implementations of the basic model, each with different '
-                                    'computational efficiencies, resolutions, and flexibilities. The first is an individual model, '
-                                    'where it simulates every individual mosquito in the population or can utilize a sampled subset'
-                                    ' of mosquitoes to represent the population as the whole. The second is a modified cohort '
-                                    'simulation, with or without explicit mosquito ages.',
-                                    None
-                                    ]
+                                 'computational efficiencies, resolutions, and flexibilities. The first is an individual model, '
+                                 'where it simulates every individual mosquito in the population or can utilize a sampled subset'
+                                 ' of mosquitoes to represent the population as the whole. The second is a modified cohort '
+                                 'simulation, with or without explicit mosquito ages.',
+                                 None
+                                 ]
                             },
                        'Malaria model':
                            {'Malaria model':
-                                [
-                                    'The malaria model inherits the functionality of the vector model and introduces human immunity,'
-                                    ' within-host parasite dynamics, effects of antimalarial drugs, and other aspects of malaria '
-                                    'biology to simulate malaria transmission. For example, individuals can have multiple infections'
-                                    ' and both innate and adaptive responses to antigens. To use the malaria model, set the '
-                                    'configuration parameter Simulation_Type to MALARIA_SIM.',
-                                    None],
+                                ['The malaria model inherits the functionality of the vector model and introduces human immunity,'
+                                 ' within-host parasite dynamics, effects of antimalarial drugs, and other aspects of malaria '
+                                 'biology to simulate malaria transmission. For example, individuals can have multiple infections'
+                                 ' and both innate and adaptive responses to antigens. To use the malaria model, set the '
+                                 'configuration parameter Simulation_Type to MALARIA_SIM.',
+                                 None
+                                 ],
                             'Model components':
                                 ['The malaria model is complex, with numerous configurable parameters. '
                                  'The following network diagram breaks down the model into various model components, '
@@ -171,7 +171,8 @@ section_and_content = {'Vector model overview':
                                  'components; this is because the network is drawn with increased detail in order to '
                                  'provide clarity in how the model functions and the components interact. The following '
                                  'pages will describe in detail how the structural components function.',
-                                 'malaria_network_schematic.png']
+                                 'malaria_network_schematic.png'
+                                 ]
                             }
                        }
 
