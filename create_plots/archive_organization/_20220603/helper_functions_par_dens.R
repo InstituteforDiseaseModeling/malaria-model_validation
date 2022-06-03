@@ -15,11 +15,17 @@ get_age_bin_averages = function(sim_df){
   age_bins = unique(sim_df$agebin)
   # remove rows where there are zero people of the measured age bin in the simulation
   sim_df = sim_df[sim_df$Pop > 0,]
-  # get average across all years in age bins and across simulation run seeds
-  age_agg_sim_df = sim_df %>% group_by(month, agebin, densitybin, Site) %>%
-    summarise(asexual_par_dens_freq = mean(asexual_par_dens_freq), 
-              gametocyte_dens_freq = mean(gametocyte_dens_freq), 
-              Pop = mean(Pop))
+  # get the simulation mean across runs
+  if (all(sim_df$Pop ==sim_df$Pop[1])){
+    # get average across all years in age bins and across simulation run seeds
+    age_agg_sim_df = sim_df %>% group_by(month, agebin, densitybin, Site) %>%
+      summarise(asexual_par_dens_freq = mean(asexual_par_dens_freq), 
+                gametocyte_dens_freq = mean(gametocyte_dens_freq), 
+                Pop = mean(Pop))
+  } else{
+    warning("Different population sizes found across years within an age group... need to set up weighted averaging of parasite densities.") 
+    # If this warning is triggered, use the population size to calculate the number of individuals in each density bin, then aggregate the sum, then divide by the total aggregated population
+  }
   return(age_agg_sim_df)
 }
 
@@ -28,7 +34,7 @@ get_age_bin_averages = function(sim_df){
 ########################## plot parasite density comparisons with reference ####################
 
 # stacked barplots of parasite density bins by age
-plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
+plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df, age_agg_bench_df){
   months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
   
   # subset simulation output to months in reference dataset
@@ -159,7 +165,7 @@ plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df){
 
 ########################### main coordinator function  ##################################
 
-generate_parasite_density_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath){
+generate_parasite_density_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){
   
   par_dens_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
   # determine which of the parasite-density sites have the relevant simulation output
@@ -173,6 +179,7 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
   # iterate through sites, grabbing relevant reference and simulation data to plot; also combine data into a dataframe containing all sites
   all_sim_sites = data.frame()
   all_ref_sites = data.frame()
+  all_bench_sites = data.frame()
   for (ss in 1:length(available_sites)){
     cur_site = available_sites[ss]
     sim_df = read.csv(paste0(simulation_output_filepath, '/', cur_site, '/parasite_densities_by_age_month.csv'))
@@ -183,14 +190,20 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     ref_df = ref_df[tolower(ref_df$Site) == tolower(cur_site),]
     ref_df$Site = tolower(ref_df$Site)
     
-    gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df)
+    if(!is.na(benchmark_simulation_filepath)){
+      bench_df = read.csv(paste0(benchmark_simulation_filepath, '/', cur_site, '/parasite_densities_by_age_month.csv'))
+      age_agg_bench_df = get_age_bin_averages(sim_df=bench_df)
+    } else age_agg_bench_df = data.frame()
+    
+    gg_plots = plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df, age_agg_bench_df)
     gg_plots[[2]] = gg_plots[[2]] + ggtitle(available_sites[ss])
     gg_plots[[3]] = gg_plots[[3]] + ggtitle(available_sites[ss])
     ggsave(filename=paste0(plot_output_filepath, '/site_compare_par_dens_age_', cur_site, '.png'), plot=gg_plots[[2]], width=8, height=6, units='in')
     ggsave(filename=paste0(plot_output_filepath, '/site_compare_gamet_dens_age_', cur_site, '.png'), plot=gg_plots[[3]], width=8, height=6, units='in')
     
-    all_sim_sites = merge(all_sim_sites, sim_df, all=TRUE)
+    all_sim_sites = merge(all_sim_sites, age_agg_sim_df, all=TRUE)
     all_ref_sites = merge(all_ref_sites, ref_df, all=TRUE)
+    all_bench_sites = merge(all_bench_sites, age_agg_bench_df, all=TRUE)
   }
   
   loglik_df = get_dens_likelihood(sim_df=all_sim_sites, ref_df=all_ref_sites)

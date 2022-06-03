@@ -1,0 +1,240 @@
+# helpers_loglikelihood_and_metrics.R
+
+#  These functions calculate likelihoods or other comparison metrics evaluating how well simulation and reference data agree.
+#    The main functions return a data frame where each row corresponds to a site (or site-month) and columns contain the quantitative measure. 
+#    Some functions also return a ggplot corresponding to the quantitative comparison.
+
+# The loglikelihood evaluations are approximate and generally assume that the mean simulated value is the 'true' population value and ask how 
+#    likely it was to observe the reference dataset (given the study sample size).
+
+library(broom)
+library(tidyverse)
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+# prevalence
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+get_prev_likelihood = function(combined_df, sim_column='simulation_value'){
+  combined_df$prob_pos_sim = combined_df[,sim_column]
+  # only include reference sites where the sample sizes were reported
+  combined_df = combined_df[!is.na(combined_df$total_sampled),]
+  sites = unique(combined_df$site_month)
+  
+  # likelihood approximated for each age group as probability of obtaining observed num_pos from total_sampled if simulation_value is true prevalence
+  loglik_by_site = rep(NA, length(sites))
+  for(ss in 1:length(sites)){
+    cur_df = combined_df[combined_df$site_month==sites[ss],]
+    # get product of probabilities for each age group. If any age groups don't match, entire site is NA.
+    if(!any(is.na(cur_df$prob_pos_sim))){
+      loglik_total=0
+      for(rr in 1:nrow(cur_df)){  # iterate through age groups (each row corresponds to a different age group)
+        loglik_total = loglik_total + log(dbinom(x=cur_df$num_pos[rr], size=cur_df$total_sampled[rr], prob=cur_df$prob_pos_sim[rr]))
+      }
+      loglik_by_site[ss] = loglik_total
+    }
+  }
+  loglik_df = data.frame('site_month' = sites, 'loglikelihood'=loglik_by_site)
+  
+  return(loglik_df)
+}
+
+
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+# parasite density
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+get_dens_likelihood = function(sim_df, ref_df){
+
+  # remove survey dates from simulation that aren't in reference
+  sim_df_ave$site_month = paste0(sim_df_ave$Site, '_month', sim_df_ave$month)
+  ref_df$site_month = paste0(ref_df$Site, '_month', ref_df$month)
+  sites = intersect(unique(sim_df_ave$site_month), unique(ref_df$site_month))
+  sim_df_ave = sim_df_ave[sim_df_ave$site_month %in% sites, ]
+  # check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
+  for(ss in sites){
+    ages_ref = sort(unique(ref_df$agebin[ref_df$site_month == ss]))
+    ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$site_month == ss]))
+    missing_ages_ref = ages_ref[which(!(ages_ref %in% ages_sim))]
+    missing_ages_sim = ages_sim[which(!(ages_sim %in% ages_ref))]
+    
+    if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
+      print(paste0('Imperfect age match between reference and simulations for site: ', ss))
+      print('...  Mismatched reference / simulation ages are:')
+      print(paste0('     ', missing_ages_ref, ' / ', missing_ages_sim, ','))
+      print('... For age thresholds that differ by less than a year, replacing simulation age with reference age.')
+      
+      # check whether the missing ages are simply off by <1 year. If so, replace simulation age with nearby reference age
+      for(mm in missing_ages_ref){
+        sim_replace_age = missing_ages_sim[which(abs(missing_ages_sim - mm)<1)]
+        if(length(sim_replace_age)==1){
+          sim_df_ave$agebin[sim_df_ave$site_month == ss & sim_df_ave$agebin == sim_replace_age] = mm
+        }
+      }
+      
+      # update sim ages
+      ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$agebin == ss]))
+      
+      if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
+        print('...After adjustment, there remains an imperfect match between reference and simulation age bins.')
+        print(paste0('      Reference has ', length(ages_ref), ' age groups and simulation has ', length(ages_sim), ' age groups.'))
+      } else{
+        print('... All age bins now match.')
+      }
+    }
+  }
+  
+  
+  # consider the simulation mean value to be 'truth,' merge it into the reference data frame
+  ref_df = ref_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'count_asex', 'bin_total_asex', 'count_gamet', 'bin_total_gamet')]
+  sim_df_ave = sim_df_ave[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'sim_asexual_par_dens_freq', 'sim_gametocyte_dens_freq')]
+  combined_df = merge(ref_df, sim_df_ave, all=TRUE)
+  combined_df$metric = 'par_dens'
+  # remove rows where there is no reference data (sometimes there are different density bins in different sites, so rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
+  ref_rows_na = which(is.na(combined_df$count_asex))
+  sim_rows_0 = which(combined_df$sim_asexual_par_dens_freq < 0.0001)
+  if(all(ref_rows_na %in% sim_rows_0)){
+    combined_df = combined_df[-ref_rows_na,]
+  } else{
+    warning('There may be a mismatch in the age bins from the reference data and simulation data for at least one site. No rows were removed.')
+  }
+  
+  # multinomial draw: likelihood of getting the observed distribution of parasite densities assuming the simulations show the true population-level frequencies
+  # iterate through groups of month-age-site
+  loglik_df = data.frame('site_month'= c(), 'loglikelihood_asex' = c(), 'loglikelihood_gamet' = c())
+  site_months = unique(combined_df$site_month)
+  for (ss in site_months){
+    loglikelihood_asex = 0
+    loglikelihood_gamet = 0
+    cur_agebins = unique(combined_df$agebin[combined_df$site_month == ss])
+    for (aa in cur_agebins){
+      cur_df = combined_df[combined_df$site_month == ss & combined_df$agebin == aa,]
+      # check that the sum of counts matches the sum column
+      if(sum(cur_df$count_asex) == cur_df$bin_total_asex[1] & sum(cur_df$count_gamet) == cur_df$bin_total_gamet[1] & length(unique(cur_df$bin_total_asex))==1 & length(unique(cur_df$bin_total_gamet))==1){
+        loglikelihood_asex = loglikelihood_asex + log(dmultinom(x=cur_df$count_asex, prob=cur_df$sim_asexual_par_dens_freq))
+        loglikelihood_gamet = loglikelihood_gamet + log(dmultinom(x=cur_df$count_gamet, prob=cur_df$sim_gametocyte_dens_freq))
+      } else{
+        warning(paste0('The sum of individuals across bins in the reference dataset does not match the reported total number of individuals included. This site and age bin is being skipped: ', ss, ' - ', aa))
+      }
+    }
+    loglik_df = rbind(loglik_df, data.frame('site_month'= ss, 'loglikelihood_asex' = loglikelihood_asex, 'loglikelihood_gamet' = loglikelihood_gamet))
+  }
+  return(loglik_df)
+}
+
+
+
+
+
+
+
+
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+
+
+
+
+
+# mean relative difference between reference and matched simulation values across ages
+#   for a given age, calculate (reference - simulation)/reference. Report the mean across all ages
+calc_mean_rel_diff = function(combined_df){
+  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
+  combined_df$rel_diff = abs((combined_df$reference_value - combined_df$simulation_value) / combined_df$reference_value)
+  combined_df$abs_diff = abs(combined_df$reference_value - combined_df$simulation_value)
+  mean_diff_df = combined_df %>% group_by(Site) %>%
+    summarise(mean_rel_diff = mean(rel_diff),
+              mean_abs_diff = mean(abs_diff))
+  return(mean_diff_df)
+}
+calc_mean_rel_slope_diff = function(combined_df){
+  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
+  combined_df$rel_diff = abs((combined_df$ref_slope_to_next - combined_df$sim_slope_to_next) / combined_df$ref_slope_to_next)
+  combined_df$abs_diff = abs(combined_df$ref_slope_to_next - combined_df$sim_slope_to_next)
+  mean_slope_diff_df = combined_df %>% group_by(Site) %>%
+    summarise(mean_rel_slope_diff = mean(rel_diff, na.rm=TRUE),
+              mean_abs_slpe_diff = mean(abs_diff, na.rm=TRUE))
+  return(mean_slope_diff_df)
+}
+
+# correlation between reference and matched simulation data points
+corr_ref_sim_points = function(combined_df){
+  metric = combined_df$metric[1]
+  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
+  min_value = min(c(combined_df$reference_value, combined_df$simulation_value), na.rm=TRUE)
+  max_value = max(c(combined_df$reference_value, combined_df$simulation_value), na.rm=TRUE)
+  gg = ggplot(combined_df, aes(x=reference_value, y=simulation_value, color=Site, fill=Site))+
+    geom_point(size=2) + 
+    ylab(paste0('simulation ', metric)) + 
+    xlab(paste0('reference ', metric)) + 
+    ggtitle('Ref versus sim values') +
+    coord_fixed(ratio=1, xlim=c(min_value, max_value), ylim=c(min_value, max_value))+
+    geom_abline(slope=1,intercept=0, color='grey', alpha=0.5) + 
+    geom_smooth(method = "lm", fill = NA, se=FALSE, alpha=0.5, size=0.5) +
+    theme_classic() +
+    theme(plot.title = element_text(size=12))
+  
+  
+  lm_fit = combined_df %>% nest(data = -Site) %>% mutate(model = map(data, ~lm(simulation_value ~ reference_value, data = .)), tidied = map(model, tidy)) %>% unnest(tidied)
+  lm_info = combined_df %>% nest(data = -Site) %>% mutate(model = map(data, ~lm(simulation_value ~ reference_value, data = .)), tidied = map(model, glance)) %>% unnest(tidied)
+  
+  lm_summary = merge(lm_fit[c('Site', 'term', 'estimate')], lm_info[c('Site', 'r.squared', 'p.value', 'nobs')], by='Site', all=TRUE)
+  lm_summary = lm_summary[lm_summary$term!='(Intercept)',]
+  colnames(lm_summary)[colnames(lm_summary)=='estimate'] = 'slope'
+  return(list(gg, lm_summary))
+}
+
+
+# correlation between derivatives moving between ages
+corr_ref_deriv_sim_points = function(combined_df){
+  metric = combined_df$metric[1]
+  # calculate the slope when moving between age groups
+  combined_df$sim_slope_to_next = NA
+  combined_df$ref_slope_to_next = NA
+  sites = unique(combined_df$Site)
+  for(ss in sites){
+    cur_df = combined_df[combined_df$Site == ss,]
+    cur_ages = sort(unique(cur_df$mean_age))
+    for(aa in 1:(length(cur_ages)-1)){
+      combined_df_row = intersect(which(combined_df$Site == ss), which(combined_df$mean_age == cur_ages[aa]))
+      # get the slope between the value for this age and the next-largest age group
+      sim_val_cur = cur_df$simulation_value[cur_df$mean_age == cur_ages[aa]]
+      sim_val_next = cur_df$simulation_value[cur_df$mean_age == cur_ages[aa+1]]
+      sim_slope = (sim_val_next - sim_val_cur) / (cur_ages[aa+1] - cur_ages[aa])
+      combined_df$sim_slope_to_next[combined_df_row] = sim_slope
+      
+      ref_val_cur = cur_df$reference_value[cur_df$mean_age == cur_ages[aa]]
+      ref_val_next = cur_df$reference_value[cur_df$mean_age == cur_ages[aa+1]]
+      ref_slope = (ref_val_next - ref_val_cur) / (cur_ages[aa+1] - cur_ages[aa])
+      combined_df$ref_slope_to_next[combined_df_row] = ref_slope
+    }
+  }
+  min_value = min(c(combined_df$ref_slope_to_next, combined_df$sim_slope_to_next), na.rm=TRUE)
+  max_value = max(c(combined_df$ref_slope_to_next, combined_df$sim_slope_to_next), na.rm=TRUE)
+  gg = ggplot(combined_df, aes(x=ref_slope_to_next, y=sim_slope_to_next, color=Site, fill=Site))+
+    geom_point(size=2) + 
+    ylab(paste0('simulation slopes for age-', metric)) + 
+    xlab(paste0('reference slopes for age-', metric)) + 
+    ggtitle('Ref versus sim slopes') +
+    coord_fixed(ratio=1, xlim=c(min_value, max_value), ylim=c(min_value, max_value))+
+    geom_abline(slope=1,intercept=0, color='grey', alpha=0.5) + 
+    # geom_smooth(method = "lm", fill = NA, se=FALSE, alpha=0.5, size=0.5) +
+    theme_classic() +
+    theme(plot.title = element_text(size=12))
+  
+  
+  lm_fit = combined_df %>% nest(data = -Site) %>% mutate(model = map(data, ~lm(sim_slope_to_next ~ ref_slope_to_next, data = .)), tidied = map(model, tidy)) %>% unnest(tidied)
+  lm_info = combined_df %>% nest(data = -Site) %>% mutate(model = map(data, ~lm(sim_slope_to_next ~ ref_slope_to_next, data = .)), tidied = map(model, glance)) %>% unnest(tidied)
+  
+  lm_summary = merge(lm_fit[c('Site', 'term', 'estimate')], lm_info[c('Site', 'r.squared', 'p.value', 'nobs')], by='Site', all=TRUE)
+  lm_summary = lm_summary[lm_summary$term!='(Intercept)',]
+  colnames(lm_summary)[colnames(lm_summary)=='estimate'] = 'slope'
+  return(list(gg, lm_summary, combined_df))
+}
+
+
+
+
+
