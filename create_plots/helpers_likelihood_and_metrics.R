@@ -48,14 +48,14 @@ get_prev_likelihood = function(combined_df, sim_column='simulation_value'){
 get_dens_likelihood = function(sim_df, ref_df){
 
   # remove survey dates from simulation that aren't in reference
-  sim_df_ave$site_month = paste0(sim_df_ave$Site, '_month', sim_df_ave$month)
+  sim_df$site_month = paste0(sim_df$Site, '_month', sim_df$month)
   ref_df$site_month = paste0(ref_df$Site, '_month', ref_df$month)
-  sites = intersect(unique(sim_df_ave$site_month), unique(ref_df$site_month))
-  sim_df_ave = sim_df_ave[sim_df_ave$site_month %in% sites, ]
+  sites = intersect(unique(sim_df$site_month), unique(ref_df$site_month))
+  sim_df = sim_df[sim_df$site_month %in% sites, ]
   # check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
   for(ss in sites){
     ages_ref = sort(unique(ref_df$agebin[ref_df$site_month == ss]))
-    ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$site_month == ss]))
+    ages_sim = sort(unique(sim_df$agebin[sim_df$site_month == ss]))
     missing_ages_ref = ages_ref[which(!(ages_ref %in% ages_sim))]
     missing_ages_sim = ages_sim[which(!(ages_sim %in% ages_ref))]
     
@@ -69,12 +69,12 @@ get_dens_likelihood = function(sim_df, ref_df){
       for(mm in missing_ages_ref){
         sim_replace_age = missing_ages_sim[which(abs(missing_ages_sim - mm)<1)]
         if(length(sim_replace_age)==1){
-          sim_df_ave$agebin[sim_df_ave$site_month == ss & sim_df_ave$agebin == sim_replace_age] = mm
+          sim_df$agebin[sim_df$site_month == ss & sim_df$agebin == sim_replace_age] = mm
         }
       }
       
       # update sim ages
-      ages_sim = sort(unique(sim_df_ave$agebin[sim_df_ave$agebin == ss]))
+      ages_sim = sort(unique(sim_df$agebin[sim_df$agebin == ss]))
       
       if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
         print('...After adjustment, there remains an imperfect match between reference and simulation age bins.')
@@ -88,12 +88,12 @@ get_dens_likelihood = function(sim_df, ref_df){
   
   # consider the simulation mean value to be 'truth,' merge it into the reference data frame
   ref_df = ref_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'count_asex', 'bin_total_asex', 'count_gamet', 'bin_total_gamet')]
-  sim_df_ave = sim_df_ave[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'sim_asexual_par_dens_freq', 'sim_gametocyte_dens_freq')]
-  combined_df = merge(ref_df, sim_df_ave, all=TRUE)
+  sim_df = sim_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'asexual_par_dens_freq', 'gametocyte_dens_freq')]
+  combined_df = merge(ref_df, sim_df, all=TRUE)
   combined_df$metric = 'par_dens'
   # remove rows where there is no reference data (sometimes there are different density bins in different sites, so rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
   ref_rows_na = which(is.na(combined_df$count_asex))
-  sim_rows_0 = which(combined_df$sim_asexual_par_dens_freq < 0.0001)
+  sim_rows_0 = which(combined_df$asexual_par_dens_freq < 0.0001)
   if(all(ref_rows_na %in% sim_rows_0)){
     combined_df = combined_df[-ref_rows_na,]
   } else{
@@ -112,8 +112,8 @@ get_dens_likelihood = function(sim_df, ref_df){
       cur_df = combined_df[combined_df$site_month == ss & combined_df$agebin == aa,]
       # check that the sum of counts matches the sum column
       if(sum(cur_df$count_asex) == cur_df$bin_total_asex[1] & sum(cur_df$count_gamet) == cur_df$bin_total_gamet[1] & length(unique(cur_df$bin_total_asex))==1 & length(unique(cur_df$bin_total_gamet))==1){
-        loglikelihood_asex = loglikelihood_asex + log(dmultinom(x=cur_df$count_asex, prob=cur_df$sim_asexual_par_dens_freq))
-        loglikelihood_gamet = loglikelihood_gamet + log(dmultinom(x=cur_df$count_gamet, prob=cur_df$sim_gametocyte_dens_freq))
+        loglikelihood_asex = loglikelihood_asex + log(dmultinom(x=cur_df$count_asex, prob=cur_df$asexual_par_dens_freq))
+        loglikelihood_gamet = loglikelihood_gamet + log(dmultinom(x=cur_df$count_gamet, prob=cur_df$gametocyte_dens_freq))
       } else{
         warning(paste0('The sum of individuals across bins in the reference dataset does not match the reported total number of individuals included. This site and age bin is being skipped: ', ss, ' - ', aa))
       }
