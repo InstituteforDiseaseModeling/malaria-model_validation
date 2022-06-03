@@ -17,7 +17,7 @@ import simulations.params as params
 from simulations import manifest as manifest
 
 
-def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.priority):
+def submit_sim(site=None, nSims=1, characteristic=False, priority=manifest.priority):
     """
     This function is designed to be a parameterized version of the sequence of things we do 
     every time we run an emod experiment. 
@@ -95,4 +95,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    general_sim(site=args.site, nSims=args.nSims, characteristic=args.characteristic, priority=args.priority)
+    submit_sim(site=args.site, nSims=args.nSims, characteristic=args.characteristic, priority=args.priority)

@@ -103,7 +103,7 @@ rule chonyi_1999_analyzer:
 
 rule chonyi_1999_download:
     input: 'COMPS_ID/chonyi_1999_analyzers'
-    output: 'COMPS_ID/chonyi_1999_done'
+    output: 'COMPS_ID/chonyi_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="chonyi_1999"))
     
@@ -122,7 +122,7 @@ rule ngerenya_1999_analyzer:
 
 rule ngerenya_1999_download:
     input: 'COMPS_ID/ngerenya_1999_analyzers'
-    output: 'COMPS_ID/ngerenya_1999_done'
+    output: 'COMPS_ID/ngerenya_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="ngerenya_1999"))
     
@@ -141,7 +141,7 @@ rule dielmo_1990_analyzer:
 
 rule dielmo_1990_download:
     input: 'COMPS_ID/dielmo_1990_analyzers'
-    output: 'COMPS_ID/dielmo_1990_done'
+    output: 'COMPS_ID/dielmo_1990_download'
     run:
         shell(get_command(script="download_wi.py", site="dielmo_1990"))
     
@@ -160,7 +160,7 @@ rule ndiop_1993_analyzer:
 
 rule ndiop_1993_download:
     input: 'COMPS_ID/ndiop_1993_analyzers'
-    output: 'COMPS_ID/ndiop_1993_done'
+    output: 'COMPS_ID/ndiop_1993_download'
     run:
         shell(get_command(script="download_wi.py", site="ndiop_1993"))
     
@@ -179,7 +179,7 @@ rule ebolakounou_1997_analyzer:
 
 rule ebolakounou_1997_download:
     input: 'COMPS_ID/ebolakounou_1997_analyzers'
-    output: 'COMPS_ID/ebolakounou_1997_done'
+    output: 'COMPS_ID/ebolakounou_1997_download'
     run:
         shell(get_command(script="download_wi.py", site="ebolakounou_1997"))
     
@@ -198,7 +198,7 @@ rule koundou_1997_analyzer:
 
 rule koundou_1997_download:
     input: 'COMPS_ID/koundou_1997_analyzers'
-    output: 'COMPS_ID/koundou_1997_done'
+    output: 'COMPS_ID/koundou_1997_download'
     run:
         shell(get_command(script="download_wi.py", site="koundou_1997"))
     
@@ -217,7 +217,7 @@ rule dongubougou_1999_analyzer:
 
 rule dongubougou_1999_download:
     input: 'COMPS_ID/dongubougou_1999_analyzers'
-    output: 'COMPS_ID/dongubougou_1999_done'
+    output: 'COMPS_ID/dongubougou_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="dongubougou_1999"))
     
@@ -236,7 +236,7 @@ rule sotuba_1999_analyzer:
 
 rule sotuba_1999_download:
     input: 'COMPS_ID/sotuba_1999_analyzers'
-    output: 'COMPS_ID/sotuba_1999_done'
+    output: 'COMPS_ID/sotuba_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="sotuba_1999"))
     
@@ -255,7 +255,7 @@ rule matsari_1970_analyzer:
 
 rule matsari_1970_download:
     input: 'COMPS_ID/matsari_1970_analyzers'
-    output: 'COMPS_ID/matsari_1970_done'
+    output: 'COMPS_ID/matsari_1970_download'
     run:
         shell(get_command(script="download_wi.py", site="matsari_1970"))
     
@@ -274,7 +274,7 @@ rule rafin_marke_1970_analyzer:
 
 rule rafin_marke_1970_download:
     input: 'COMPS_ID/rafin_marke_1970_analyzers'
-    output: 'COMPS_ID/rafin_marke_1970_done'
+    output: 'COMPS_ID/rafin_marke_1970_download'
     run:
         shell(get_command(script="download_wi.py", site="rafin_marke_1970"))
     
@@ -293,7 +293,7 @@ rule sugungum_1970_analyzer:
 
 rule sugungum_1970_download:
     input: 'COMPS_ID/sugungum_1970_analyzers'
-    output: 'COMPS_ID/sugungum_1970_done'
+    output: 'COMPS_ID/sugungum_1970_download'
     run:
         shell(get_command(script="download_wi.py", site="sugungum_1970"))
     
@@ -312,7 +312,7 @@ rule navrongo_2000_analyzer:
 
 rule navrongo_2000_download:
     input: 'COMPS_ID/navrongo_2000_analyzers'
-    output: 'COMPS_ID/navrongo_2000_done'
+    output: 'COMPS_ID/navrongo_2000_download'
     run:
         shell(get_command(script="download_wi.py", site="navrongo_2000"))
     
@@ -331,7 +331,7 @@ rule laye_2007_analyzer:
 
 rule laye_2007_download:
     input: 'COMPS_ID/laye_2007_analyzers'
-    output: 'COMPS_ID/laye_2007_done'
+    output: 'COMPS_ID/laye_2007_download'
     run:
         shell(get_command(script="download_wi.py", site="laye_2007"))
     
@@ -350,7 +350,7 @@ rule dapelogo_2007_analyzer:
 
 rule dapelogo_2007_download:
     input: 'COMPS_ID/dapelogo_2007_analyzers'
-    output: 'COMPS_ID/dapelogo_2007_done'
+    output: 'COMPS_ID/dapelogo_2007_download'
     run:
         shell(get_command(script="download_wi.py", site="dapelogo_2007"))
     
