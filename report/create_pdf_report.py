@@ -2,6 +2,7 @@ from fpdf import FPDF
 
 title = 'Malaria Model Overview'
 
+
 class PDF(FPDF):
     def header(self):
         # Logo

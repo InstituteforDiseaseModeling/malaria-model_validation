@@ -10,7 +10,9 @@ from idmtools.entities.experiment import Experiment
 from emodpy.emod_task import EMODTask
 from emodpy_malaria.reporters.builtin import add_report_intervention_pop_avg
 
-from simulations.helpers import *
+from simulations.helpers import set_param_fn, update_sim_random_seed, set_simulation_scenario_for_characteristic_site, \
+set_simulation_scenario_for_matched_site, get_comps_id_filename
+
 import simulations.params as params
 from simulations import manifest as manifest
 
@@ -28,14 +30,13 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
     # create EMODTask 
     print("Creating EMODTask (from files)...")
     
-    task = EMODTask.from_default2(
-            config_path="my_config.json",
-            eradication_path=str(manifest.eradication_path),
-            ep4_custom_cb=None,
-            campaign_builder=None,
-            schema_path=str(manifest.schema_file),
-            param_custom_cb=set_param_fn,
-            demog_builder=None,
+    task = EMODTask.from_default2(config_path="my_config.json",
+                                  eradication_path=str(manifest.eradication_path),
+                                  ep4_custom_cb=None,
+                                  campaign_builder=None,
+                                  schema_path=str(manifest.schema_file),
+                                  param_custom_cb=set_param_fn,
+                                  demog_builder=None,
         )
 
     # add html intervention-visualizer asset to COMPS
@@ -46,7 +47,6 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
 
     # Create simulation sweep with builder
     builder = SimulationBuilder()
-
 
     exp_name = "validation_" + site
 
@@ -62,7 +62,7 @@ def general_sim(site=None, nSims=1, characteristic=False, priority=manifest.prio
         builder.add_sweep_definition(set_simulation_scenario_for_matched_site, [site])
 
     # create experiment from builder
-    print(f"Prompting for COMPS creds if necessary...")
+    print("Prompting for COMPS creds if necessary...")
     experiment = Experiment.from_builder(builder, task, name=exp_name)
 
     # The last step is to call run() on the ExperimentManager to run the simulations.

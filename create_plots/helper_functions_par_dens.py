@@ -1,4 +1,5 @@
-from plotnine import *
+from plotnine import ggplot, aes, geom_bar, scale_fill_brewer, facet_grid, geom_line, geom_point, scale_x_continuous, \
+    geom_errorbar, theme_bw, xlab, ylab, scale_color_manual
 import numpy as np
 import pandas as pd
 from scipy.stats import beta
@@ -83,16 +84,16 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
 
     # colors
     len_density_bin = len(combined_df['densitybin'].unique())
-    num_colors = len_density_bin + 1 if len_density_bin % 2 == 0 else len_density_bin
-    #colors = brewer.pal(n=num_colors, name='BrBG')
-    #names(colors) = sorted(combined_df['densitybin'].unique())
+    # num_colors = len_density_bin + 1 if len_density_bin % 2 == 0 else len_density_bin
+    # colors = brewer.pal(n=num_colors, name='BrBG')
+    # names(colors) = sorted(combined_df['densitybin'].unique())
     # plot
-    gg1 = ( ggplot(combined_df, aes(x='agebin', y='asexual_par_dens_freq', fill='densitybin'))
-        + geom_bar(position="stack", stat="identity")
-        + scale_fill_brewer(palette="BrBG")
-        # scale_fill_manual(values=colors, limits=names(colors)) +
-        + facet_grid('month~source')
-      )
+    gg1 = (ggplot(combined_df, aes(x='agebin', y='asexual_par_dens_freq', fill='densitybin')) +
+           geom_bar(position="stack", stat="identity") +
+           scale_fill_brewer(palette="BrBG") +
+           # scale_fill_manual(values=colors, limits=names(colors)) +
+           facet_grid('month~source')
+           )
 
     # = = = = = = = = = #
     # grid of line plots
@@ -106,30 +107,29 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     combined_df0['min_gamet'] = np.nan
     combined_df0['max_gamet'] = np.nan
     for rr in range(len(combined_df0.index)):
-
         if combined_df0['source'].iloc[rr] == 'reference':
             if ((combined_df0['count_asex'].iloc[rr] > 0) &
                     (combined_df0['count_asex'].iloc[rr] < combined_df0['bin_total_asex'].iloc[rr])):
                 combined_df0['min_asex'].ilo[rr] = beta.ppf(
                     p=alpha / 2,
-                    a=combined_df0['count_asex'].iloc[rr]+0.5,
+                    a=combined_df0['count_asex'].iloc[rr] + 0.5,
                     b=combined_df0['bin_total_asex'].iloc[rr] - combined_df0['count_asex'][rr] + 0.5)
 
                 combined_df0['max_asex'].iloc[rr] = beta.ppf(
-                    p=1-alpha / 2,
-                    a=combined_df0['count_asex'].iloc[rr]+0.5,
+                    p=1 - alpha / 2,
+                    a=combined_df0['count_asex'].iloc[rr] + 0.5,
                     b=combined_df0['bin_total_asex'].iloc[rr] - combined_df0['count_asex'].iloc[rr] + 0.5)
 
             if ((combined_df0['count_gamet'].iloc[rr] > 0) &
-                (combined_df0['count_gamet'].iloc[rr] < combined_df0['bin_total_gamet'].iloc[rr])):
+                    (combined_df0['count_gamet'].iloc[rr] < combined_df0['bin_total_gamet'].iloc[rr])):
                 combined_df0['min_gamet'].iloc[rr] = beta.ppf(
                     p=alpha / 2,
-                    a=combined_df0['count_gamet'].iloc[rr]+0.5,
+                    a=combined_df0['count_gamet'].iloc[rr] + 0.5,
                     b=combined_df0['bin_total_gamet'].iloc[rr] - combined_df0['count_gamet'].iloc[rr] + 0.5)
 
                 combined_df0['max_gamet'].iloc[rr] = beta.ppf(
-                    p=1-alpha / 2,
-                    a=combined_df0['count_gamet'].iloc[rr]+0.5,
+                    p=1 - alpha / 2,
+                    a=combined_df0['count_gamet'].iloc[rr] + 0.5,
                     b=combined_df0['bin_total_gamet'].iloc[rr] - combined_df0['count_gamet'].iloc[rr] + 0.5)
 
     # change facet values to intuitive labels
@@ -139,7 +139,7 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     all_age_bins = sorted(combined_df0['agebin'].unique())
     age_bin_labels = ['<=' + all_age_bins[1] + " years"]
     for aa in range(len(all_age_bins) - 1):
-        age_bin_labels.append(all_age_bins[aa] + '-' + all_age_bins[aa+1] + ' years')
+        age_bin_labels.append(all_age_bins[aa] + '-' + all_age_bins[aa + 1] + ' years')
 
     combined_df0['agebin_index'] = combined_df0['agebin'].isin(all_age_bins)
     combined_df0['agebin'] = age_bin_labels[combined_df0['agebin'].isin(all_age_bins)]
@@ -147,33 +147,33 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     combined_df0['agebin'] = combined_df0['agebin'].astype(age_bin_labels_cat)
 
     # plot asexual densities
-    gg2 = ( ggplot(combined_df0, aes(x="densitybin", y='asexual_par_dens_freq', color='source'), alpha=0.8)
-    + geom_line(size=2)
-    + geom_point()
-    + scale_x_continuous(trans='log10')
-    + geom_errorbar(aes(ymin='min_asex', ymax='max_asex'), width=0.2)
-    + theme_bw()
-    + ylab('fraction of population')
-    + xlab('asexual parasite density bin')
-    + scale_color_manual(values={"reference": 'red',
-                                 "simulation": 'blue'})
-    + facet_grid('agebin~month')
-    # scale_fill_brewer(palette = "BrBG") +
-    # scale_fill_manual(values=colors, limits=names(colors)) +
-    )
+    gg2 = (ggplot(combined_df0, aes(x="densitybin", y='asexual_par_dens_freq', color='source'), alpha=0.8) +
+           geom_line(size=2) +
+           geom_point() +
+           scale_x_continuous(trans='log10') +
+           geom_errorbar(aes(ymin='min_asex', ymax='max_asex'), width=0.2) +
+           theme_bw() +
+           ylab('fraction of population') +
+           xlab('asexual parasite density bin') +
+           scale_color_manual(values={"reference": 'red',
+                                        "simulation": 'blue'}) +
+           facet_grid('agebin~month')
+           # scale_fill_brewer(palette = "BrBG") +
+           # scale_fill_manual(values=colors, limits=names(colors)) +
+           )
 
     # plot gametocyte densities
-    gg3 = ( ggplot(combined_df0, aes(x='densitybin', y='gametocyte_dens_freq', color='source'))
-            + geom_line(size=2)
-            + geom_point()
-            + scale_x_continuous(trans='log10')
-            + geom_errorbar(aes(ymin='min_gamet', ymax='max_gamet'), width=0.2)
-            + theme_bw()
-            + ylab('fraction of population')
-            + xlab('gametocyte density bin')
-            + scale_color_manual(values={"reference": 'red',
-                                 "simulation": 'blue'})
-            + facet_grid('agebin~month')
-    )
+    gg3 = (ggplot(combined_df0, aes(x='densitybin', y='gametocyte_dens_freq', color='source')) +
+           geom_line(size=2) +
+           geom_point() +
+           scale_x_continuous(trans='log10') +
+           geom_errorbar(aes(ymin='min_gamet', ymax='max_gamet'), width=0.2) +
+           theme_bw() +
+           ylab('fraction of population') +
+           xlab('gametocyte density bin') +
+           scale_color_manual(values={"reference": 'red',
+                                        "simulation": 'blue'}) +
+           facet_grid('agebin~month')
+           )
 
     return list(gg1, gg2, gg3)

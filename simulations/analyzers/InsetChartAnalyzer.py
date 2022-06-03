@@ -1,4 +1,3 @@
-import json
 import os
 import pandas as pd
 import numpy as np
@@ -12,18 +11,19 @@ from idmtools.entities.simulation import Simulation
 from logging import getLogger
 
 from idmtools.analysis.analyze_manager import AnalyzeManager
-from idmtools.analysis.csv_analyzer import CSVAnalyzer
 from idmtools.core import ItemType
 from idmtools.core.platform_factory import Platform
+
 
 mpl.use('Agg')
 
 
 class InsetChartAnalyzer(BaseAnalyzer):
-
-    def __init__(self, title='idm', tags=['Baseline', 'Run_Number', 'Larval_Capacity', 'Transmission_To_Human',
-                                          'Infected_Progress']):
+    def __init__(self, title='idm', tags=None):
         super().__init__(filenames=["output\\InsetChart.json"])
+        if tags is None:
+            tags = ['Baseline', 'Run_Number', 'Larval_Capacity', 'Transmission_To_Human',
+                    'Infected_Progress']
         self.tags = tags
         print(title)
 
@@ -103,7 +103,6 @@ class InsetChartAnalyzer(BaseAnalyzer):
 
 
 if __name__ == '__main__':
-
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
     logger = getLogger()
