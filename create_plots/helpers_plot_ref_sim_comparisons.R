@@ -18,7 +18,36 @@ library(tidyr)
 
 
 
+####################################################################################################### 
+##########################  compare new and benchmark simulation values  ########################## 
+####################################################################################################### 
+# create scatter plots with new versus benchmark simulation output
+compare_benchmark = function(combined_df){
+  combined_df = combined_df[!is.na(combined_df$benchmark),]
+  metric = combined_df$metric[1]
+  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
+  min_value = min(c(combined_df$benchmark, combined_df$simulation), na.rm=TRUE)
+  max_value = max(c(combined_df$benchmark, combined_df$simulation), na.rm=TRUE)
+  gg = ggplot(combined_df, aes(x=benchmark, y=simulation, color=Site, fill=Site))+
+    geom_point(size=2) + 
+    ylab(paste0('new simulation ', metric)) + 
+    xlab(paste0('benchmark sim ', metric)) + 
+    ggtitle('Benchmark versus new sim values') +
+    coord_fixed(ratio=1, xlim=c(min_value, max_value), ylim=c(min_value, max_value))+
+    geom_abline(slope=1,intercept=0, color='grey', alpha=0.5) + 
+    theme_classic() +
+    theme(plot.title = element_text(size=12))
+  return(gg)
+}
+
+
+
+
+
+
+####################################################################################################### 
 ########################## plot age-incidence comparisons with reference ####################
+####################################################################################################### 
 plot_inc_ref_sim_comparison = function(combined_df){
   
   # convert dataframe to long format
@@ -49,10 +78,11 @@ plot_inc_ref_sim_comparison = function(combined_df){
 
 
 
-########################## plot age-prevalence comparisons with reference without sweep background ####################
+####################################################################################################### 
+########################## plot age-prevalence comparisons with reference ####################
+####################################################################################################### 
 plot_prev_ref_sim_comparison = function(combined_df){
 
-  
   # convert dataframe to long format
   combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='prevalence')
   
@@ -82,7 +112,9 @@ plot_prev_ref_sim_comparison = function(combined_df){
 
 
 
+####################################################################################################### 
 ########################## plot parasite density comparisons with reference ####################
+####################################################################################################### 
 
 # create plots of parasite density bins by age with reference and simulation results overlaid for comparison
 plot_par_dens_ref_sim_comparison = function(combined_df){
@@ -173,7 +205,9 @@ plot_par_dens_ref_sim_comparison = function(combined_df){
 
 
 
+####################################################################################################### 
 ########################### create infectiousness plots  ##################################
+####################################################################################################### 
 
 plot_infectiousness_ref_sim_comparison = function(combined_df){
   months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
@@ -226,42 +260,9 @@ plot_infectiousness_ref_sim_comparison = function(combined_df){
 
 
 
-
-
-
-# create scatter plots with new versus benchmark simulation output and get comparison of likelihoods for each simulation set and each site.
-compare_benchmark = function(combined_df){
-  combined_df = combined_df[!is.na(combined_df$benchmark),]
-  metric = combined_df$metric[1]
-  if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
-  min_value = min(c(combined_df$benchmark, combined_df$simulation), na.rm=TRUE)
-  max_value = max(c(combined_df$benchmark, combined_df$simulation), na.rm=TRUE)
-  gg = ggplot(combined_df, aes(x=benchmark, y=simulation, color=Site, fill=Site))+
-    geom_point(size=2) + 
-    ylab(paste0('new simulation ', metric)) + 
-    xlab(paste0('benchmark sim ', metric)) + 
-    ggtitle('Benchmark versus new sim values') +
-    coord_fixed(ratio=1, xlim=c(min_value, max_value), ylim=c(min_value, max_value))+
-    geom_abline(slope=1,intercept=0, color='grey', alpha=0.5) + 
-    theme_classic() +
-    theme(plot.title = element_text(size=12))
-  return(gg)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-############################# infection duration functions ################################33
-
-
+####################################################################################################### 
+############################# infection duration plotting functions ################################33
+####################################################################################################### 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # calculate probability of going from negative to positive or from positive to negative between sample dates
@@ -512,30 +513,6 @@ plot_infection_duration_dist = function(ref_df, sim_data, pos_thresh_dens, sim_d
 
 
 
-plot_infection_duration_dist_ref_only = function(ref_df, sim_dir, duration_bins=c(seq(0,350,50), 500)){
-  
-  # get densities for each duration bin
-  ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=TRUE, facet_age=FALSE)
-  ref_bin_df$dataset = 'reference'
-  ref_bin_df$censor_type = 'start & finish observed'
-  ref_bin_df$censor_type[ref_bin_df$censored] = 'censored'
-  bin_df = ref_bin_df
-  
-  # max_y=0.8
-  gg = ggplot(bin_df, aes(x=bin_mid, y=density, color=dataset, fill=dataset)) +
-    geom_bar(stat="identity",position = "identity", alpha=.3)+
-    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    # ylim(NA,max_y) +
-    labs(title=paste0('infection duration - reference'), x='infection duration (days)') + 
-    facet_wrap(scales='fixed', facets='censor_type')
-  
-  ggsave(filename=paste0(sim_dir, '/duration_allAges_reference.png'), plot=gg, width=6, height=3, units='in')
-}
-
-
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # create plots comparing the distributions of infection lengths, faceted by age group
@@ -575,38 +552,11 @@ plot_infection_duration_dist_by_age = function(ref_df, sim_data, pos_thresh_dens
 }
 
 
-plot_infection_duration_dist_by_age_ref_only = function(ref_df, sim_dir, age_bin_lower=c(0, 5, 10, 20, 100), duration_bins=c(seq(0,350,50), 500)){
-  
-  # get densities for each duration bin
-  ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=TRUE, facet_age=TRUE)
-  ref_bin_df$dataset = 'reference'
-  ref_bin_df$censor_type = 'start & finish observed'
-  ref_bin_df$censor_type[ref_bin_df$censored] = 'censored'
-  bin_df = ref_bin_df
-  
-  # max_y=0.9
-  gg = ggplot(bin_df, aes(x=bin_mid, y=density, color=dataset, fill=dataset)) +
-    geom_bar(stat="identity", position = "identity", alpha=.3)+
-    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    # ylim(NA,max_y) +
-    labs(title=paste0('infection duration - reference'), x='infection duration (days)') + 
-    facet_grid(scales='fixed', facets=c('censor_type', 'age_group'))
-  
-  ggsave(filename=paste0(sim_dir, '/duration_by_agebin_reference.png'), plot=gg, width=8, height=4.5, units='in')
-}
 
 
-
-
-
-
-
-#########################################################################
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # Create all reference-simulation comparison plots: infection duration
-#########################################################################
+# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 
 plot_duration_ref_sim_comparison = function(sim_dir, ref_df){
   ref_df$date = as.Date(ref_df$date)

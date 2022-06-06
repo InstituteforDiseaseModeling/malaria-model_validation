@@ -184,7 +184,7 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
 
 
 ################################################################################# 
-###########################  Infectious to vectors  ##################################
+###########################  Infectiousness to vectors  ##################################
 ################################################################################# 
 
 generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){

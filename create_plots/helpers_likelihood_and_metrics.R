@@ -11,6 +11,11 @@ library(broom)
 library(tidyverse)
 
 
+
+####################################################################################################### 
+# loglikelihood functions for each validation relationship
+####################################################################################################### 
+
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # prevalence
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
@@ -47,54 +52,6 @@ get_prev_likelihood = function(combined_df, sim_column='simulation'){
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 get_dens_likelihood = function(combined_df, sim_column='simulation'){
 
-  # # remove survey dates from simulation that aren't in reference
-  # sim_df$site_month = paste0(sim_df$Site, '_month', sim_df$month)
-  # ref_df$site_month = paste0(ref_df$Site, '_month', ref_df$month)
-  # sites = intersect(unique(sim_df$site_month), unique(ref_df$site_month))
-  # sim_df = sim_df[sim_df$site_month %in% sites, ]
-  # 
-  # 
-  # # check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
-  # for(ss in sites){
-  #   ages_ref = sort(unique(ref_df$agebin[ref_df$site_month == ss]))
-  #   ages_sim = sort(unique(sim_df$agebin[sim_df$site_month == ss]))
-  #   missing_ages_ref = ages_ref[which(!(ages_ref %in% ages_sim))]
-  #   missing_ages_sim = ages_sim[which(!(ages_sim %in% ages_ref))]
-  #   
-  #   if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
-  #     print(paste0('Imperfect age match between reference and simulations for site: ', ss))
-  #     print('...  Mismatched reference / simulation ages are:')
-  #     print(paste0('     ', missing_ages_ref, ' / ', missing_ages_sim, ','))
-  #     print('... For age thresholds that differ by less than a year, replacing simulation age with reference age.')
-  #     
-  #     # check whether the missing ages are simply off by <1 year. If so, replace simulation age with nearby reference age
-  #     for(mm in missing_ages_ref){
-  #       sim_replace_age = missing_ages_sim[which(abs(missing_ages_sim - mm)<1)]
-  #       if(length(sim_replace_age)==1){
-  #         sim_df$agebin[sim_df$site_month == ss & sim_df$agebin == sim_replace_age] = mm
-  #       }
-  #     }
-  #     
-  #     # update sim ages
-  #     ages_sim = sort(unique(sim_df$agebin[sim_df$agebin == ss]))
-  #     
-  #     if(!all(ages_ref <= ages_sim+0.1) | !all(ages_ref >= ages_sim-0.1)){
-  #       print('...After adjustment, there remains an imperfect match between reference and simulation age bins.')
-  #       print(paste0('      Reference has ', length(ages_ref), ' age groups and simulation has ', length(ages_sim), ' age groups.'))
-  #     } else{
-  #       print('... All age bins now match.')
-  #     }
-  #   }
-  # }
-  # 
-  # 
-  # # consider the simulation mean value to be 'truth,' merge it into the reference data frame
-  # ref_df = ref_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'count_asex', 'bin_total_asex', 'count_gamet', 'bin_total_gamet')]
-  # sim_df = sim_df[,c('Site', 'month', 'site_month', 'agebin', 'densitybin', 'asexual_par_dens_freq', 'gametocyte_dens_freq')]
-  # combined_df = merge(ref_df, sim_df, all=TRUE)
-  # combined_df$metric = 'par_dens'
-  
-  
   # remove rows where there is no reference data (sometimes there are different density bins in different sites, so rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
   ref_rows_na = which(is.na(combined_df$ref_bin_count))
   if(length(ref_rows_na)>0){
@@ -136,14 +93,9 @@ get_dens_likelihood = function(combined_df, sim_column='simulation'){
 
 
 
-
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-
-
-
-
+####################################################################################################### 
+# other quantitative comparison metrics
+####################################################################################################### 
 
 # mean relative difference between reference and matched simulation values across ages
 #   for a given age, calculate (reference - simulation)/reference. Report the mean across all ages
@@ -156,6 +108,8 @@ calc_mean_rel_diff = function(combined_df){
               mean_abs_diff = mean(abs_diff))
   return(mean_diff_df)
 }
+
+
 calc_mean_rel_slope_diff = function(combined_df){
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
   combined_df$rel_diff = abs((combined_df$ref_slope_to_next - combined_df$sim_slope_to_next) / combined_df$ref_slope_to_next)
@@ -165,6 +119,7 @@ calc_mean_rel_slope_diff = function(combined_df){
               mean_abs_slpe_diff = mean(abs_diff, na.rm=TRUE))
   return(mean_slope_diff_df)
 }
+
 
 # correlation between reference and matched simulation data points
 corr_ref_sim_points = function(combined_df){

@@ -60,7 +60,7 @@ generate_parasite_density_outputs(coord_csv, simulation_output_filepath, base_re
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-#                   infectiouness to vectors                        #
+#                   infectiousness to vectors                        #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=benchmark_simulation_filepath)
 

@@ -17,15 +17,19 @@ library(broom)
 library(tidyverse)
 
 
+######################################################################################### 
 ############################ helper functions #########################################
+######################################################################################### 
+
 get_substr = function(site_name_str, index){
   strsplit(site_name_str, "_")[[1]][index]
 }
+
+
 get_mean_from_upper_age = function(cur_age, upper_ages){
   mean_ages = (c(0, upper_ages[1:(length(upper_ages)-1)]) + upper_ages) / 2
   return(mean_ages[which(upper_ages == cur_age)])
 }
-
 
 
 # get average parasite densities in each age bin, weighting all ages in bin equally (e.g., not weighted by population size)
@@ -45,7 +49,6 @@ get_age_bin_averages = function(sim_df){
   }
   return(age_agg_sim_df)
 }
-
 
 
 
@@ -110,7 +113,6 @@ get_available_sites_for_relationship = function(coord_csv, simulation_output_fil
 }
 
 
-
 # if the maximum reference density bin is < (maximum simulation density bin / max_magnitude_difference), 
 #    aggregate all simulation densities >= max ref bin into the max ref bin. The new final density bin will be all densities equal to or above that value
 combine_higher_dens_freqs = function(sim_df_cur, max_ref_dens, max_magnitude_difference=100){
@@ -129,8 +131,6 @@ combine_higher_dens_freqs = function(sim_df_cur, max_ref_dens, max_magnitude_dif
   }
   return(sim_df_cur)
 }
-
-
 
 
 
@@ -177,6 +177,10 @@ get_fraction_in_infectious_bin = function(sim_df){
 
 
 
+
+####################################################################################################### 
+############################ main reformatting functions #########################################
+####################################################################################################### 
 
 
 
@@ -567,10 +571,10 @@ prepare_infect_df = function(coord_csv, simulation_output_filepath, base_referen
 
 
 
-
-
-
-# infection duration functions
+####################################################################################################### 
+############################ infection duration sampling function #########################################
+####################################################################################################### 
+# Note: this function does not follow the same pattern as the functions for the other validation relationships
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # get subset of simulation dataset to match reference dataset for dates and ages of individuals of sampled individuals
