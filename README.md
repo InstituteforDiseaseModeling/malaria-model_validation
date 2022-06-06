@@ -57,9 +57,16 @@ When you see "Password:" in the terminal, enter your comps password and hit ente
 
 ## Option 1_Run One Site with Python Scripts
 ```bash
+cd simulations
 python3 run_sims.py -s {site_name} -n {nSims}
 python3 run_analyzers.py -s {site_name}
 python3 download_wi.py -s {site_name}
+```
+
+Run Plotting and reportting scripts with site(s) that you ran:
+```bash
+Rscript create_plots\run_generate_validation_comparisons_site.R
+python3 report\create_pdf_report_3.py
 ```
 
 ## Option 2_Run all Sites with Snakemake (Recommended)
