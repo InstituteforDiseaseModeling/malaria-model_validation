@@ -56,7 +56,8 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent"
     ],
-    package_data={'simulation_inputs': ['*/*.csv', '*.csv']},
+    package_data={'simulation_inputs': ['*/*.csv', '*.csv'],
+                  'simulations': ['snakefile_bak']},
     include_package_data=True,
     exclude_package_data={'': ['tests']},
     package_dir={},
