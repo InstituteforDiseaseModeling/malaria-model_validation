@@ -1,12 +1,20 @@
 import unittest
+from BaseTest import BaseTest
 
 
-class IDMTestImportTest(unittest.TestCase):
+class MyImportTestClass(object):
+    def __init__(self):
+        self.expected_items = None
+        self.found_items = None
+
     def setUp(self) -> None:
+        super(MyImportTestClass, self).setUp()
         self.expected_items = None
         self.found_items = None
         pass
 
+
+class ImportTest(BaseTest, MyImportTestClass):
     def verify_expected_items_present(self, namespace):
         self.found_items = dir(namespace)
         for item in self.expected_items:
@@ -33,7 +41,10 @@ class IDMTestImportTest(unittest.TestCase):
             'add_nmf_hs_from_file',
             'ptr_config_builder',
             'add_broadcasting_survey',
-            'build_demog'
+            'build_demog',
+            'get_comps_id_filename',
+            'load_coordinator_df',
+            'get_suite_id'
         ]
         import simulations.helpers as helpers
         self.verify_expected_items_present(namespace=helpers)
@@ -89,18 +100,18 @@ class IDMTestImportTest(unittest.TestCase):
 
     def test_run_sims_import(self):
         self.expected_items = [
-            'general_sim'
+            'submit_sim'
         ]
         import simulations.run_sims as run_sims
         self.verify_expected_items_present(namespace=run_sims)
         pass
 
-    def test_run_sims_import(self):
+    def test_add_suite_import(self):
         self.expected_items = [
-            'check_experiment'
+            'add_suite'
         ]
-        import simulations.wait_for_experiment as wait_for_experiment
-        self.verify_expected_items_present(namespace=wait_for_experiment)
+        import simulations.add_suite as add_suite
+        self.verify_expected_items_present(namespace=add_suite)
         pass
 
 
