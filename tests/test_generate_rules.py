@@ -6,10 +6,6 @@ import simulations.manifest as manifest
 
 
 class GenerateRuleTest(BaseTest):
-    def setUp(self) -> None:
-        print(f"Running test: {self._testMethodName}")
-        pass
-
     def test_generate_rule(self):
         site = "test_site_name"
         n = 99

@@ -6,10 +6,6 @@ from BaseTest import BaseTest
 
 
 class RunSimsTest(BaseTest):
-    def setUp(self) -> None:
-        print(f"Running test: {self._testMethodName}")
-        pass
-
     def test_submit_sim(self):
         # todo: NYI, need to figure out a way to test this function without run the real experiment in Comps.
         pass
