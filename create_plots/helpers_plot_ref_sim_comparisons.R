@@ -13,36 +13,19 @@ library(stringr)
 library(data.table)
 library(RcmdrMisc)
 library(lubridate)
-
+library(tidyr)
 
 
 
 
 ########################## plot age-incidence comparisons with reference ####################
-plot_inc_ref_sim_comparison = function(sim_df, ref_df, bench_df=data.frame()){
-  # scale down incidence in simulation according to probability of detecting a case
-  sim_df$Incidence = sim_df$Incidence * sim_df$p_detect_case
+plot_inc_ref_sim_comparison = function(combined_df){
   
-  # set up reference and simulation dataset columns
-  ref_df$Incidence = ref_df$INC / 1000
-  ref_df$mean_age = (ref_df$INC_LAR + ref_df$INC_UAR)/2
-  ref_df = data.frame('Incidence'=ref_df$Incidence, 'mean_age'=ref_df$mean_age, 'Site'=ref_df$Site, 'Pop_size'=ref_df$POP, 'year'=ref_df$START_YEAR)
-  sim_df = data.frame('Incidence'=sim_df$Incidence, 'mean_age'=sim_df$mean_age, 'Site'=sim_df$Site, 'Pop_size'=NA, 'year'=NA)
-  ref_df$source = 'reference'
-  sim_df$source = 'simulation'
+  # convert dataframe to long format
+  combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='incidence')
   
-  if(nrow(bench_df)>0){
-    # scale down incidence in simulation according to probability of detecting a case
-    bench_df$Incidence = bench_df$Incidence * bench_df$p_detect_case
-    bench_df = data.frame('Incidence'=bench_df$Incidence, 'mean_age'=bench_df$mean_age, 'Site'=bench_df$Site, 'Pop_size'=NA, 'year'=NA)
-    bench_df$source = 'benchmark'
-  }
-  
-  df_combined = rbind(sim_df, ref_df, bench_df)
-  df_combined$source = factor(df_combined$source, levels=c('reference', 'simulation', 'benchmark'))
-  
-  gg = ggplot(df_combined, aes(x=mean_age, y=Incidence, color=source, shape=source, group=year)) +
-    geom_line() +
+  gg = ggplot(combined_df_long, aes(x=mean_age, y=incidence, color=source, shape=source, group=ref_year)) +
+    geom_line(aes(group=interaction(source, ref_year))) +
     geom_point(aes(size=source)) +
     scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
                                   "simulation"=rgb(0/255,124/255,180/255, alpha=0.8),
@@ -67,32 +50,14 @@ plot_inc_ref_sim_comparison = function(sim_df, ref_df, bench_df=data.frame()){
 
 
 ########################## plot age-prevalence comparisons with reference without sweep background ####################
-plot_prev_ref_sim_comparison = function(sim_df, ref_df, bench_df=data.frame()){
-  # get simulation average across seeds
-  sim_df = sim_df %>% group_by(Site, mean_age, month) %>%
-    summarise(prev_sd = sd(prevalence),
-              prevalence = mean(prevalence))
+plot_prev_ref_sim_comparison = function(combined_df){
+
   
-  ref_df$Site = tolower(ref_df$Site)
-  sim_df$Site = tolower(sim_df$Site)
-  ref_df$source = 'reference'
-  sim_df$source = 'simulation'
-  df_combined = merge(sim_df, ref_df, all=TRUE)
+  # convert dataframe to long format
+  combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='prevalence')
   
-  if(nrow(bench_df)>0){
-    # get simulation average across seeds
-    bench_df = bench_df %>% group_by(Site, mean_age, month) %>%
-      summarise(prev_sd = sd(prevalence),
-                prevalence = mean(prevalence))
-    bench_df$Site = tolower(bench_df$Site)
-    bench_df$source = 'benchmark'
-    df_combined = merge(df_combined, bench_df, all=TRUE)
-  }
-  df_combined$source = factor(df_combined$source, levels=c('reference', 'simulation', 'benchmark'))
-  df_combined$site_month = paste0(df_combined$Site, '_month', df_combined$month)
-  
-  gg = ggplot(df_combined, aes(x=mean_age, y=prevalence, color=source, shape=source, group=year)) +
-    geom_line() +
+  gg = ggplot(combined_df_long, aes(x=mean_age, y=prevalence, color=source, shape=source, group=ref_year)) +
+    geom_line(aes(group=interaction(source, ref_year))) +
     geom_point(aes(size=source)) +
     scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
                                   "simulation"=rgb(0/255,124/255,180/255, alpha=0.8),
@@ -119,131 +84,87 @@ plot_prev_ref_sim_comparison = function(sim_df, ref_df, bench_df=data.frame()){
 
 ########################## plot parasite density comparisons with reference ####################
 
-# stacked barplots of parasite density bins by age
-plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df, age_agg_bench_df){
+# create plots of parasite density bins by age with reference and simulation results overlaid for comparison
+plot_par_dens_ref_sim_comparison = function(combined_df){
+  
   months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
   
-  # subset simulation output to months in reference dataset
-  months = sort(unique(ref_df$month))
-  cur_df = age_agg_sim_df[age_agg_sim_df$month %in% months,]
   
+  # convert dataframe to long format
+  combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='density_frequency')
   
-  # if the maximum reference density bin is < (maximum simulation density bin / 1000), aggregate all simulation densities >= max ref bin into the max ref bin
-  #   the final bin will be all densities equal to or above that value
-  max_ref_dens = max(ref_df$densitybin, na.rm=TRUE)
-  if(max_ref_dens < (max(cur_df$densitybin, na.rm=TRUE)/1000)){
-    # get sum of frequencies within higher bins
-    all_higher_dens = cur_df[cur_df$densitybin >= max_ref_dens,]
-    sim_agg_higher_dens = all_higher_dens %>% group_by(month, agebin, Site) %>%
-      summarise(densitybin = min(densitybin),
-                asexual_par_dens_freq = sum(asexual_par_dens_freq),
-                gametocyte_dens_freq = sum(gametocyte_dens_freq),
-                Pop = mean(Pop))
-    # remove higher density bins from df
-    cur_df_lower = cur_df[cur_df$densitybin < max_ref_dens,]
-    # add back in the aggregated frequencies across higher density bins
-    cur_df = merge(cur_df_lower, sim_agg_higher_dens, all=TRUE)
-  }
-  
-  # add zeros for unobserved reference densities up to max_ref_dens
-  all_zeros_df = cur_df[,c('month', 'agebin', 'densitybin', 'Site')]
-  ref_df = merge(ref_df, all_zeros_df, all=TRUE)
-  ref_df[is.na(ref_df)] = 0
-  
-  
-  # combine reference and simulation dataframes
-  cur_df$source = 'simulation'
-  ref_df$source = 'reference'
-  combined_df0 = full_join(cur_df, ref_df)
-  
-  
+
   # = = = = = = = = = #
   # stacked barplots
   # = = = = = = = = = #
   # change type to factors for barplot groupings
-  combined_df = combined_df0
-  combined_df$densitybin = factor(combined_df$densitybin, levels=sort(unique(combined_df$densitybin)))
-  combined_df$agebin = factor(combined_df$agebin, levels=sort(unique(combined_df$agebin)))
+  combined_df_long$densitybin = factor(combined_df_long$densitybin, levels=sort(unique(combined_df_long$densitybin)))
+  combined_df_long$mean_age = factor(combined_df_long$mean_age, levels=sort(unique(combined_df_long$mean_age)))
   
   # colors
-  num_colors = ifelse(length(unique(combined_df$densitybin)) %% 2 ==0, length(unique(combined_df$densitybin))+1, length(unique(combined_df$densitybin)))
+  num_colors = ifelse(length(unique(combined_df_long$densitybin)) %% 2 ==0, length(unique(combined_df_long$densitybin))+1, length(unique(combined_df_long$densitybin)))
   colors = brewer.pal(n=num_colors, name='BrBG')
-  names(colors) = sort(unique(combined_df$densitybin))
+  names(colors) = sort(unique(combined_df_long$densitybin))
   # plot
-  gg1=ggplot(combined_df, aes(fill=densitybin, y=asexual_par_dens_freq, x=agebin)) + 
+  gg1=ggplot(combined_df_long, aes(fill=densitybin, y=density_frequency, x=mean_age)) + 
     geom_bar(position="stack", stat="identity") + 
     # scale_fill_brewer(palette = "BrBG") +
     scale_fill_manual(values=colors, limits=names(colors)) +
-    facet_grid(month~source)
+    facet_grid(site_month~source)
   
-  
-  
-  # = = = = = = = = = #
-  # grid of line plots
-  # = = = = = = = = = #
-  
-  # calculate reference error bounds using Jerrerys interval
-  ci_width = 0.95
-  alpha = 1-ci_width
-  combined_df0$min_asex = NA
-  combined_df0$max_asex = NA
-  combined_df0$min_gamet = NA
-  combined_df0$max_gamet = NA
-  for(rr in 1:nrow(combined_df0)){
-    if(combined_df0$source[rr] == 'reference'){
-      if((combined_df0$count_asex[rr]>0) & (combined_df0$count_asex[rr]<combined_df0$bin_total_asex[rr])){
-        combined_df0$min_asex[rr] = qbeta(p=(alpha/2), shape1=(combined_df0$count_asex[rr]+0.5), shape2=(combined_df0$bin_total_asex[rr] - combined_df0$count_asex[rr] + 0.5))
-        combined_df0$max_asex[rr] = qbeta(p=(1-alpha/2), shape1=(combined_df0$count_asex[rr]+0.5), shape2=(combined_df0$bin_total_asex[rr] - combined_df0$count_asex[rr] + 0.5))
-      }
-      if((combined_df0$count_gamet[rr]>0) & (combined_df0$count_gamet[rr]<combined_df0$bin_total_gamet[rr])){
-        combined_df0$min_gamet[rr] = qbeta(p=(alpha/2), shape1=(combined_df0$count_gamet[rr]+0.5), shape2=(combined_df0$bin_total_gamet[rr] - combined_df0$count_gamet[rr] + 0.5))
-        combined_df0$max_gamet[rr] = qbeta(p=(1-alpha/2), shape1=(combined_df0$count_gamet[rr]+0.5), shape2=(combined_df0$bin_total_gamet[rr] - combined_df0$count_gamet[rr] + 0.5))
-      }
+
+  # = = = = = = = = = = = = = = = = = = #
+  # grid of line plots - one plot panel per site
+  # = = = = = = = = = = = = = = = = = = #
+  line_plot_list = list()
+  all_sites = unique(combined_df_long$Site)
+  for(ss in 1:length(all_sites)){
+    cur_site = all_sites[ss]
+    combined_df = combined_df_long[combined_df_long$Site == cur_site,]
+    
+    # calculate reference error bounds using Jerrerys interval
+    ci_width = 0.95
+    alpha = 1-ci_width
+    combined_df$min_ref = NA
+    combined_df$max_ref = NA
+    eligible_rows = which((combined_df$ref_bin_count>0) & (combined_df$ref_bin_count<combined_df$ref_total) & combined_df$source == 'reference')
+    combined_df$min_ref[eligible_rows] = qbeta(p=(alpha/2), shape1=(combined_df$ref_bin_count[eligible_rows]+0.5), shape2=(combined_df$ref_total[eligible_rows] - combined_df$ref_bin_count[eligible_rows] + 0.5))
+    combined_df$max_ref[eligible_rows] = qbeta(p=(1-alpha/2), shape1=(combined_df$ref_bin_count[eligible_rows]+0.5), shape2=(combined_df$ref_total[eligible_rows] - combined_df$ref_bin_count[eligible_rows] + 0.5))
+
+    # change facet values to intuitive labels
+    combined_df$month = months_of_year[combined_df$month]
+    combined_df$month = factor(combined_df$month, levels=months_of_year)
+    all_age_bins = sort(unique(combined_df$agebin))
+    age_bin_labels = paste0('<=', all_age_bins[1], ' years')
+    for(aa in 1:(length(all_age_bins)-1)){
+      age_bin_labels = c(age_bin_labels, paste0(all_age_bins[aa], '-', all_age_bins[aa+1], ' years'))
     }
+    combined_df$agebin_index = match(combined_df$agebin, all_age_bins)
+    combined_df$agebin = age_bin_labels[combined_df$agebin_index]
+    combined_df$agebin = factor(combined_df$agebin, levels = age_bin_labels)
+    
+    # plot lineplot of simulation and reference densities
+    line_plot_list[[ss]]=ggplot(combined_df, aes(x=densitybin, y=density_frequency, color=source), alpha=0.8) + 
+      geom_line(aes(group=interaction(source)), size=1) +
+      geom_point(aes(size=source, shape=source)) +
+      # scale_x_continuous(trans='log10') +
+      geom_errorbar(aes(ymin=min_ref, ymax=max_ref), width=0.2) +
+      theme_bw() +
+      ylab('fraction of population') +
+      xlab('parasite density bin') +
+      ggtitle(cur_site) +
+      scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
+                                    "simulation"=rgb(0/255,124/255,180/255, alpha=0.8),
+                                    "benchmark"=rgb(0,0,0,0.8))) +
+      scale_shape_manual(values=c("reference" = 16,
+                                  "simulation"=16,
+                                  "benchmark"=1)) +
+      scale_size_manual(values=c("reference" = 1.5,
+                                 "simulation"=1.5,
+                                 "benchmark"=2)) +
+      facet_grid(agebin~month)
   }
-  
-  # change facet values to intuitive labels
-  combined_df0$month = months_of_year[combined_df0$month]
-  combined_df0$month = factor(combined_df0$month, levels=months_of_year)
-  all_age_bins = sort(unique(combined_df0$agebin))
-  age_bin_labels = paste0('<=', all_age_bins[1], ' years')
-  for(aa in 1:(length(all_age_bins)-1)){
-    age_bin_labels = c(age_bin_labels, paste0(all_age_bins[aa], '-', all_age_bins[aa+1], ' years'))
-  }
-  combined_df0$agebin_index = match(combined_df0$agebin, all_age_bins)
-  combined_df0$agebin = age_bin_labels[combined_df0$agebin_index]
-  combined_df0$agebin = factor(combined_df0$agebin, levels = age_bin_labels)
-  
-  # plot asexual densities
-  gg2=ggplot(combined_df0, aes(x=densitybin, y=asexual_par_dens_freq, color=source), alpha=0.8) + 
-    geom_line(size=2) + 
-    geom_point() +
-    scale_x_continuous(trans='log10') +
-    geom_errorbar(aes(ymin=min_asex, ymax=max_asex), width=0.2) +
-    theme_bw() +
-    ylab('fraction of population') +
-    xlab('asexual parasite density bin') +
-    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    # scale_fill_brewer(palette = "BrBG") +
-    # scale_fill_manual(values=colors, limits=names(colors)) +
-    facet_grid(agebin~month)
-  
-  
-  # plot gametocyte densities
-  gg3=ggplot(combined_df0, aes(x=densitybin, y=gametocyte_dens_freq, color=source)) + 
-    geom_line(size=2) + 
-    geom_point() +
-    scale_x_continuous(trans='log10') +
-    geom_errorbar(aes(ymin=min_gamet, ymax=max_gamet), width=0.2) +
-    theme_bw() +
-    ylab('fraction of population') +
-    xlab('gametocyte density bin') +
-    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    facet_grid(agebin~month)
-  
-  return(list(gg1,gg2, gg3))
+  return(list(gg1,line_plot_list, all_sites))
 }
 
 
@@ -254,89 +175,47 @@ plot_par_dens_ref_sim_comparison = function(age_agg_sim_df, ref_df, age_agg_benc
 
 ########################### create infectiousness plots  ##################################
 
-plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
+plot_infectiousness_ref_sim_comparison = function(combined_df){
   months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
   
-  # remove simulation rows with zero pop
-  sim_df = sim_df[sim_df$Pop>0,]
+  # convert dataframe to long format
+  combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='infectiousness_bin_freq')
   
-  # subset simulation to months in reference df
-  ref_months = unique(ref_df$month)
-  sim_df = sim_df[sim_df$month %in% ref_months,]
-  
-  
-  # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-  # translate the frequencies from simulation output into fraction of individuals in each 
-  #     {age bin, month, densitybin, run number} group are in each infectiousness bin
-  sim_df$infectiousness_bin_count = sim_df$infectiousness_bin_freq * sim_df$Pop  # note, since this is an average over the reporting period, these may not be whole numbers
-  
-  # check that people are never infectious while they have no parasites - send a warning if not
-  if(nrow(sim_df[sim_df$infectiousness_bin == 0 & sim_df$infectiousness_bin > 0 & sim_df$infectiousness_bin_count > 0,])>0){
-    warning('Some individuals without parasites are reporting that they are infectious to mosquitoes... this suggests a bug.')
+  line_plot_list = list()
+  all_sites = unique(combined_df_long$Site)
+  for(ss in 1:length(all_sites)){
+    cur_site = all_sites[ss]
+    combined_df = combined_df_long[combined_df_long$Site == cur_site,]
+
+    # change facet values to intuitive labels
+    combined_df$month = months_of_year[combined_df$month]
+    combined_df$month = factor(combined_df$month, levels=months_of_year)
+    all_age_bins = sort(unique(combined_df$agebin))
+    age_bin_labels = paste0('<=', all_age_bins[1], ' years')
+    for(aa in 1:(length(all_age_bins)-1)){
+      age_bin_labels = c(age_bin_labels, paste0(all_age_bins[aa], '-', all_age_bins[aa+1], ' years'))
+    }
+    combined_df$agebin_index = match(combined_df$agebin, all_age_bins)
+    combined_df$agebin = age_bin_labels[combined_df$agebin_index]
+    combined_df$agebin = factor(combined_df$agebin, levels = age_bin_labels)
+    
+    line_plot_list[[ss]] = ggplot(data=combined_df, aes(y=fraction_infected_bin, x=densitybin, size=infectiousness_bin_freq, color=source, fill=source))+
+      geom_point(pch=21) +
+      scale_x_log10() +
+      ylab('percent of mosquitoes infected upon feeding') + #('percent of individuals (in each age-density group) who fall in each infectiousness bin') +
+      xlab('gametocyte density') +
+      labs(size = 'fraction of individuals') +
+      ggtitle(cur_site) +
+      scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.6),
+                                    "simulation"=rgb(0/255,124/255,180/255, alpha=0.6),
+                                    "benchmark"=rgb(0,0,0,alpha=1))) +
+      scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.5),
+                                   "simulation"=rgb(0/255,124/255,180/255, alpha=0.5),
+                                   "benchmark"=rgb(0,0,0,alpha=0.1))) +
+      facet_grid(agebin~month)
   }
-  
-  # aggregate individuals within an age bin (across years)
-  sim_df_agg1 = sim_df %>% group_by(Site, month, Run_Number, agebin, densitybin, infectiousness_bin) %>%
-    summarise(infectiousness_bin_count = sum(infectiousness_bin_count), 
-              Pop = sum(Pop))
-  # get total within each group (for denominator)
-  sim_df_group_total = sim_df_agg1 %>% group_by(Site, month, Run_Number, agebin, densitybin) %>%
-    summarise(infectiousness_group_sum = sum(infectiousness_bin_count))
-  # calculate proportion of all individuals in a group fell in each infectiousness bin
-  sim_df_agg1 = merge(sim_df_agg1, sim_df_group_total, all=TRUE)
-  sim_df_agg1$group_infectiousness_freq = sim_df_agg1$infectiousness_bin_count / sim_df_agg1$infectiousness_group_sum
-  # # check that sum within a group is 1
-  # sim_subset = sim_df_agg1[sim_df_agg1$month==1 & sim_df_agg1$agebin==5 & sim_df_agg1$Run_Number == 0 & sim_df_agg1$densitybin==500,]
-  # sum(sim_subset$group_infectiousness_freq)
-  
-  # get simulation average across seeds and within age groups (assuming equal population sizes for all ages in bin)
-  sim_df_agg2 = sim_df_agg1 %>% group_by(Site, month, agebin, densitybin, infectiousness_bin) %>%
-    summarise(infect_sd = sd(group_infectiousness_freq),
-              infectiousness_bin_freq = mean(group_infectiousness_freq))
-  # check that the sum within all groups is 1
-  sim_df_check = sim_df_agg2 %>% group_by(Site, month, agebin, densitybin) %>%
-    summarise(infectiousness_dens_bin_sum = sum(infectiousness_bin_freq))
-  if(!all(sim_df_check$infectiousness_dens_bin_sum-0.001 < 1) | !all(sim_df_check$infectiousness_dens_bin_sum+0.001 > 1)) warning("The sum of infectiousness bin frequencies is not 1 for at least one group. Recommend checking for bugs.")
-  
-  
-  # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-  # standardize column names and merge simulation and reference data frames
-  colnames(sim_df_agg2)[colnames(sim_df_agg2) == 'Site'] = 'site'
-  colnames(sim_df_agg2)[colnames(sim_df_agg2) == 'infectiousness_bin'] = 'fraction_infected_bin'
-  colnames(ref_df)[colnames(ref_df) == 'freq_frac_infect'] = 'infectiousness_bin_freq'
-  
-  sim_df_agg2$source='simulation'
-  ref_df$source='reference'  
-  
-  combined_df = merge(sim_df_agg2, ref_df, all=TRUE)
-  combined_df$source = factor(combined_df$source, levels=c('reference', 'simulation'))
-  
-  # change facet values to intuitive labels
-  combined_df$month = months_of_year[combined_df$month]
-  combined_df$month = factor(combined_df$month, levels=months_of_year)
-  all_age_bins = sort(unique(combined_df$agebin))
-  age_bin_labels = paste0('<=', all_age_bins[1], ' years')
-  for(aa in 1:(length(all_age_bins)-1)){
-    age_bin_labels = c(age_bin_labels, paste0(all_age_bins[aa], '-', all_age_bins[aa+1], ' years'))
-  }
-  combined_df$agebin_index = match(combined_df$agebin, all_age_bins)
-  combined_df$agebin = age_bin_labels[combined_df$agebin_index]
-  combined_df$agebin = factor(combined_df$agebin, levels = age_bin_labels)
-  
-  # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-  # create plot
-  gg = ggplot(data=combined_df, aes(y=fraction_infected_bin, x=densitybin, size=infectiousness_bin_freq, color=source, fill=source))+
-    geom_point(alpha=0.5) +
-    scale_x_log10() +
-    ylab('percent of mosquitoes infected upon feeding') + #('percent of individuals (in each age-density group) who fall in each infectiousness bin') +
-    xlab('gametocyte density') +
-    labs(size = 'fraction of individuals') +
-    scale_color_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                  "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    scale_fill_manual(values = c("reference" = rgb(169/255,23/255,23/255, alpha=0.8),
-                                 "simulation"=rgb(0/255,124/255,180/255, alpha=0.8))) +
-    facet_grid(agebin~month)
-  return(gg)
+
+  return(list(line_plot_list, all_sites))
 }
 
 
@@ -352,12 +231,12 @@ plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
 
 # create scatter plots with new versus benchmark simulation output and get comparison of likelihoods for each simulation set and each site.
 compare_benchmark = function(combined_df){
-  combined_df = combined_df[!is.na(combined_df$benchmark_value),]
+  combined_df = combined_df[!is.na(combined_df$benchmark),]
   metric = combined_df$metric[1]
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
-  min_value = min(c(combined_df$benchmark_value, combined_df$simulation_value), na.rm=TRUE)
-  max_value = max(c(combined_df$benchmark_value, combined_df$simulation_value), na.rm=TRUE)
-  gg = ggplot(combined_df, aes(x=benchmark_value, y=simulation_value, color=Site, fill=Site))+
+  min_value = min(c(combined_df$benchmark, combined_df$simulation), na.rm=TRUE)
+  max_value = max(c(combined_df$benchmark, combined_df$simulation), na.rm=TRUE)
+  gg = ggplot(combined_df, aes(x=benchmark, y=simulation, color=Site, fill=Site))+
     geom_point(size=2) + 
     ylab(paste0('new simulation ', metric)) + 
     xlab(paste0('benchmark sim ', metric)) + 

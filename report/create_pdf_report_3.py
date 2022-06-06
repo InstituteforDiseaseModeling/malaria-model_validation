@@ -223,7 +223,7 @@ section_and_content = {'Introduction':
                                 'Observed infections are divided into two groups. "Censored" infections refer to infections where the individual was positive at the first or final survey of the study (so the infection may have extended beyond the period observed). '
                                 '"Start & finish observed" infections refer to infections were the individual was observed to have a negative test at the start and end of the infection. The two types of infection duration records are illustrated in the figure below.\n'
                                  'In the plot panel below, columns correspond to the age group (in years) and rows correspond to whether or not the start and end of the infection was observed.',
-                                ['_plots/site_compare_age_infect_duration_navrongo_2000.png'],
+                                ['_plots/site_compare_infect_duration_age_navrongo_2000.png'],
                              None],
                             'Asexual parasite density by age':
                                 ['The plots below compare the distribution of parasite densities across ages and '
