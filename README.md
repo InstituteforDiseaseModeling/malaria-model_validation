@@ -59,6 +59,7 @@ When you see "Password:" in the terminal, enter your comps password and hit ente
 ```bash
 cd simulations
 python3 run_sims.py -s {site_name} -n {nSims}
+python3 add_suite.py(optional step) 
 python3 run_analyzers.py -s {site_name}
 python3 download_wi.py -s {site_name}
 ```
@@ -99,7 +100,7 @@ snakemake clean_download -j
 snakemake -j
 ```
 
-- If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run(/simulations/COMPS_ID/{site_name}_COMPS_ID_submit and _done files) and run "snakemake -j" again.
+- If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run(/simulations/COMPS_ID/{site_name}_COMPS_ID_exp_submit, _analyzers and _download files) and run "snakemake -j" again.
 
-- If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_done files only and re-run "snakemake -j".
+- If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_analyzers and _download files only and re-run "snakemake -j".
 
