@@ -21,19 +21,25 @@ library(tidyverse)
 ############################ helper functions #########################################
 ######################################################################################### 
 
-get_substr = function(site_name_str, index){
-  strsplit(site_name_str, "_")[[1]][index]
-}
-
 
 get_mean_from_upper_age = function(cur_age, upper_ages){
+  #' Using the upper bounds of a set of age bins, return the mean age of an individuals in a particular bin
+  #' 
+  #' @param cur_age The upper age bound of the current age bin
+  #' @param upper_ages The upper age bounds of all age bins
+  #' @return The mean age of someone in the current age bin
+  
   mean_ages = (c(0, upper_ages[1:(length(upper_ages)-1)]) + upper_ages) / 2
   return(mean_ages[which(upper_ages == cur_age)])
 }
 
 
-# get average parasite densities in each age bin, weighting all ages in bin equally (e.g., not weighted by population size)
 get_age_bin_averages = function(sim_df){
+  #' get average fraction of individuals in each age bin that fall into each parasite density bin, weighting all ages in bin equally (e.g., not weighted by population size)
+  #' 
+  #' @param sim_df A dataframe with simulation output where each row corresponds to an unique combination of {age bin, parasite density bin, month, year, site, and run seed}
+  #' @return A dataframe with the average gametocyte and asexual parasite density within all groupings
+  
   # remove rows where there are zero people of the measured age bin in the simulation
   sim_df = sim_df[sim_df$Pop > 0,]
   # get the simulation mean across runs
@@ -53,9 +59,14 @@ get_age_bin_averages = function(sim_df){
 
 
 match_sim_ref_ages = function(ref_df, sim_df, bench_df=data.frame()){
+  #' Check that ages match between reference and simulation. if there is a small difference (<1 year), update simulation to use same ages as reference.
+  #' 
+  #' @param ref_df A dataframe with the reference values. Has column mean_age.
+  #' @param sim_df A dataframe with the simulation values. Has column mean_age.
+  #' @param bench_df A dataframe with the benchmark simulation values. If included, must have column mean_age. 
+  #' @return A list where the first element is the updated (main) simulation dataframe and the second element is the benchmark simulation dataframe
   
   sites = intersect(unique(sim_df$Site), unique(ref_df$Site))
-  # check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
   for(ss in sites){
     ages_ref = sort(unique(ref_df$mean_age[ref_df$Site == ss]))
     ages_sim = sort(unique(sim_df$mean_age[sim_df$Site == ss]))
@@ -100,8 +111,14 @@ match_sim_ref_ages = function(ref_df, sim_df, bench_df=data.frame()){
 
 
 get_available_sites_for_relationship = function(coord_csv, simulation_output_filepath, relationship_name, relationship_sim_filename){
-  # determine which of the simulation sites both are indicated by the coordinator csv to be included in this validation relationship and have the relevant simulation output
-  
+  #' Determine which of the simulation sites both are indicated by the coordinator csv to be included in this validation relationship and have the relevant simulation output
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param relationship_name The column name from coord_csv corresponding to the current validation relationship (values in this column indicate whether or not a site is used for that relationship)
+  #' @param relationship_sim_filename The name of the simulation output file used for this validation relationship 
+  #' @return A vector of the simulation site names that should be included for this validation relationship
+
   coord_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv[[relationship_name]]==1))]
   available_sites = c()
   for (ii in 1:length(coord_sites)){
@@ -113,9 +130,16 @@ get_available_sites_for_relationship = function(coord_csv, simulation_output_fil
 }
 
 
-# if the maximum reference density bin is < (maximum simulation density bin / max_magnitude_difference), 
-#    aggregate all simulation densities >= max ref bin into the max ref bin. The new final density bin will be all densities equal to or above that value
 combine_higher_dens_freqs = function(sim_df_cur, max_ref_dens, max_magnitude_difference=100){
+  #' Aggregate simulation parasite density bins that are substantially above the maximum reference bin.
+  #'    Specifically, if the maximum reference density bin is < (maximum simulation density bin / max_magnitude_difference),
+  #'    aggregate all simulation densities >= max ref bin into the max ref bin. The new final density bin will be all densities equal to or above that value
+  #'    
+  #' @param sim_df_cur A dataframe with simulation results in the original density bins
+  #' @param max_ref_dens A number indicating the maximum parasite density bin included in the reference dataset
+  #' @param max_magnitude_difference The maximum allowable difference between the maximum reference and simulation density bins before the largest simulation bins are aggregated
+  #' @return The updated simulation dataframe with either the original or aggregated density bins
+  
   if(max_ref_dens < (max(sim_df_cur$densitybin, na.rm=TRUE)/max_magnitude_difference)){
     # get sum of frequencies within higher bins
     all_higher_dens = sim_df_cur[sim_df_cur$densitybin >= max_ref_dens,]
@@ -135,9 +159,11 @@ combine_higher_dens_freqs = function(sim_df_cur, max_ref_dens, max_magnitude_dif
 
 
 get_fraction_in_infectious_bin = function(sim_df){
-  # translate the frequencies from simulation output into fraction of individuals in each 
-  #     {age bin, month, densitybin, run number} group are in each infectiousness bin
-  # return mean values across simulation seeds and within age groups (Assuming equal population sizes and weighting for all ages in an age bin)
+  #' Translate the infectiousness values from simulation output into the fraction of individuals from each {age bin, month, densitybin, run number} group that are in each infectiousness bin.
+  #'    Calculate the average value across seeds and years.
+  #' 
+  #' @param sim_df A dataframe containing the (unaggregated) simulation output
+  #' @return A dataframe including the mean bin frequency values across simulation seeds and within age groups (assuming equal population sizes and weighting for all ages in an age bin)
   
   sim_df$infectiousness_bin_count = sim_df$infectiousness_bin_freq * sim_df$Pop  # note, since this is an average over the reporting period, these may not be whole numbers
   
@@ -185,8 +211,15 @@ get_fraction_in_infectious_bin = function(sim_df){
 
 
 prepare_inc_df = function(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath=NA){
-  # read in, format, and align simulation and matched reference data into a single dataframe for incidence results across all sites
+  #' Read in, align, and combine reference and simulation data for all sites associated with the incidence-by-age validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+  #' @return A dataframe containing the combined reference and simulation data for this validation relationship
   
+
   
   # determine which of the age-incidence sites have the relevant simulation output
   available_sites = get_available_sites_for_relationship(coord_csv, simulation_output_filepath, relationship_name='age_incidence', relationship_sim_filename='inc_prev_data_final.csv')
@@ -257,6 +290,13 @@ prepare_inc_df = function(coord_csv, simulation_output_filepath, base_reference_
 
 # prepare dataframe with simulation and reference data formatted together
 prepare_prev_df = function(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath=NA){
+  #' Read in, align, and combine reference and simulation data for all sites associated with the prevalence-by-age validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+  #' @return A dataframe containing the combined reference and simulation data for this validation relationship
   
   
   # determine which of the age-prevalence sites have the relevant simulation output
@@ -379,8 +419,14 @@ prepare_prev_df = function(coord_csv, simulation_output_filepath, base_reference
 
 
 prepare_dens_df = function(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath=NA){
-  # read in, format, and align simulation and matched reference data into a single dataframe for parasite density results across all sites
-
+  #' Read in, align, and combine reference and simulation data for all sites associated with the parasite density-by-age validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+  #' @return A dataframe containing the combined reference and simulation data for this validation relationship
+  
   # determine which of the parasite density sites have the relevant simulation output
   available_sites = get_available_sites_for_relationship(coord_csv, simulation_output_filepath, relationship_name='age_parasite_density', relationship_sim_filename='parasite_densities_by_age_month.csv')
   
@@ -493,6 +539,13 @@ prepare_dens_df = function(coord_csv, simulation_output_filepath, base_reference
 
 
 prepare_infect_df = function(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath=NA){
+  #' Read in, align, and combine reference and simulation data for all sites associated with the infectiousness-to-mosquitos validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+  #' @return A dataframe containing the combined reference and simulation data for this validation relationship
   
   # determine which of the infectiousness sites have the relevant simulation output
   available_sites = get_available_sites_for_relationship(coord_csv, simulation_output_filepath, relationship_name='infectiousness_to_mosquitos', relationship_sim_filename='infectiousness_by_age_density_month.csv')
@@ -577,9 +630,17 @@ prepare_infect_df = function(coord_csv, simulation_output_filepath, base_referen
 # Note: this function does not follow the same pattern as the functions for the other validation relationships
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# get subset of simulation dataset to match reference dataset for dates and ages of individuals of sampled individuals
+# 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 get_sim_survey = function(sim_dir, ref_df, seeds=NA){
+  #' Subsample from the simulation output to match the survey that generated the reference dataset (i.e., match the dates and ages of sampled individuals)
+  #'     If they have not already been generated, the subsampled results (one subsampling per simulation seed) are saved to a csv
+  #' 
+  #' @param sim_dir The filepath to the directory where the simulation results are saved
+  #' @param ref_df A dataframe containing the reference data, which is used to determine which individuals from the simulations are kept in the subsampled results
+  #' @param seeds The subset of simulaton run seeds to include. If NA, all seeds are used.
+  #' @return A dataframe containing simulation survey results matching the reference dataset (includes a set of reference-matched rows for each of the simulation seeds)
+  
   sampled_sim_filename = 'sim_duration_survey_sampling.csv'
   if(file.exists(paste0(sim_dir, '/', sampled_sim_filename))){
     sim_subset_full = read.csv(paste0(sim_dir, '/', sampled_sim_filename))

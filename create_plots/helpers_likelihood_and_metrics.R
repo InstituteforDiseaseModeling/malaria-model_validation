@@ -19,7 +19,14 @@ library(tidyverse)
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # prevalence
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-get_prev_likelihood = function(combined_df, sim_column='simulation'){
+get_prev_loglikelihood = function(combined_df, sim_column='simulation'){
+  #' Calculate an approximate likelihood for the simulation parameters for each site. This is estimated as the product, across age groups, 
+  #'     of the probability of observing the reference values if the simulation means represented the true population mean
+  #' 
+  #' @param combined_df A dataframe containing both the reference and matched simulation output
+  #' @param sim_column The name of the column of combined_df to use as the simulation output
+  #' @return A dataframe of loglikelihoods where each row corresponds to a site-month
+  
   combined_df$prob_pos_sim = combined_df[,sim_column]
   # only include reference sites where the sample sizes were reported
   combined_df = combined_df[!is.na(combined_df$total_sampled),]
@@ -50,8 +57,14 @@ get_prev_likelihood = function(combined_df, sim_column='simulation'){
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # parasite density
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-get_dens_likelihood = function(combined_df, sim_column='simulation'){
-
+get_dens_loglikelihood = function(combined_df, sim_column='simulation'){
+  #' Calculate an approximate likelihood for the simulation parameters for each site. This is estimated as the product, across age groups, 
+  #'     of the probability of observing the reference values if the simulation means represented the true population mean
+  #' 
+  #' @param combined_df A dataframe containing both the reference and matched simulation output
+  #' @param sim_column The name of the column of combined_df to use as the simulation output
+  #' @return A dataframe of loglikelihoods where each row corresponds to a site-month
+  
   # remove rows where there is no reference data (sometimes there are different density bins in different sites, so rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
   ref_rows_na = which(is.na(combined_df$ref_bin_count))
   if(length(ref_rows_na)>0){
@@ -66,7 +79,7 @@ get_dens_likelihood = function(combined_df, sim_column='simulation'){
   # remove rows without simulation output
   combined_df = combined_df[!is.na(combined_df[[sim_column]]),]
   
-  # multinomial draw: likelihood of getting the observed distribution of parasite densities assuming the simulations show the true population-level frequencies
+  # assuming reference data comes from a multinomial draw: likelihood of getting the observed distribution of parasite densities assuming the simulations show the true population-level frequencies
   # iterate through groups of month-age-site
   loglik_df = data.frame('site_month'= c(), 'loglikelihood' = c())
   site_months = unique(combined_df$site_month)
@@ -97,9 +110,14 @@ get_dens_likelihood = function(combined_df, sim_column='simulation'){
 # other quantitative comparison metrics
 ####################################################################################################### 
 
-# mean relative difference between reference and matched simulation values across ages
-#   for a given age, calculate (reference - simulation)/reference. Report the mean across all ages
+
 calc_mean_rel_diff = function(combined_df){
+  #' Calculate the mean relative difference between reference and matched simulation values across ages.
+  #'    For a given age, calculate (reference - simulation)/reference. Report the mean across all ages.
+  #' 
+  #' @param combined_df  A dataframe containing both the reference and matched simulation output
+  #' @return A dataframe with the mean absolute difference and the mean magnitude of the relative difference between all pairs of reference and simulation values
+  
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
   combined_df$rel_diff = abs((combined_df$reference - combined_df$simulation) / combined_df$reference)
   combined_df$abs_diff = abs(combined_df$reference - combined_df$simulation)
@@ -111,6 +129,12 @@ calc_mean_rel_diff = function(combined_df){
 
 
 calc_mean_rel_slope_diff = function(combined_df){
+  #' Calculate the mean relative difference between the slopes in the reference and matched simulation dataset, moving from the youngest to the oldest age bin.
+  #'    For a given age, calculate (reference slope - simulation slope)/reference slope. Report the mean across all ages.
+  #' 
+  #' @param combined_df  A dataframe containing both the reference and matched simulation output
+  #' @return A dataframe with the mean absolute difference and the mean magnitude of the relative difference between all pairs of reference and simulation values
+  
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
   combined_df$rel_diff = abs((combined_df$ref_slope_to_next - combined_df$sim_slope_to_next) / combined_df$ref_slope_to_next)
   combined_df$abs_diff = abs(combined_df$ref_slope_to_next - combined_df$sim_slope_to_next)
@@ -121,8 +145,15 @@ calc_mean_rel_slope_diff = function(combined_df){
 }
 
 
-# correlation between reference and matched simulation data points
+
 corr_ref_sim_points = function(combined_df){
+  #' Calculate the correlation between reference and matched simulation data points.
+  #' 
+  #' @param combined_df  A dataframe containing both the reference and matched simulation output
+  #' @return A list with two elements:
+  #'     1) A gg scatterplot showing the reference values against the simulation values
+  #'     2) A dataframe summarizing the linear regression results
+  
   metric = combined_df$metric[1]
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
   min_value = min(c(combined_df$reference, combined_df$simulation), na.rm=TRUE)
@@ -149,8 +180,15 @@ corr_ref_sim_points = function(combined_df){
 }
 
 
-# correlation between derivatives moving between ages
 corr_ref_deriv_sim_points = function(combined_df){
+  #' Calculate the correlation between reference and matched simulation slopes (derivatives) when moving from the youngest to the oldest age group.
+  #' 
+  #' @param combined_df  A dataframe containing both the reference and matched simulation output
+  #' @return A list with two elements:
+  #'     1) A gg scatterplot showing the reference slopes against the simulation slopes
+  #'     2) A dataframe summarizing the linear regression results
+  #'     3) The combined_df dataframe, with columns added giving the simulation and reference slopes
+
   metric = combined_df$metric[1]
   # calculate the slope when moving between age groups
   combined_df$sim_slope_to_next = NA

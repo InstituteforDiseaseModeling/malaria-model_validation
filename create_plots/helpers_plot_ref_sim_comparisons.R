@@ -21,8 +21,12 @@ library(tidyr)
 ####################################################################################################### 
 ##########################  compare new and benchmark simulation values  ########################## 
 ####################################################################################################### 
-# create scatter plots with new versus benchmark simulation output
 compare_benchmark = function(combined_df){
+  #' Create scatter plots with new versus benchmark simulation output
+  #' 
+  #' @param combined_df A dataframe with both the simulation and matched benchmark values
+  #' @return A gg scatterplot
+
   combined_df = combined_df[!is.na(combined_df$benchmark),]
   metric = combined_df$metric[1]
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
@@ -49,6 +53,10 @@ compare_benchmark = function(combined_df){
 ########################## plot age-incidence comparisons with reference ####################
 ####################################################################################################### 
 plot_inc_ref_sim_comparison = function(combined_df){
+  #' Create a panel of line plots (one for each site-month) showing the incidence-by-age relationship seen in the reference and simulation datasets
+  #' 
+  #' @param combined_df A dataframe with the reference and simulation values
+  #' @return A panel of ggplots
   
   # convert dataframe to long format
   combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='incidence')
@@ -82,7 +90,11 @@ plot_inc_ref_sim_comparison = function(combined_df){
 ########################## plot age-prevalence comparisons with reference ####################
 ####################################################################################################### 
 plot_prev_ref_sim_comparison = function(combined_df){
-
+  #' Create a panel of line plots (one for each site-month) showing the prevalence-by-age relationship seen in the reference and simulation datasets
+  #' 
+  #' @param combined_df A dataframe with the reference and simulation values
+  #' @return A panel of ggplots
+  
   # convert dataframe to long format
   combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='prevalence')
   
@@ -116,15 +128,18 @@ plot_prev_ref_sim_comparison = function(combined_df){
 ########################## plot parasite density comparisons with reference ####################
 ####################################################################################################### 
 
-# create plots of parasite density bins by age with reference and simulation results overlaid for comparison
 plot_par_dens_ref_sim_comparison = function(combined_df){
+  #' Create a plots (one for each site-month) showing the parasite density-by-age relationship seen in the reference and simulation datasets
+  #' 
+  #' @param combined_df A dataframe with the reference and simulation values
+  #' @return A list with three elements: 
+  #'      - 1) A panel of gg barplots showing the parasite density frequencies across age groups for all sites. 
+  #'      - 2) A list of ggplots comparing the reference and simulation density frequencies. Each plot corresponds to a site.
+  #'      - 3) A vector of site names, with the same ordering as the list of plots (element 2)
   
   months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
-  
-  
   # convert dataframe to long format
   combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='density_frequency')
-  
 
   # = = = = = = = = = #
   # stacked barplots
@@ -210,8 +225,14 @@ plot_par_dens_ref_sim_comparison = function(combined_df){
 ####################################################################################################### 
 
 plot_infectiousness_ref_sim_comparison = function(combined_df){
-  months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+  #' Create a plots (one for each site-month) showing the infectiousness-to-vectors by age and parasite density relationship seen in the reference and simulation datasets
+  #' 
+  #' @param combined_df A dataframe with the reference and simulation values
+  #' @return A list with two elements: 
+  #'      - 1) A list of ggplots comparing the reference and simulation density frequencies. Each plot corresponds to a site.
+  #'      - 2) A vector of site names, with the same ordering as the list of plots (element 2)
   
+  months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
   # convert dataframe to long format
   combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='infectiousness_bin_freq')
   
@@ -248,7 +269,6 @@ plot_infectiousness_ref_sim_comparison = function(combined_df){
                                    "benchmark"=rgb(0,0,0,alpha=0.1))) +
       facet_grid(agebin~month)
   }
-
   return(list(line_plot_list, all_sites))
 }
 
@@ -261,13 +281,18 @@ plot_infectiousness_ref_sim_comparison = function(combined_df){
 
 
 ####################################################################################################### 
-############################# infection duration plotting functions ################################33
+############################# infection duration plotting functions ################################
 ####################################################################################################### 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# calculate probability of going from negative to positive or from positive to negative between sample dates
+# helper functions for pre-plotting data processing
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+
 get_frac_state_swaps = function(data){
+  #' Calculate probability of going from negative to positive or from positive to negative between sample dates (among surveyed individuals)
+  #' 
+  #' @param data A dataframe of test results for all individuals and survey days
+  #' @return A vector where the first element is the fraction of the time a positive test was followed by a negative result and the second element is the fraction of time a negative test was followed by a positive test
   
   # brute force approach iterating through people and dates
   indIDs = unique(data$SID)
@@ -300,10 +325,11 @@ get_frac_state_swaps = function(data){
 }
 
 
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# calculate infection duration (time between consequtive positive samples) and whether or not the infection observation was censored
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 get_time_pos = function(data){
+  #' Calculate infection duration (time between consecutive positive samples) and whether or not the infection observation was censored
+  #' 
+  #' @param data A dataframe of test results for all individuals and survey days
+  #' @return A dataframe where each row corresponds to a stretch of time when an individual has uninterrupted positive tests
   
   # brute force approach iterating through people and dates
   indIDs = unique(data$SID)
@@ -349,18 +375,19 @@ get_time_pos = function(data){
       }
     }
   }
-  
   return(data.frame('days_positive' = days_positive, 'censored' = sample_censored, 'age' = sample_ages, 'seed' = sample_seeds))
 }
 
 
 
-
-
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# functions to get binned durations of infections, with quantile ranges across sim seeds, optionally faceted by censorship and age
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 bin_durations_all_seeds = function(days_positive, duration_bins){
+  #' Get binned durations of infections for a specific group of infections (e.g., age group and censored/non-censored), with quantile ranges across sim seeds
+  #' 
+  #' @param days_positive A data frame where each row corresponds to a stretch of time when an individual has uninterrupted positive tests
+  #' @param duration_bins A monotonically-increasing vector of numbers giving the plotted bin breaks for the duration (in days) individuals remain infected
+  #' @return A dataframe with the fraction of infections that fall in each of the duration bins (average value across seeds), along with the extreme quantiles among all seeds
+  
+
   # create data frame of binned days positive for each seed in days_positive
   bin_w_seeds = data.frame(bin_mid=(duration_bins[-length(duration_bins)]+duration_bins[-1])/2,
                            bin_min=duration_bins[-length(duration_bins)],
@@ -371,7 +398,6 @@ bin_durations_all_seeds = function(days_positive, duration_bins){
     binned_dens = binned_counts$counts / sum(binned_counts$counts)
     bin_w_seeds[[paste0('seed_', seed)]] = as.numeric(binned_dens)
   }
-  
   if(length(which(grepl('seed_', colnames(bin_w_seeds))))>1){
     bin_w_seeds$density = apply(bin_w_seeds[,which(grepl('seed_', colnames(bin_w_seeds)))], 1, mean)
     bin_w_seeds$quant_low = apply(bin_w_seeds[,which(grepl('seed_', colnames(bin_w_seeds)))], 1, quantile, probs=0.0)  # 0.1
@@ -385,18 +411,33 @@ bin_durations_all_seeds = function(days_positive, duration_bins){
     bin_w_seeds$quant_low = NA
     bin_w_seeds$quant_high = NA
   }
-  
   bin_df = bin_w_seeds[,c('bin_mid', 'density', 'quant_low', 'quant_high', 'bin_min', 'bin_max')]
   return(bin_df)
 }
 
 
 get_age_group = function(cur_age, age_bin_lower, age_bin_labels){
+  #' Get the appropriate age bin label for a particular age in years
+  #' 
+  #' @param cur_age A numeric value representing an individual's age in years
+  #' @param age_bin_lower A vector of the lower age ranges of each age bin
+  #' @param age_bin_labels A vector of age bin labels, with index-wise correspondance with age_bin_lower
+  #' @return The age-bin label corresponding to an age in years
+  
   return(age_bin_labels[max(which(cur_age>age_bin_lower))])
 }
 
 
 get_duration_bins = function(ind_data, duration_bins, facet_censored=TRUE, facet_age=TRUE, age_bin_lower=c(0, 5, 10, 20, 100)){
+  #' Get fraction of infections that fall in each duration bin for an entire dataset, with quantile ranges across sim seeds, optionally faceted by censorship and age
+  #' 
+  #' @param ind_data A dataframe with all individual infection duration data
+  #' @param duration_bins A monotonically-increasing vector of numbers giving the plotted bin breaks for the duration (in days) individuals remain infected
+  #' @param facet_censored A boolean value indicating whether results should be partitioned by whether or not the infection duration observation was censored
+  #' @param facet_age A boolean value indicating whether results should be partitioned by age group
+  #' @param age_bin_lower A vector of the lower age ranges of each age bin to use if faceting by age group
+  #' @return A dataframe with the fraction of infections that fall in each of the duration bins (average value across seeds), along with the extreme quantiles among all seeds. 
+  
   if(facet_age) age_bin_labels = c(paste0(age_bin_lower[1:(length(age_bin_lower)-1)], '-', age_bin_lower[2:length(age_bin_lower)]), paste0('>', age_bin_lower[length(age_bin_lower)]))
   
   # get data frame of the days each observed infection lasted, also recording age, whether infection was censored, and seed
@@ -447,9 +488,16 @@ get_duration_bins = function(ind_data, duration_bins, facet_censored=TRUE, facet
 
 
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# create barplot comparing sim and ref for fraction of samples positive and fractions of samples switching from neg--> pos or pos--> neg
+# plotting functions
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-create_barplot_frac_comparison = function(ref_df, sim_data, pos_thresh_dens, sim_dir){
+create_barplot_frac_comparison = function(ref_df, sim_data, pos_thresh_dens){
+  #' Create a gg barplot comparing the reference dataset and matching subsampled simulations for fraction of samples positive and fractions of samples switching from neg--> pos or pos--> neg
+  #'
+  #' @param ref_df A dataframe with the reference values.
+  #' @param sim_data A dataframe with the subsampled simulation values (may include results from multiple seeds)
+  #' @param pos_thresh_dens A number giving the minimum true asexual parasite density a simulated individual must have to be considered positive
+  #' @return A gg barplot
+  
   frac_swap_ref = get_frac_state_swaps(data=ref_df)
   frac_swap_sim = get_frac_state_swaps(data=sim_data)
   
@@ -474,11 +522,16 @@ create_barplot_frac_comparison = function(ref_df, sim_data, pos_thresh_dens, sim
   return(gg)
 }
 
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# create plots comparing the distributions of infection lengths
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 
-plot_infection_duration_dist = function(ref_df, sim_data, pos_thresh_dens, sim_dir, duration_bins=c(seq(0,350,50), 500)){
+
+plot_infection_duration_dist = function(ref_df, sim_data, pos_thresh_dens, duration_bins=c(seq(0,350,50), 500)){
+  #' Create a panel of gg barplots comparing the distributions of infection lengths in simulation versus reference datasets
+  #'
+  #' @param ref_df A dataframe with the reference values.
+  #' @param sim_data A dataframe with the subsampled simulation values (may include results from multiple seeds)
+  #' @param pos_thresh_dens A number giving the minimum true asexual parasite density a simulated individual must have to be considered positive
+  #' @param duration_bins A monotonically-increasing vector of numbers giving the plotted bin breaks for the duration (in days) individuals remain infected
+  #' @return A panel of gg barplots, faceted by censorship status
   
   # get densities for each duration bin
   ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=TRUE, facet_age=FALSE)
@@ -508,7 +561,6 @@ plot_infection_duration_dist = function(ref_df, sim_data, pos_thresh_dens, sim_d
     labs(title=paste0('infection duration'), x='infection duration (days)') + 
     facet_wrap(scales='fixed', facets='censor_type')
   return(gg)
-  # ggsave(filename=paste0(sim_dir, '/duration_comparison_xEIR', xEIR_val, '_densThresh', pos_thresh_dens, '.png'), plot=gg, width=6, height=3, units='in')
 }
 
 
@@ -518,7 +570,14 @@ plot_infection_duration_dist = function(ref_df, sim_data, pos_thresh_dens, sim_d
 # create plots comparing the distributions of infection lengths, faceted by age group
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 
-plot_infection_duration_dist_by_age = function(ref_df, sim_data, pos_thresh_dens, sim_dir, age_bin_lower=c(0, 5, 10, 20, 100), duration_bins=c(seq(0,350,50), 500)){
+plot_infection_duration_dist_by_age = function(ref_df, sim_data, pos_thresh_dens, age_bin_lower=c(0, 5, 10, 20, 100), duration_bins=c(seq(0,350,50), 500)){
+  #' Create a panel of gg barplots comparing the distributions of infection lengths in simulation versus reference datasets
+  #'
+  #' @param ref_df A dataframe with the reference values.
+  #' @param sim_data A dataframe with the subsampled simulation values (may include results from multiple seeds)
+  #' @param pos_thresh_dens A number giving the minimum true asexual parasite density a simulated individual must have to be considered positive
+  #' @param duration_bins A monotonically-increasing vector of numbers giving the plotted bin breaks for the duration (in days) individuals remain infected
+  #' @return A panel of gg barplots, faceted by censorship status and age bin
   
   # get densities for each duration bin
   ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=TRUE, facet_age=TRUE)
@@ -548,27 +607,9 @@ plot_infection_duration_dist_by_age = function(ref_df, sim_data, pos_thresh_dens
     labs(title=paste0('infection duration'), x='infection duration (days)') + 
     facet_grid(scales='fixed', facets=c('censor_type', 'age_group'))
   return(gg)
-  # ggsave(filename=paste0(sim_dir, '/duration_comparison_by_agebin_xEIR', xEIR_val, '_densThresh', pos_thresh_dens, '.png'), plot=gg, width=8, height=4.5, units='in')
 }
 
 
-
-
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-# Create all reference-simulation comparison plots: infection duration
-# = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-
-plot_duration_ref_sim_comparison = function(sim_dir, ref_df){
-  ref_df$date = as.Date(ref_df$date)
-  sim_data = get_sim_survey(sim_dir=sim_dir, ref_df=ref_df)
-  
-  # create comparison plots
-  gg1 = plot_infection_duration_dist(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, sim_dir=sim_dir, duration_bins=duration_bins)
-  gg2 = plot_infection_duration_dist_by_age(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, sim_dir=sim_dir, duration_bins=duration_bins)
-  gg3 = create_barplot_frac_comparison(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, sim_dir=sim_dir)
-  
-  return(list(gg1, gg2, gg3))
-}
 
 
 

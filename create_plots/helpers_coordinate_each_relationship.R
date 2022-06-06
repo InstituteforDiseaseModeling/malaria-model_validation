@@ -19,6 +19,13 @@ library(ggpubr)
 ################################################################################# 
 
 generate_age_incidence_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){
+  #' From simulation output and matched reference data, create plots and quantitative comparisons for all sites associated with the incidence-by-age validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param plot_output_filepath The filepath to the directory where plots should be created
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
 
   # get formatted dataframe with reference and simulation incidence data from all relevant sites
   combined_df = prepare_inc_df(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath)
@@ -71,7 +78,14 @@ generate_age_incidence_outputs = function(coord_csv, simulation_output_filepath,
 ################################################################################# 
 
 generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){
-  
+  #' From simulation output and matched reference data, create plots and quantitative comparisons for all sites associated with the prevalence-by-age validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param plot_output_filepath The filepath to the directory where plots should be created
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+
   # get formatted dataframe with reference and simulation prevalence data from all relevant sites
   combined_df = prepare_prev_df(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath)
 
@@ -112,8 +126,8 @@ generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath
   if('benchmark' %in% colnames(combined_df)){
     compare_benchmarks_output = compare_benchmark(combined_df)
     ggsave(filename=paste0(plot_output_filepath, '/scatter_benchmark_prevalence_age.png'), plot=compare_benchmarks_output, height=4.5, width=8, units='in')
-    new_sim_loglik = get_prev_likelihood(combined_df, sim_column='simulation')
-    bench_sim_loglik = get_prev_likelihood(combined_df, sim_column='benchmark')
+    new_sim_loglik = get_prev_loglikelihood(combined_df, sim_column='simulation')
+    bench_sim_loglik = get_prev_loglikelihood(combined_df, sim_column='benchmark')
     colnames(new_sim_loglik)[which(colnames(new_sim_loglik)=='loglikelihood')] = 'loglikelihood_new_sim'
     colnames(bench_sim_loglik)[which(colnames(bench_sim_loglik)=='loglikelihood')] = 'loglikelihood_benchmark_sim'
     loglikelihood_comparison = merge(new_sim_loglik, bench_sim_loglik)
@@ -131,6 +145,13 @@ generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath
 
 
 generate_parasite_density_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){
+  #' From simulation output and matched reference data, create plots and quantitative comparisons for all sites associated with the parasite density-by-age validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param plot_output_filepath The filepath to the directory where plots should be created
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
 
   # get formatted dataframe with reference and simulation prevalence data from all relevant sites
   combined_dfs = prepare_dens_df(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath)
@@ -163,15 +184,15 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     compare_benchmarks_output = compare_benchmark(combined_df_gamet)
     ggsave(filename=paste0(plot_output_filepath, '/scatter_benchmark_gamet_dens.png'), plot=compare_benchmarks_output, height=4.5, width=8, units='in')
     
-    loglik_df_asex = get_dens_likelihood(combined_df=combined_df_asex, sim_column='simulation')
+    loglik_df_asex = get_dens_loglikelihood(combined_df=combined_df_asex, sim_column='simulation')
     colnames(loglik_df_asex)[colnames(loglik_df_asex)=='loglikelihood'] = 'loglike_asex'
-    loglik_df_asex_bench = get_dens_likelihood(combined_df=combined_df_asex, sim_column='benchmark')
+    loglik_df_asex_bench = get_dens_loglikelihood(combined_df=combined_df_asex, sim_column='benchmark')
     colnames(loglik_df_asex_bench)[colnames(loglik_df_asex_bench)=='loglikelihood'] = 'benchmark_loglike_asex'
     loglik_df_asex = merge(loglik_df_asex, loglik_df_asex_bench, all=TRUE)
     
-    loglik_df_gamet = get_dens_likelihood(combined_df=combined_df_gamet, sim_column='simulation')
+    loglik_df_gamet = get_dens_loglikelihood(combined_df=combined_df_gamet, sim_column='simulation')
     colnames(loglik_df_gamet)[colnames(loglik_df_gamet)=='loglikelihood'] = 'loglike_gamet'
-    loglik_df_gamet_bench = get_dens_likelihood(combined_df=combined_df_gamet, sim_column='benchmark')
+    loglik_df_gamet_bench = get_dens_loglikelihood(combined_df=combined_df_gamet, sim_column='benchmark')
     colnames(loglik_df_gamet_bench)[colnames(loglik_df_gamet_bench)=='loglikelihood'] = 'benchmark_loglike_gamet'
     loglik_df_gamet = merge(loglik_df_gamet, loglik_df_gamet_bench, all=TRUE)
 
@@ -188,7 +209,14 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
 ################################################################################# 
 
 generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){
-  
+  #' From simulation output and matched reference data, create plots and quantitative comparisons for all sites associated with the infectiousness-to-vectors validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param plot_output_filepath The filepath to the directory where plots should be created
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+
   combined_df = prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_filepath, benchmark_simulation_filepath)
 
   plot_output = plot_infectiousness_ref_sim_comparison(combined_df)
@@ -198,10 +226,12 @@ generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath
     ggsave(filename=paste0(plot_output_filepath, '/site_compare_infectiousness_', all_sites[ss], '.png'), plot=plot_list[[ss]], width=7.5, height=6, units='in')
   } 
   
-  # TODO: add likelihood and other quantitative comparisons
   if('benchmark' %in% colnames(combined_df)){
     compare_benchmarks_output = compare_benchmark(combined_df)
     ggsave(filename=paste0(plot_output_filepath, '/scatter_benchmark_infectiousness.png'), plot=compare_benchmarks_output, height=4.5, width=8, units='in')
+    
+    # TODO: add likelihood and other quantitative comparisons
+    
   }
 }
 
@@ -213,7 +243,19 @@ generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath
 ################################################################################# 
 
 generate_age_infection_duration_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, pos_thresh_dens=0.5, duration_bins=c(seq(0,350,50), 500), benchmark_simulation_filepath=NA){
+  #' From simulation output and matched reference data, create plots and quantitative comparisons for all sites associated with the duration-of-infection validation relationship. 
+  #' 
+  #' @param coord_csv A dataframe detailing the sites simulated for each validation relationship and the corresponding reference dataset
+  #' @param simulation_output_filepath The filepath where simulation output is located
+  #' @param base_reference_filepath The filepath where reference datasets are located
+  #' @param plot_output_filepath The filepath to the directory where plots should be created
+  #' @param pos_thresh_dens A number giving the minimum true asexual parasite density a simulated individual must have to be considered positive
+  #' @param duration_bins A monotonically-increasing vector of numbers giving the plotted bin breaks for the duration (in days) individuals remain infected
+  #' @param benchmark_simulation_filepath The filepath where benchmark simulation output is located. If NA, no comparisons are made against benchmark simulations
+  
+  
   # TODO: add benchmark simulation support, add quantitative comparisons
+  
   
   # determine which of the infectiousness sites have the relevant simulation output
   available_sites = get_available_sites_for_relationship(coord_csv, simulation_output_filepath, relationship_name='infection_duration', relationship_sim_filename='patient_reports.csv')
@@ -221,16 +263,22 @@ generate_age_infection_duration_outputs = function(coord_csv, simulation_output_
   for (ss in 1:length(available_sites)){
     cur_site = available_sites[ss]
     sim_dir = paste0(simulation_output_filepath, '/', cur_site)
+    sim_data = get_sim_survey(sim_dir=sim_dir, ref_df=ref_df)
     
     filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infection_duration_ref[which(coord_csv$site == cur_site)])
     ref_df = read.csv(filepath_ref)
     ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
+    ref_df$date = as.Date(ref_df$date)
     
-    gg_plots = plot_duration_ref_sim_comparison(sim_dir, ref_df)
     
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_', cur_site, '.png'), plot=gg_plots[[1]], height=4, width=8, units='in')
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_age_', cur_site, '.png'), plot=gg_plots[[2]], height=5, width=8, units='in')
-    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_measures_', cur_site, '.png'), plot=gg_plots[[3]], height=4, width=8, units='in')
+    # create and save comparison plots
+    gg1 = plot_infection_duration_dist(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, duration_bins=duration_bins)
+    gg2 = plot_infection_duration_dist_by_age(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, duration_bins=duration_bins)
+    gg3 = create_barplot_frac_comparison(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens)
+    
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_', cur_site, '.png'), plot=gg1, height=4, width=8, units='in')
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_age_', cur_site, '.png'), plot=gg2, height=5, width=8, units='in')
+    ggsave(filename=paste0(plot_output_filepath, '/site_compare_infect_duration_measures_', cur_site, '.png'), plot=gg3, height=4, width=8, units='in')
   }
 }
 

@@ -69,7 +69,7 @@ generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_refe
 #                    age - infection duration                     #
 # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
 # set positive threshold density for sampled parasites in simulation output (to match PCR threshold in reference)
-pos_thresh_dens = 0.5  # (39=min(ref_df$DENSITY[ref_df$DENSITY>0], na.rm=TRUE) - 1)
+pos_thresh_dens = 0.5  # Note: from the reference dataset, the smallest positive density was 39. (39=min(ref_df$DENSITY[ref_df$DENSITY>0], na.rm=TRUE) - 1)
 # specify binning for duration of infection
 duration_bins=c(seq(0,350,50), 500)
 generate_age_infection_duration_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, pos_thresh_dens, duration_bins, benchmark_simulation_filepath=benchmark_simulation_filepath)
