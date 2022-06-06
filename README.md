@@ -58,7 +58,8 @@ When you see "Password:" in the terminal, enter your comps password and hit ente
 ## Option 1_Run One Site with Python Scripts
 ```bash
 python3 run_sims.py -s {site_name} -n {nSims}
-python3 wait_for_experiment.py -s {site_name}
+python3 run_analyzers.py -s {site_name}
+python3 download_wi.py -s {site_name}
 ```
 
 ## Option 2_Run all Sites with Snakemake (Recommended)
@@ -76,6 +77,18 @@ snakemake -j
 - If you make change locally in simulation_coordinator.csv, run the generate_site_rules.py to regenerate snakemake rules(run this script every time you update your simulation_coordinator.csv):
 ```bash
 python3 generate_site_rules.py
+snakemake -j
+```
+
+- If you want to re-run the analyzers steps with previous experiments you ran, you can delete the analyzer id files and run:
+```bash
+snakemake clean_ana clean_download -j
+snakemake -j
+```
+
+- Simular to previous scenario, if you want to run only the download and plotting steps:
+```bash
+snakemake clean_download -j
 snakemake -j
 ```
 
