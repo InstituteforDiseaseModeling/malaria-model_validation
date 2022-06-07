@@ -1,10 +1,8 @@
-import math
 import os
 import warnings
 import pandas as pd
 import numpy as np
 from functools import partial
-from pathlib import Path
 import emod_api.demographics.Demographics as Demographics
 
 from emodpy_malaria.interventions.diag_survey import add_diagnostic_survey

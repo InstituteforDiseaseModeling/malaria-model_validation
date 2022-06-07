@@ -1,7 +1,7 @@
 import os
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+# import numpy as np
+# import matplotlib.pyplot as plt
 import matplotlib
 from plotnine import ggplot, aes, geom_line, facets
 
@@ -18,10 +18,10 @@ df["CM"] = [(x.split("_")[2]) for x in df.Site]
 
 
 gg = (
-        ggplot(df)
-        + aes(x='Age', y='Incidence', color='EIR')  # , linetype="season"
-        + geom_line()
-        + facets.facet_grid("season ~ CM")
+        ggplot(df) +
+        aes(x='Age', y='Incidence', color='EIR') +  # , linetype="season"
+        geom_line() +
+        facets.facet_grid("season ~ CM")
         # + facets.facet_wrap(facets="season", nrow=1)
 )
 

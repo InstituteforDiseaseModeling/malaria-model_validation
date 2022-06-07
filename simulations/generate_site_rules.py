@@ -5,7 +5,6 @@ sites, nSims, script_names = load_sites()
 
 
 def generate_rule(site, n, script_name="run_sims.py"):
-
     exp_id_file = get_comps_id_filename(site=site)
     analyzer_id_file = get_comps_id_filename(site=site, level=2)
     download_id_file = get_comps_id_filename(site=site, level=3)
@@ -32,11 +31,11 @@ rule {site}_download:
     return rule
 
 
-def run(snakefile='snakefile_bak'):
-    with open(snakefile, 'r') as file:
+def run(snakefile_bak='snakefile_bak', snakefile='snakefile'):
+    with open(snakefile_bak, 'r') as file:
         snakefile_str = file.read()
     snakefile_str = delete_old_rules(snakefile_str)
-    write_rules(snakefile_str, 'snakefile')
+    write_rules(snakefile_str, snakefile)
 
 
 def delete_old_rules(snakefile_str):

@@ -6,3 +6,4 @@ seaborn
 sklearn
 scipy
 snakemake
+plotnine

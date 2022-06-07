@@ -2,6 +2,7 @@ from fpdf import FPDF
 
 title = 'Malaria Model Overview'
 
+
 class PDF(FPDF):
     def header(self):
         # Logo
@@ -35,6 +36,7 @@ class PDF(FPDF):
         self.set_font('Arial', 'I', 8)
         # Page number
         self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
+
 
 # Instantiation of inherited class
 pdf = PDF()

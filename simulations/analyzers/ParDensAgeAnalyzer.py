@@ -1,8 +1,6 @@
 import os
 import warnings
 import pandas as pd
-import numpy as np
-from typing import Dict, Any, Union
 from logging import getLogger
 from idmtools.core.platform_factory import Platform
 from idmtools.analysis.analyze_manager import AnalyzeManager
@@ -11,7 +9,6 @@ from idmtools.entities.ianalyzer import IAnalyzer as BaseAnalyzer
 
 
 class ParDensAgeAnalyzer(BaseAnalyzer):
-
     def __init__(self, expt_name, sweep_variables=None, working_dir=".", start_year=0, end_year=65):
         super(ParDensAgeAnalyzer, self).__init__(working_dir=working_dir,
                                                  filenames=["output/MalariaSummaryReport_Monthly_Report_%d.json" % x

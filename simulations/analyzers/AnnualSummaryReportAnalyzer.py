@@ -1,4 +1,3 @@
-import json
 import os
 import pandas as pd
 import numpy as np
@@ -15,11 +14,11 @@ from idmtools.analysis.analyze_manager import AnalyzeManager
 from idmtools.core import ItemType
 from idmtools.core.platform_factory import Platform
 
+
 mpl.use('Agg')
 
 
 class AnnualSummaryReportAnalyzer(BaseAnalyzer):
-
     def __init__(self, expt_name, sweep_variables=None, working_dir="."):
         super().__init__(filenames=["output\\MalariaSummaryReport_Annual_Report.json"])
         self.expt_name = expt_name
@@ -88,7 +87,6 @@ class AnnualSummaryReportAnalyzer(BaseAnalyzer):
 
 
 if __name__ == '__main__':
-
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
     logger = getLogger()
