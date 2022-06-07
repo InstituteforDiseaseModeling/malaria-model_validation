@@ -464,7 +464,7 @@ plot_duration_ref_sim_comparison = function(sim_dir, ref_df){
 # Main function to generate all infection-duration outputs
 #########################################################################
 
-generate_age_infection_duration_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, pos_thresh_dens=0.5, duration_bins=c(seq(0,350,50), 500)){
+generate_age_infection_duration_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, pos_thresh_dens=0.5, duration_bins=c(seq(0,350,50), 500), benchmark_simulation_filepath=NA){
   
   age_duration_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$age_parasite_density==1))]
   

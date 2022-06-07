@@ -1,10 +1,10 @@
-# helper_functions_infectiousness.R
+=# helper_functions_infectiousness.R
 library(ggplot2)
 
 
 
 
-########################### create plots  ##################################
+########################### create infectiousness plots  ##################################
 
 plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
   months_of_year = c('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
@@ -96,7 +96,7 @@ plot_infectiousness_ref_sim_comparison = function(sim_df, ref_df){
 
 ########################### main coordinator function  ##################################
 
-generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath){
+generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath, benchmark_simulation_filepath=NA){
   
   infectiousness_sites = coord_csv$site[intersect(which(!is.na(coord_csv$site)), which(coord_csv$infectiousness_to_mosquitos==1))]
   
