@@ -105,7 +105,7 @@ def get_dens_loglikelihood(combined_df, sim_column='simulation'):
         for aa in cur_agebins:
             cur_df = combined_df[(combined_df['site_month'] == ss) & (combined_df['agebin'] == aa)]
             # check that the sum of counts matches the sum column
-            if sum(cur_df['ref_bin_count']) == cur_df['ref_total'].iloc[1] and len(cur_df['ref_total'].unique()) == 1:
+            if sum(cur_df['ref_bin_count']) == cur_df['ref_total'].iloc[0] and len(cur_df['ref_total'].unique()) == 1:
                 # todo: need code review for this math
                 # https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.multinomial.html
                 # in Python:
