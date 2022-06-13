@@ -176,4 +176,4 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
            facet_grid('agebin~month')
            )
 
-    return list(gg1, gg2, gg3)
+    return gg1, gg2, gg3
