@@ -10,8 +10,6 @@
 #       population value and ask how likely it was to observe the reference dataset (given the study sample size).
 
 import pandas as pd
-import os
-import math
 from scipy import stats
 import warnings
 import numpy as np
@@ -120,8 +118,8 @@ def get_dens_loglikelihood(combined_df, sim_column='simulation'):
                                                                          p=cur_df[sim_column])
             else:
                 warnings.warn(f'Either the sum of individuals across bins in the reference dataset does not match the '
-                              'reported total number of individuals included or different density bins are used in '
-                              'the reference and simulation. This site-age is being skipped: {ss} - {aa}')
+                              f'reported total number of individuals included or different density bins are used in '
+                              f'the reference and simulation. This site-age is being skipped: {ss} - {aa}')
 
         loglik_df = pd.concat([loglik_df, pd.DataFrame({'site_month': ss, 'loglikelihood': loglikelihood})])
 
