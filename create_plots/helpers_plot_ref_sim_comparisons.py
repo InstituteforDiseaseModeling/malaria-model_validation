@@ -324,12 +324,14 @@ def get_frac_state_swaps(data, pos_thresh_dens):
     return [frac_pos_turn_neg_next_time, frac_neg_turn_pos_next_time]
 
 
-def get_time_pos(data):
+def get_time_pos(data, pos_thresh_dens):
     """
     Calculate infection duration (time between consecutive positive samples) and whether or not the infection
     observation was censored
     Args:
         data (): A dataframe of test results for all individuals and survey days
+        pos_thresh_dens (): A number giving the minimum true asexual parasite density a simulated individual must have
+                            to be considered positive
 
     Returns: A dataframe where each row corresponds to a stretch of time when an individual has uninterrupted positive tests
 
@@ -479,7 +481,7 @@ def get_age_group(cur_age, age_bin_lower, age_bin_labels):
     return res_labels[-1] if len(res_labels) else age_bin_labels[0]
 
 
-def get_duration_bins(ind_data, duration_bins, facet_censored=True, facet_age=True, age_bin_lower=None):
+def get_duration_bins(ind_data, duration_bins, pos_thresh_dens, facet_censored=True, facet_age=True, age_bin_lower=None):
     """
     Get fraction of infections that fall in each duration bin for an entire dataset, with quantile ranges across sim
     seeds, optionally faceted by censorship and age
@@ -487,6 +489,8 @@ def get_duration_bins(ind_data, duration_bins, facet_censored=True, facet_age=Tr
         ind_data (): A dataframe with all individual infection duration data
         duration_bins (): A monotonically-increasing vector of numbers giving the plotted bin breaks for the duration
                          (in days) individuals remain infected
+        pos_thresh_dens (): A number giving the minimum true asexual parasite density a simulated individual must have
+                            to be considered positive
         facet_censored (): A boolean value indicating whether results should be partitioned by whether or not the
                            infection duration observation was censored
         facet_age (): A boolean value indicating whether results should be partitioned by age group
@@ -504,7 +508,7 @@ def get_duration_bins(ind_data, duration_bins, facet_censored=True, facet_age=Tr
         age_bin_labels.append(f'>{age_bin_lower[-1]}')
 
     # get data frame of the days each observed infection lasted, also recording age, whether infection was censored, and seed
-    days_positive = get_time_pos(data=ind_data)
+    days_positive = get_time_pos(data=ind_data, pos_thresh_dens=pos_thresh_dens)
     if facet_age:
         days_positive['age_group'] = days_positive['age'].apply(get_age_group,
                                                                 age_bin_lower=age_bin_lower,
@@ -609,7 +613,8 @@ def plot_infection_duration_dist(ref_df, sim_data, pos_thresh_dens, duration_bin
         duration_bins.append(500)
 
     # get densities for each duration bin
-    ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=True, facet_age=False)
+    ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=True, facet_age=False,
+                                   pos_thresh_dens=pos_thresh_dens)
     ref_bin_df['dataset'] = 'reference'
     ref_bin_df['censor_type'] = 'start & finish observed'
     # todo: need code review, not sure if the Python code is correct or not
@@ -617,7 +622,8 @@ def plot_infection_duration_dist(ref_df, sim_data, pos_thresh_dens, duration_bin
     ref_bin_df['censor_type'][ref_bin_df['censored']] = 'censored'
 
     # combine multiple simulation seeds to show mean, 10%, 90% quantile values across seed distributions
-    sim_bin_df = get_duration_bins(ind_data=sim_data, duration_bins=duration_bins, facet_censored=True, facet_age=False)
+    sim_bin_df = get_duration_bins(ind_data=sim_data, duration_bins=duration_bins, facet_censored=True, facet_age=False,
+                                   pos_thresh_dens=pos_thresh_dens)
     sim_bin_df['dataset'] = 'simulation'
     sim_bin_df['censor_type'] = 'start & finish observed'
     sim_bin_df['censor_type'][sim_bin_df['censored']] = 'censored'
@@ -664,13 +670,15 @@ def plot_infection_duration_dist_by_age(ref_df, sim_data, pos_thresh_dens, age_b
         duration_bins.append(500)
 
     # get densities for each duration bin
-    ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=True, facet_age=True)
+    ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=True, facet_age=True,
+                                   pos_thresh_dens=pos_thresh_dens)
     ref_bin_df['dataset'] = 'reference'
     ref_bin_df['censor_type'] = 'start & finish observed'
     ref_bin_df['censor_type'][ref_bin_df['censored']] = 'censored'
 
     # combine multiple simulation seeds to show mean, 10%, 90% quantile values across seed distributions
-    sim_bin_df = get_duration_bins(ind_data=sim_data, duration_bins=duration_bins, facet_censored=True, facet_age=False)
+    sim_bin_df = get_duration_bins(ind_data=sim_data, duration_bins=duration_bins, facet_censored=True, facet_age=False,
+                                   pos_thresh_dens=pos_thresh_dens)
     sim_bin_df['dataset'] = 'simulation'
     sim_bin_df['censor_type'] = 'start & finish observed'
     sim_bin_df['censor_type'][sim_bin_df['censored']] = 'censored'
