@@ -108,8 +108,8 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     combined_df0['max_gamet'] = np.nan
     for rr in range(len(combined_df0.index)):
         if combined_df0['source'].iloc[rr] == 'reference':
-            if ((combined_df0['count_asex'].iloc[rr] > 0) &
-                    (combined_df0['count_asex'].iloc[rr] < combined_df0['bin_total_asex'].iloc[rr])):
+            if ((combined_df0['count_asex'].iloc[rr] > 0)
+                    & (combined_df0['count_asex'].iloc[rr] < combined_df0['bin_total_asex'].iloc[rr])):
                 combined_df0['min_asex'].ilo[rr] = beta.ppf(
                     p=alpha / 2,
                     a=combined_df0['count_asex'].iloc[rr] + 0.5,
@@ -120,8 +120,8 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
                     a=combined_df0['count_asex'].iloc[rr] + 0.5,
                     b=combined_df0['bin_total_asex'].iloc[rr] - combined_df0['count_asex'].iloc[rr] + 0.5)
 
-            if ((combined_df0['count_gamet'].iloc[rr] > 0) &
-                    (combined_df0['count_gamet'].iloc[rr] < combined_df0['bin_total_gamet'].iloc[rr])):
+            if ((combined_df0['count_gamet'].iloc[rr] > 0)
+                    & (combined_df0['count_gamet'].iloc[rr] < combined_df0['bin_total_gamet'].iloc[rr])):
                 combined_df0['min_gamet'].iloc[rr] = beta.ppf(
                     p=alpha / 2,
                     a=combined_df0['count_gamet'].iloc[rr] + 0.5,
