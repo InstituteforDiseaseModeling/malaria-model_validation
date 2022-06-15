@@ -88,11 +88,11 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     # colors = brewer.pal(n=num_colors, name='BrBG')
     # names(colors) = sorted(combined_df['densitybin'].unique())
     # plot
-    gg1 = (ggplot(combined_df, aes(x='agebin', y='asexual_par_dens_freq', fill='densitybin')) +
-           geom_bar(position="stack", stat="identity") +
-           scale_fill_brewer(palette="BrBG") +
+    gg1 = (ggplot(combined_df, aes(x='agebin', y='asexual_par_dens_freq', fill='densitybin'))
+           + geom_bar(position="stack", stat="identity")
+           + scale_fill_brewer(palette="BrBG")
+           + facet_grid('month~source')
            # scale_fill_manual(values=colors, limits=names(colors)) +
-           facet_grid('month~source')
            )
 
     # = = = = = = = = = #
@@ -147,33 +147,33 @@ def plot_par_dens_ref_sim_comparison(age_agg_sim_df, ref_df):
     combined_df0['agebin'] = combined_df0['agebin'].astype(age_bin_labels_cat)
 
     # plot asexual densities
-    gg2 = (ggplot(combined_df0, aes(x="densitybin", y='asexual_par_dens_freq', color='source'), alpha=0.8) +
-           geom_line(size=2) +
-           geom_point() +
-           scale_x_continuous(trans='log10') +
-           geom_errorbar(aes(ymin='min_asex', ymax='max_asex'), width=0.2) +
-           theme_bw() +
-           ylab('fraction of population') +
-           xlab('asexual parasite density bin') +
-           scale_color_manual(values={"reference": 'red',
-                                        "simulation": 'blue'}) +
-           facet_grid('agebin~month')
+    gg2 = (ggplot(combined_df0, aes(x="densitybin", y='asexual_par_dens_freq', color='source'), alpha=0.8)
+           + geom_line(size=2)
+           + geom_point()
+           + scale_x_continuous(trans='log10')
+           + geom_errorbar(aes(ymin='min_asex', ymax='max_asex'), width=0.2)
+           + theme_bw()
+           + ylab('fraction of population')
+           + xlab('asexual parasite density bin')
+           + scale_color_manual(values={"reference": 'red',
+                                        "simulation": 'blue'})
+           + facet_grid('agebin~month')
            # scale_fill_brewer(palette = "BrBG") +
            # scale_fill_manual(values=colors, limits=names(colors)) +
            )
 
     # plot gametocyte densities
-    gg3 = (ggplot(combined_df0, aes(x='densitybin', y='gametocyte_dens_freq', color='source')) +
-           geom_line(size=2) +
-           geom_point() +
-           scale_x_continuous(trans='log10') +
-           geom_errorbar(aes(ymin='min_gamet', ymax='max_gamet'), width=0.2) +
-           theme_bw() +
-           ylab('fraction of population') +
-           xlab('gametocyte density bin') +
-           scale_color_manual(values={"reference": 'red',
-                                        "simulation": 'blue'}) +
-           facet_grid('agebin~month')
+    gg3 = (ggplot(combined_df0, aes(x='densitybin', y='gametocyte_dens_freq', color='source'))
+           + geom_line(size=2)
+           + geom_point()
+           + scale_x_continuous(trans='log10')
+           + geom_errorbar(aes(ymin='min_gamet', ymax='max_gamet'), width=0.2)
+           + theme_bw()
+           + ylab('fraction of population')
+           + xlab('gametocyte density bin')
+           + scale_color_manual(values={"reference": 'red',
+                                        "simulation": 'blue'})
+           + facet_grid('agebin~month')
            )
 
     return gg1, gg2, gg3

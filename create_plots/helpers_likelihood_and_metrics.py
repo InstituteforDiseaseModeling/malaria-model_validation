@@ -169,8 +169,8 @@ def calc_mean_rel_slope_diff(combined_df):
     """
     if 'site_month' in combined_df.columns:
         combined_df['Site'] = combined_df['site_month']
-    combined_df['rel_diff'] = abs((combined_df['ref_slope_to_next'] - combined_df['sim_slope_to_next']) /
-                                  combined_df['ref_slope_to_next'])
+    combined_df['rel_diff'] = abs((combined_df['ref_slope_to_next'] - combined_df['sim_slope_to_next'])
+                                  / combined_df['ref_slope_to_next'])
     combined_df['abs_diff'] = abs(combined_df['ref_slope_to_next'] - combined_df['sim_slope_to_next'])
     # todo: should we replace all numpy.mean with numpy.nanmean() to ignore the nan values
     mean_slope_diff_df = combined_df.group_by(['Site']).agg(

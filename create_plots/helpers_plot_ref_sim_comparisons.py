@@ -179,12 +179,10 @@ def plot_par_dens_ref_sim_comparison(combined_df):
                          & (combined_df['source'] == 'reference'))
         combined_df[eligible_rows]['min_ref'] = beta.ppf(p=alpha / 2,
                                                          a=combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5,
-                                                         b=combined_df[eligible_rows]['ref_total'].iloc[0] -
-                                                           combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
+                                                         b=combined_df[eligible_rows]['ref_total'].iloc[0] - combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
         combined_df[eligible_rows]['max_ref'] = beta.ppf(p=1 - alpha / 2,
                                                          a=combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5,
-                                                         b=combined_df[eligible_rows]['ref_total'].iloc[0] -
-                                                           combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
+                                                         b=combined_df[eligible_rows]['ref_total'].iloc[0] - combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
 
         # change facet values to intuitive labels
         combined_df['month'] = months_of_year[combined_df['month']]
@@ -394,7 +392,7 @@ def get_time_pos(data):
             # num_in_a_row['lengths'][num_in_a_row['values']
 
             # iterate through periods of positivity
-            pos_index = np.where(np.array(num_in_a_row['values']) == True)[0]
+            pos_index = np.where(np.array(num_in_a_row['values']))[0]
             for tt in pos_index:
                 # indicate whether this period of positivity was censored
                 # todo: need code review: the 4 lists are empty lists, should use append() instead of assigning by index
