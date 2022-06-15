@@ -74,16 +74,16 @@ def get_sim_survey(sim_dir, ref_df, seeds=np.nan):
                     year_range = 0
                     while len(id_candidates) == 0 & year_range < 100:
                         year_range = year_range + 5
-                        id_candidates = sim[(sim['date'] == day_cur) &
-                                            (sim['age'].round().isin(range((round(age_cur)-year_range),
-                                                                           round(age_cur)+year_range)))]['id']
+                        id_candidates = sim[(sim['date'] == day_cur)
+                                            & (sim['age'].round().isin(range((round(age_cur)-year_range),
+                                                                             round(age_cur)+year_range)))]['id']
                         id_candidates = [idx not in included_ids for idx in id_candidates]
 
                     if len(id_candidates) == 0:
-                       print('Problem: no age-matched simulation individual found for reference id: ' + indIDs[ii])
+                        print('Problem: no age-matched simulation individual found for reference id: ' + indIDs[ii])
                     else:
-                        print('No exact age match remaining for reference id: ' + indIDs[ii] +
-                              '. Used simulation individual within ', year_range, ' years.')
+                        print('No exact age match remaining for reference id: ' + indIDs[ii]
+                              + '. Used simulation individual within ', year_range, ' years.')
 
                 id_sim_cur = random.sample(id_candidates, 1) # todo: should we remove this id after drawing?
                 included_ids.extend(id_sim_cur)
@@ -105,40 +105,40 @@ def get_sim_survey(sim_dir, ref_df, seeds=np.nan):
     return sim_subset_full
 
 
-def get_frac_state_swaps(data):
-    """
-    Calculate probability of going from negative to positive or from positive to negative between sample dates
-    Args:
-        data ():
-
-    Returns:
-
-    """
-    # brute force approach iterating through people and dates
-    indIDs = data['SID'].unique()
-    sum_denom_pos = 0
-    sum_turn_neg = 0
-    sum_denom_neg = 0
-    sum_turn_pos = 0
-
-    for ii in range(len(indIDs)):
-        data_cur = data[data['SID'] == indIDs[ii]]
-        data_cur = data_cur.sort_values(by=['date'])
-        # get indices of positive tests and of negative tests
-    #     ind_pos = which(data_cur$DENSITY > pos_thresh_dens)
-    #     ind_neg = which(data_cur$DENSITY <= pos_thresh_dens)
-    #
-    #     # denominators for each (number of each type that had an observation after then (i.e., they could have been observed to change))
-    #     last_obs_pos = (data_cur$DENSITY[nrow(data_cur)] > pos_thresh_dens)
-    #     sum_denom_pos = sum_denom_pos + ifelse(last_obs_pos, length(ind_pos)-1, length(ind_pos))
-    #     sum_denom_neg = sum_denom_neg + ifelse(last_obs_pos, length(ind_neg), length(ind_neg)-1)
-    #
-    #     # find how many tests change from neg to pos or pos to neg across timesteps
-    #     sum_turn_neg = sum_turn_neg + sum((ind_pos + 1) % in % ind_neg)
-    #     sum_turn_pos = sum_turn_pos + sum((ind_neg + 1) % in % ind_pos)
-    #
-    #
-    # frac_pos_turn_neg_next_time = sum_turn_neg / sum_denom_pos
-    # frac_neg_turn_pos_next_time = sum_turn_pos / sum_denom_neg
-    #
-    # return (c(frac_pos_turn_neg_next_time, frac_neg_turn_pos_next_time))
+# def get_frac_state_swaps(data):
+#     """
+#     Calculate probability of going from negative to positive or from positive to negative between sample dates
+#     Args:
+#         data ():
+#
+#     Returns:
+#
+#     """
+#     # brute force approach iterating through people and dates
+#     indIDs = data['SID'].unique()
+#     sum_denom_pos = 0
+#     sum_turn_neg = 0
+#     sum_denom_neg = 0
+#     sum_turn_pos = 0
+#
+#     for ii in range(len(indIDs)):
+#         data_cur = data[data['SID'] == indIDs[ii]]
+#         data_cur = data_cur.sort_values(by=['date'])
+#         # get indices of positive tests and of negative tests
+#         ind_pos = which(data_cur$DENSITY > pos_thresh_dens)
+#         ind_neg = which(data_cur$DENSITY <= pos_thresh_dens)
+#
+#         # denominators for each (number of each type that had an observation after then (i.e., they could have been observed to change))
+#         last_obs_pos = (data_cur$DENSITY[nrow(data_cur)] > pos_thresh_dens)
+#         sum_denom_pos = sum_denom_pos + ifelse(last_obs_pos, length(ind_pos)-1, length(ind_pos))
+#         sum_denom_neg = sum_denom_neg + ifelse(last_obs_pos, length(ind_neg), length(ind_neg)-1)
+#
+#         # find how many tests change from neg to pos or pos to neg across timesteps
+#         sum_turn_neg = sum_turn_neg + sum((ind_pos + 1) % in % ind_neg)
+#         sum_turn_pos = sum_turn_pos + sum((ind_neg + 1) % in % ind_pos)
+#
+#
+#     frac_pos_turn_neg_next_time = sum_turn_neg / sum_denom_pos
+#     frac_neg_turn_pos_next_time = sum_turn_pos / sum_denom_neg
+#
+#     return (c(frac_pos_turn_neg_next_time, frac_neg_turn_pos_next_time))
