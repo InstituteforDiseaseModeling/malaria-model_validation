@@ -213,7 +213,7 @@ def corr_ref_sim_points(combined_df):
           + theme_classic()
           + themes.theme(plot_title=themes.element_text(size=12)))
 
-    # todo: need code review for the nest and unnest functions.
+    # todo: need code review. nest and unnest functions are from datar library
     # https://stackoverflow.com/questions/59068394/is-there-a-pandas-equivalent-to-the-tidyr-nest-function
     # https://github.com/pwwang/datar/blob/master/datar/tidyr/nest.py
     # R code:
@@ -236,7 +236,7 @@ def corr_ref_sim_points(combined_df):
 
     lm_summary = pd.merge(lm_fit[['Site', 'term', 'estimate']], lm_info[['Site', 'r.squared', 'p.value', 'nobs']],
                           by='Site', how='outer')
-    lm_summary = lm_summary[lm_summary['term'] != '(Intercept)']
+    lm_summary = lm_summary[lm_summary['term'] != 'intercept_']
     lm_summary.rename({'estimate': 'slope'}, inplace=True)
     return gg, lm_summary
 
@@ -310,7 +310,7 @@ def corr_ref_deriv_sim_points(combined_df):
 
     lm_summary = pd.merge(lm_fit[['Site', 'term', 'estimate']], lm_info[['Site', 'r.squared', 'p.value', 'nobs']],
                           by='Site', how='outer')
-    lm_summary = lm_summary[lm_summary['term'] != '(Intercept)']
+    lm_summary = lm_summary[lm_summary['term'] != 'intercept_']
     lm_summary.rename({'estimate': 'slope'}, inplace=True)
     return gg, lm_summary, combined_df
 # endregion

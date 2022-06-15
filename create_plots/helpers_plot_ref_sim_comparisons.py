@@ -52,7 +52,7 @@ def compare_benchmark(combined_df):
           + coord_fixed(ratio=1, xlim=(min_value, max_value), ylim=(min_value, max_value))
           + geom_abline(slope=1, intercept=0, color='grey', alpha=0.5)
           + theme_classic()
-          + themes.theme(plot_title = themes.element_text(size=12)))
+          + themes.theme(plot_title=themes.element_text(size=12)))
     return gg
 
 
