@@ -7,3 +7,5 @@ sklearn
 scipy
 snakemake
 plotnine
+bokeh
+datar

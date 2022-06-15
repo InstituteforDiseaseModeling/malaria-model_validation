@@ -13,6 +13,10 @@ import pandas as pd
 from scipy import stats
 import warnings
 import numpy as np
+from datar.all import f, nest, unnest
+from plotnine import ggplot, aes, geom_point, xlab, ylab, coord_fixed, geom_abline, theme_classic, themes, \
+    ggtitle, geom_smooth
+from sklearn.linear_model import LinearRegression
 
 
 # region: loglikelihood functions for each validation relationship
@@ -179,4 +183,134 @@ def calc_mean_rel_slope_diff(combined_df):
     )
 
     return mean_slope_diff_df
+
+
+def corr_ref_sim_points(combined_df):
+    """
+    Calculate the correlation between reference and matched simulation data points.
+    Args:
+        combined_df (): A dataframe containing both the reference and matched simulation output
+
+    Returns: A list with two elements:
+            1) A gg scatterplot showing the reference values against the simulation values
+            2) A dataframe summarizing the linear regression results
+
+    """
+
+    metric = combined_df['metric'].iloc[0]
+    if 'site_month' in combined_df.columns:
+        combined_df['Site'] = combined_df['site_month']
+    min_value = min(combined_df['reference'].min(skipna=True), combined_df['simulation'].min(skipna=True))
+    max_value = max(combined_df['reference'].max(skipna=True), combined_df['simulation'].max(skipna=True))
+    gg = (ggplot(combined_df, aes(x='reference', y='simulation', color='Site', fill='Site'))
+          + geom_point(size=2)
+          + ylab('simulation ' + str(metric))
+          + xlab('reference ' + str(metric))
+          + ggtitle('Ref versus sim values')
+          + coord_fixed(ratio=1, xlim=(min_value, max_value), ylim=(min_value, max_value))
+          + geom_abline(slope=1, intercept=0, color='grey', alpha=0.5)
+          + geom_smooth(method="lm", fill=None, se=False, alpha=0.5, size=0.5)
+          + theme_classic()
+          + themes.theme(plot_title=themes.element_text(size=12)))
+
+    # todo: need code review for the nest and unnest functions.
+    # https://stackoverflow.com/questions/59068394/is-there-a-pandas-equivalent-to-the-tidyr-nest-function
+    # https://github.com/pwwang/datar/blob/master/datar/tidyr/nest.py
+    # R code:
+    # lm_fit = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(simulation
+    # ~ reference, data =.)), tidied = map(model, tidy)) % > % unnest(tidied)
+    # lm_info = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(simulation
+    # ~ reference, data =.)), tidied = map(model, glance)) % > % unnest(tidied)
+    lm = LinearRegression()
+    lm_fit = combined_df >> nest(data=~f.Site)
+    lm_fit['model'] = lm_fit.apply(
+        lambda data: ~lm.fit(data.simulation, data.reference))  # todo: need to find equivalent in Python
+    lm_fit['tidied'] = lm_fit.apply(lambda data: tidy(data.model))  # todo: need to find equivalent in Python
+    lm_fit = lm_fit >> unnest(f.tidied)
+
+    lm_info = combined_df >> nest(data=~f.Site)
+    lm_info['model'] = lm_info.apply(
+        lambda data: ~lm.fit(data.simulation, data.reference))  # todo: need to find equivalent in Python
+    lm_info['tidied'] = lm_info.apply(lambda data: glance(data.model))  # todo: need to find equivalent in Python
+    lm_info = lm_info >> unnest(f.tidied)
+
+    lm_summary = pd.merge(lm_fit[['Site', 'term', 'estimate']], lm_info[['Site', 'r.squared', 'p.value', 'nobs']],
+                          by='Site', how='outer')
+    lm_summary = lm_summary[lm_summary['term'] != '(Intercept)']
+    lm_summary.rename({'estimate': 'slope'}, inplace=True)
+    return gg, lm_summary
+
+
+def corr_ref_deriv_sim_points(combined_df):
+    """
+    Calculate the correlation between reference and matched simulation slopes (derivatives) when moving from the
+    youngest to the oldest age group.
+    Args:
+        combined_df (): A dataframe containing both the reference and matched simulation output
+
+    Returns: A list with two elements:
+            1) A gg scatterplot showing the reference slopes against the simulation slopes
+            2) A dataframe summarizing the linear regression results
+            3) The combined_df dataframe, with columns added giving the simulation and reference slopes
+
+    """
+
+    metric = combined_df['metric'].iloc[0]
+    # calculate the slope when moving between age groups
+    combined_df['sim_slope_to_next'] = np.nan
+    combined_df['ref_slope_to_next'] = np.nan
+    sites = combined_df['Site'].unique()
+    for ss in sites:
+        cur_df = combined_df[combined_df['Site'] == ss]
+        cur_ages = sorted(cur_df['mean_age'].unique())
+        for aa in range(len(cur_ages) - 1):
+            # todo: need code review
+            combined_df_row = (combined_df['Site'] == ss) & (combined_df['mean_age'] == cur_ages[aa])
+            # get the slope between the value for this age and the next-largest age group
+            sim_val_cur = cur_df[cur_df['mean_age'] == cur_ages[aa]]['simulation'].iloc[0]
+            sim_val_next = cur_df[cur_df['mean_age'] == cur_ages[aa + 1]]['simulation'].iloc[0]
+            sim_slope = (sim_val_next - sim_val_cur) / (cur_ages[aa + 1] - cur_ages[aa])
+            combined_df[combined_df_row]['sim_slope_to_next'] = sim_slope
+
+            ref_val_cur = cur_df[cur_df['mean_age'] == cur_ages[aa]]['reference'].iloc[0]
+            ref_val_next = cur_df[cur_df['mean_age'] == cur_ages[aa + 1]]['reference'].iloc[0]
+            ref_slope = (ref_val_next - ref_val_cur) / (cur_ages[aa + 1] - cur_ages[aa])
+            combined_df[combined_df_row]['ref_slope_to_next'] = ref_slope
+
+    min_value = min(combined_df['ref_slope_to_next'].min(skipna=True), combined_df['sim_slope_to_next'].min(skipna=True))
+    max_value = max(combined_df['ref_slope_to_next'].max(skipna=True), combined_df['sim_slope_to_next'].max(skipna=True))
+
+    gg = (ggplot(combined_df, aes(x='ref_slope_to_next', y='sim_slope_to_next', color='Site', fill='Site'))
+          + geom_point(size=2)
+          + ylab('simulation slopes for age-' + str(metric))
+          + xlab('reference slopes for age-' + str(metric))
+          + ggtitle('Ref versus sim slopes')
+          + coord_fixed(ratio=1, xlim=(min_value, max_value), ylim=(min_value, max_value))
+          + geom_abline(slope=1, intercept=0, color='grey', alpha=0.5)
+          # + geom_smooth(method="lm", fill=None, se=False, alpha=0.5, size=0.5)
+          + theme_classic()
+          + themes.theme(plot_title=themes.element_text(size=12)))
+
+    # todo: same as line 216, need code review
+    # R code:
+    # lm_fit = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(sim_slope_to_next
+    # ~ ref_slope_to_next, data =.)), tidied = map(model, tidy)) % > % unnest(tidied)
+    # lm_info = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(sim_slope_to_next
+    # ~ ref_slope_to_next, data =.)), tidied = map(model, glance)) % > % unnest(tidied)
+    lm = LinearRegression()
+    lm_fit = combined_df >> nest(data=~f.Site)
+    lm_fit['model'] = lm_fit.apply(lambda data: ~lm.fit(data.sim_slope_to_next, data.ref_slope_to_next))  # todo: need to find equivalent in Python
+    lm_fit['tidied'] = lm_fit.apply(lambda data: tidy(data.model))  # todo: need to find equivalent in Python
+    lm_fit = lm_fit >> unnest(f.tidied)
+
+    lm_info = combined_df >> nest(data=~f.Site)
+    lm_info['model'] = lm_info.apply(lambda data: ~lm.fit(data.sim_slope_to_next, data.ref_slope_to_next))  # todo: need to find equivalent in Python
+    lm_info['tidied'] = lm_info.apply(lambda data: glance(data.model))  # todo: need to find equivalent in Python
+    lm_info = lm_info >> unnest(f.tidied)
+
+    lm_summary = pd.merge(lm_fit[['Site', 'term', 'estimate']], lm_info[['Site', 'r.squared', 'p.value', 'nobs']],
+                          by='Site', how='outer')
+    lm_summary = lm_summary[lm_summary['term'] != '(Intercept)']
+    lm_summary.rename({'estimate': 'slope'}, inplace=True)
+    return gg, lm_summary, combined_df
 # endregion
