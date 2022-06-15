@@ -12,10 +12,8 @@
 #   - among all individuals turning positive during study, how long until negative?
 #####################################################################################
 
-from plotnine import *
 import numpy as np
 import pandas as pd
-from pandas.api.types import CategoricalDtype
 import os.path as path
 import datetime
 import math
@@ -127,20 +125,20 @@ def get_frac_state_swaps(data):
         data_cur = data[data['SID'] == indIDs[ii]]
         data_cur = data_cur.sort_values(by=['date'])
         # get indices of positive tests and of negative tests
-        ind_pos = which(data_cur$DENSITY > pos_thresh_dens)
-        ind_neg = which(data_cur$DENSITY <= pos_thresh_dens)
-
-        # denominators for each (number of each type that had an observation after then (i.e., they could have been observed to change))
-        last_obs_pos = (data_cur$DENSITY[nrow(data_cur)] > pos_thresh_dens)
-        sum_denom_pos = sum_denom_pos + ifelse(last_obs_pos, length(ind_pos)-1, length(ind_pos))
-        sum_denom_neg = sum_denom_neg + ifelse(last_obs_pos, length(ind_neg), length(ind_neg)-1)
-
-        # find how many tests change from neg to pos or pos to neg across timesteps
-        sum_turn_neg = sum_turn_neg + sum((ind_pos + 1) % in % ind_neg)
-        sum_turn_pos = sum_turn_pos + sum((ind_neg + 1) % in % ind_pos)
-
-
-    frac_pos_turn_neg_next_time = sum_turn_neg / sum_denom_pos
-    frac_neg_turn_pos_next_time = sum_turn_pos / sum_denom_neg
-
-    return (c(frac_pos_turn_neg_next_time, frac_neg_turn_pos_next_time))
+    #     ind_pos = which(data_cur$DENSITY > pos_thresh_dens)
+    #     ind_neg = which(data_cur$DENSITY <= pos_thresh_dens)
+    #
+    #     # denominators for each (number of each type that had an observation after then (i.e., they could have been observed to change))
+    #     last_obs_pos = (data_cur$DENSITY[nrow(data_cur)] > pos_thresh_dens)
+    #     sum_denom_pos = sum_denom_pos + ifelse(last_obs_pos, length(ind_pos)-1, length(ind_pos))
+    #     sum_denom_neg = sum_denom_neg + ifelse(last_obs_pos, length(ind_neg), length(ind_neg)-1)
+    #
+    #     # find how many tests change from neg to pos or pos to neg across timesteps
+    #     sum_turn_neg = sum_turn_neg + sum((ind_pos + 1) % in % ind_neg)
+    #     sum_turn_pos = sum_turn_pos + sum((ind_neg + 1) % in % ind_pos)
+    #
+    #
+    # frac_pos_turn_neg_next_time = sum_turn_neg / sum_denom_pos
+    # frac_neg_turn_pos_next_time = sum_turn_pos / sum_denom_neg
+    #
+    # return (c(frac_pos_turn_neg_next_time, frac_neg_turn_pos_next_time))

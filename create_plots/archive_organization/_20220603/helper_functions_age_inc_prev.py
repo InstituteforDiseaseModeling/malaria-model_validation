@@ -1,4 +1,4 @@
-from plotnine import *
+from plotnine import ggplot, aes, geom_line, geom_point, theme_bw, xlab, ylab, scale_color_manual, facet_wrap
 import numpy as np
 import pandas as pd
 from pandas.api.types import CategoricalDtype
