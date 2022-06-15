@@ -41,7 +41,7 @@ authors = [
 
 setuptools.setup(
     name="malaria_model_validation",
-    version="0.0.1",
+    version="0.0.2",
     author=[author[0] for author in authors],
     author_email=[author[1] for author in authors],
     description="malaria-model_validation package",
