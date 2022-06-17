@@ -11,7 +11,6 @@
 
 import pandas as pd
 import os
-import math
 
 from create_plots.helpers_reformat_sim_ref_dfs import prepare_inc_df, prepare_prev_df, prepare_dens_df, \
     prepare_infect_df, get_available_sites_for_relationship, get_sim_survey

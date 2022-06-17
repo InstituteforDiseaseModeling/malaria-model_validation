@@ -214,6 +214,7 @@ def corr_ref_sim_points(combined_df):
           + themes.theme(plot_title=themes.element_text(size=12)))
 
     # todo: need code review. nest and unnest functions are from datar library
+    # datar library has a conflict on Pandas version with idmtools, please see: https://github.com/InstituteforDiseaseModeling/malaria-model_validation/pull/17#issuecomment-1159284541
     # https://stackoverflow.com/questions/59068394/is-there-a-pandas-equivalent-to-the-tidyr-nest-function
     # https://github.com/pwwang/datar/blob/master/datar/tidyr/nest.py
     # R code:

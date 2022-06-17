@@ -93,8 +93,8 @@ def match_sim_ref_ages(ref_df, sim_df, bench_df=pd.DataFrame()):
                           f"simulation for site: {ss}. This benchmark simulation will be excluded.")
             bench_df = bench_df[bench_df['Site'] != ss]
 
-        if (not all(age_ref <= age_sim + 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim)) or
-                (not all(age_ref >= age_sim - 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim)))):
+        if (not all(age_ref <= age_sim + 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim))
+                or (not all(age_ref >= age_sim - 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim)))):
             print(f'Imperfect age match between reference and simulations for site: {ss}')
             print('...  Mismatched reference / simulation ages are:')
             for missing_age_ref, missing_age_sim in zip(missing_ages_ref, missing_ages_sim):
@@ -112,8 +112,8 @@ def match_sim_ref_ages(ref_df, sim_df, bench_df=pd.DataFrame()):
             # update sim ages
             ages_sim = sorted(sim_df[sim_df['Site'] == ss]['mean_age'].unique())
 
-            if (not all(age_ref <= age_sim + 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim)) or
-                    (not all(age_ref >= age_sim - 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim)))):
+            if (not all(age_ref <= age_sim + 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim))
+                    or (not all(age_ref >= age_sim - 0.1 for age_ref, age_sim in zip(ages_ref, ages_sim)))):
                 print('...After adjustment, there remains an imperfect match between reference and simulation age bins.')
                 print(f'      Reference has {len(ages_ref)} age groups and simulation has {len(ages_sim)} age groups.')
             else:
@@ -195,9 +195,9 @@ def get_fraction_in_infectious_bin(sim_df):
     sim_df['infectiousness_bin_count'] = sim_df['infectiousness_bin_freq'] * sim_df['Pop']
 
     # check that people are never infectious while they have no parasites - send a warning if not
-    if len(sim_df[(sim_df['infectiousness_bin'] == 0) &
-                  (sim_df['infectiousness_bin'] > 0) &
-                  (sim_df['infectiousness_bin_count'] > 0)]) > 0:
+    if len(sim_df[(sim_df['infectiousness_bin'] == 0)
+                  & (sim_df['infectiousness_bin'] > 0)
+                  & (sim_df['infectiousness_bin_count'] > 0)]) > 0:
         warnings.warn('Some individuals without parasites are reporting that they are infectious to mosquitoes... '
                       'this suggests a bug.')
 
@@ -278,7 +278,7 @@ def prepare_inc_df(coord_csv, simulation_output_filepath, base_reference_filepat
 
         # simulations used as benchmark
         if (benchmark_simulation_filepath is not None) and \
-            (os.path.isfile(os.path.join(benchmark_simulation_filepath, cur_site, 'inc_prev_data_final.csv'))):
+                (os.path.isfile(os.path.join(benchmark_simulation_filepath, cur_site, 'inc_prev_data_final.csv'))):
             bench_df_cur = pd.read_csv(os.path.join(benchmark_simulation_filepath, cur_site, 'inc_prev_data_final.csv'))
             upper_ages = sorted(bench_df_cur['Age'].unique())
             bench_df_cur['mean_age'] = bench_df_cur['Age'].apply(get_mean_from_upper_age, upper_ages=upper_ages)
@@ -408,7 +408,7 @@ def prepare_prev_df(coord_csv, simulation_output_filepath, base_reference_filepa
 
         # determine whether reference is for a single month or averaged over multiple months - subset from simulations to match
         if (len(ref_df_cur['month'].unique()) == 1) and \
-            (isinstance(ref_df_cur['month'].iloc[0], str)):  # check whether multiple months are listed in a character string
+                (isinstance(ref_df_cur['month'].iloc[0], str)):  # check whether multiple months are listed in a character string
             # todo: need code review
             # included_months = as.numeric(unlist(strsplit(ref_df_cur$month[1], ",")))
             included_months = ref_df_cur['month'].iloc[0].split(",")
@@ -674,6 +674,14 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
         # simulations currently being evaluated
         cur_site = available_sites[ss]
 
+        filepath_ref = os.path.join(base_reference_filepath,
+                                    coord_csv[coord_csv['site'] == cur_site]['infectiousness_to_mosquitos_ref'].iloc[0])
+        ref_df_cur = pd.read_csv(filepath_ref)
+        # todo: local variable 'upper_ages' is assigned to but never used
+        upper_ages = sorted(sim_df_cur['agebin'].unique())
+        ref_df_cur = ref_df_cur[ref_df_cur['site'].str.lower() == str(cur_site).lower()]
+        ref_months = ref_df_cur['month'].unique()
+
         filepath_sim = os.path.join(simulation_output_filepath, cur_site, 'infectiousness_by_age_density_month.csv')
         sim_df_cur = pd.read_csv(filepath_sim)
         # remove simulation rows with zero pop
@@ -683,13 +691,6 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
         # get mean (across simulation seeds and ages within a bin) fraction of individuals in each  {age bin, month,
         # densitybin, run number} group that fall in each infectiousness bin
         sim_df_agg2 = get_fraction_in_infectious_bin(sim_df_cur)
-
-        filepath_ref = os.path.join(base_reference_filepath,
-                                    coord_csv[coord_csv['site'] == cur_site]['infectiousness_to_mosquitos_ref'].iloc[0])
-        ref_df_cur = pd.read_csv(filepath_ref)
-        upper_ages = sorted(sim_df_cur['agebin'].unique())
-        ref_df_cur = ref_df_cur[ref_df_cur['site'].str.lower() ==str(cur_site).lower()]
-        ref_months = ref_df_cur['month'].unique()
 
         if benchmark_simulation_filepath is not None:
             bench_df_cur = pd.read_csv(os.path.join(benchmark_simulation_filepath, cur_site,
@@ -825,16 +826,16 @@ def get_sim_survey(sim_dir, ref_df, seeds=None):
                         # todo: need some code review on the math
                         # r code
                         # id_candidates = sim$id[intersect(which(sim$date == day_cur), which(round(sim$age) % in % seq((round(age_cur)-year_range), (round(age_cur)+year_range))))]
-                        id_candidates = sim[(sim['date'] == day_cur) &
-                                            (sim['age'].round().isin(range((round(age_cur)-year_range),
-                                                                           round(age_cur)+year_range)))]['id']
+                        id_candidates = sim[(sim['date'] == day_cur)
+                                            & (sim['age'].round().isin(range((round(age_cur)-year_range),
+                                                                             round(age_cur)+year_range)))]['id']
                         id_candidates = [idx not in included_ids for idx in id_candidates]
 
                     if len(id_candidates) == 0:
-                       print('Problem: no age-matched simulation individual found for reference id: ' + indIDs[ii])
+                        print('Problem: no age-matched simulation individual found for reference id: ' + indIDs[ii])
                     else:
-                        print('No exact age match remaining for reference id: ' + indIDs[ii] +
-                              '. Used simulation individual within ', year_range, ' years.')
+                        print('No exact age match remaining for reference id: ' + indIDs[ii]
+                              + '. Used simulation individual within ', year_range, ' years.')
 
                 id_sim_cur = random.sample(id_candidates, 1)  # todo: should we remove this id after drawing?
                 included_ids.extend(id_sim_cur)
