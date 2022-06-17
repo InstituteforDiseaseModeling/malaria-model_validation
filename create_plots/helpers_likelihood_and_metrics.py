@@ -224,7 +224,7 @@ def corr_ref_sim_points(combined_df):
     lm = LinearRegression()
     lm_fit = combined_df >> nest(data=~f.Site)
     lm_fit['model'] = lm_fit.apply(
-        lambda data: ~lm.fit(data.simulation, data.reference))  # todo: need to find equivalent in Python
+        lambda data: ~lm.fit(data['simulation'], data['reference']))  # todo: need to find equivalent in Python
     lm_fit['tidied'] = lm_fit.apply(lambda data: tidy(data.model))  # todo: need to find equivalent in Python
     lm_fit = lm_fit >> unnest(f.tidied)
 

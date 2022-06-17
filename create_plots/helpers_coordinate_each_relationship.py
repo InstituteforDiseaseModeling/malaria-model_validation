@@ -47,8 +47,8 @@ def generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_r
 
     # create plots comparing reference and simulation outputs
     gg_plot = plot_inc_ref_sim_comparison(combined_df)
-    gg_plot.save(filename=os.path.join(plot_output_filepath, 'site_compare_incidence_age.png'),
-                 height=2 * math.ceil(len(combined_df['Site'].unique()) / 4), width = 7.5, units = 'in')
+    gg_plot.save(filename=os.path.join(plot_output_filepath, 'site_compare_incidence_age.png'))
+                 # height=2 * math.ceil(len(combined_df['Site'].unique()) / 4), width=7.5, units='in')
 
     # additional quantitative comparisons and metrics between simulation and reference data
     # correlations between new simulation and reference dataset values
@@ -58,10 +58,10 @@ def generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_r
     slope_correlation_df = slope_correlation_output[1]
     combined_df_with_slopes = slope_correlation_output[2]
     # todo: no equivalent for ggarrange in Python
-    correlation_plots = ggarrange(correlation_output[0], slope_correlation_output[0], nrow=1, ncol=2,
-                                  common.legend = TRUE)  # , legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
-    correlation_plots.save(filename=os.path.join(plot_output_filepath, 'scatter_regression_incidence_age.png'),
-                           height=4.5, width=8, units='in')
+    # correlation_plots = ggarrange(correlation_output[0], slope_correlation_output[0], nrow=1, ncol=2,
+    #                               common.legend = TRUE)  # , legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
+    # correlation_plots.save(filename=os.path.join(plot_output_filepath, 'scatter_regression_incidence_age.png'),
+    #                        height=4.5, width=8, units='in')
 
     # metrics comparing simulation to reference VALUE
     mean_diff_df = calc_mean_rel_diff(combined_df)
@@ -125,10 +125,10 @@ def generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_
     slope_correlation_df = slope_correlation_output[1]
     combined_df_with_slopes = slope_correlation_output[2]
     # todo: no equivalent for ggarrange in Python
-    correlation_plots = ggarrange(correlation_output[0], slope_correlation_output[0], nrow=1, ncol=2,
-                                  common.legend = TRUE)  # , legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
-    correlation_plots.save(filename=os.path.join(plot_output_filepath, 'scatter_regression_prevalence_age.png'),
-                           height=4.5, width=8, units='in')
+    # correlation_plots = ggarrange(correlation_output[0], slope_correlation_output[0], nrow=1, ncol=2,
+    #                               common.legend = TRUE)  # , legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
+    # correlation_plots.save(filename=os.path.join(plot_output_filepath, 'scatter_regression_prevalence_age.png'),
+    #                        height=4.5, width=8, units='in')
 
     # metrics comparing simulation to reference VALUE
     mean_diff_df = calc_mean_rel_diff(combined_df)

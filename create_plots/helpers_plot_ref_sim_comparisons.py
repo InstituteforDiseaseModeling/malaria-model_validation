@@ -14,17 +14,23 @@ from datetime import date
 
 
 # todo: not sure how to define color with rbg numbers. using the builtin colors for now
-color_manual = {"reference": 'red',
-                "simulation": 'blue',
-                "benchmark": 'black'}
+color_manual = {"reference": 'red',  # (169/255,23/255,23/255, 0.8),
+                "simulation": 'blue',  # (0/255,124/255,180/255, 0.8),
+                "benchmark": 'black'}  # (0 ,0 , 0, 0.8)}
 color_manual_2 = color_manual.copy()
 color_manual_2.pop("benchmark")
-shape_manual = {"reference": 16,
-                "simulation": 16,
-                "benchmark": 1}
+# todo: See matplotlib.markers. for list of all possible shapes.
+# https://plotnine.readthedocs.io/en/stable/_modules/plotnine/scales/scale_shape.html
+# https://matplotlib.org/stable/api/markers_api.html
+shape_manual = {"reference": "P",  # plus #16,
+                "simulation": "D",  # diamond #16,
+                "benchmark":  6}  # careup #1}
 size_manual = {"reference": 1.5,
                "simulation": 1.5,
-               "benchmark": 2}
+               "benchmark": 3}
+fill_manual = {"reference": 'red',
+               "simulation": 'blue',
+               "benchmark": (0, 0, 0, 0)}  # todo: this should set a transparent fill color for benchmark, but it doesn't work for me
 
 
 # compare new and benchmark simulation values
@@ -69,23 +75,46 @@ def plot_ref_sim_comparison(combined_df, data_column_name):
     """
     # convert dataframe to long format
     # todo: need code review
+    # R code:
     # combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source',
     #                                 values_to='incidence')
-    combined_df_long = pd.wide_to_long(df=combined_df, stubnames =['reference', 'simulation', 'benchmark'],
-                                       j='source', i=data_column_name)
+    # todo: the dataframe combined_df only contains one column called simulation, one reference and one benchmark,
+    # pd.wide_to_long will not work is the stubnames are exactly as the column names
+    # ValueError: stubname can't be identical to a column name.
+    # rename the columns to add data_column_name as pre-fix
+    """
+    combined_rename_df = combined_df.rename(
+    columns=lambda column: f"{data_column_name}_{column}" if column in ['reference', 'simulation', 'benchmark'] else column)
+    combined_rename_df["id"] = combined_rename_df.index
+    print(combined_rename_df.index.name)
+    print(combined_rename_df.columns)
 
-    gg = (ggplot(combined_df_long, aes(x='mean_age', y=data_column_name, color='source', shape='source', group='ref_year'))
+    combined_df_long = pd.wide_to_long(combined_rename_df, stubnames=f'{data_column_name}_',
+                                       j='source', i=['id'])
+    # this returns an empty dataframe
+    """
+    # todo: try with melt function instead
+    # it seems to work
+    combined_df_long = pd.melt(combined_df.reset_index(),
+                               id_vars=['mean_age', 'Site', 'ref_pop_size', 'ref_year', 'metric'],
+                               value_vars=['reference', 'simulation', 'benchmark'],
+                               var_name='source', value_name=data_column_name
+                               )
+    gg = (ggplot(combined_df_long,
+                 aes(x='mean_age', y=data_column_name, color='source', shape='source', group='ref_year'))
           # todo: need to find equivalent of interaction() in Python
           # + geom_line(aes(group=interaction('source', 'ref_year')))
-          + geom_line(aes(group=1))
-          + geom_point(aes(size='source'))
+          + geom_line(aes(group='source'))
+          + geom_point(aes(size='source'), alpha=0.5)
           + scale_color_manual(values=color_manual)
           + scale_shape_manual(values=shape_manual)
-          + scale_size_manual(values=shape_manual)
+          + scale_size_manual(values=size_manual)
+          + scale_fill_manual(values=fill_manual)
           + xlab('age (midpoint of age bin)')
           + ylab(data_column_name)
           + facet_wrap('Site', ncol=4)
-          + theme_bw())
+          + theme_bw()
+          )
 
     return gg
 
@@ -101,7 +130,7 @@ def plot_inc_ref_sim_comparison(combined_df):
         Returns: A panel of ggplots
 
         """
-    plot_ref_sim_comparison(combined_df, 'incidence')
+    return plot_ref_sim_comparison(combined_df, 'incidence')
 
 
 # plot age-prevalence comparisons with reference
@@ -115,7 +144,7 @@ def plot_prev_ref_sim_comparison(combined_df):
     Returns: A panel of ggplots
 
     """
-    plot_ref_sim_comparison(combined_df, 'prevalence')
+    return plot_ref_sim_comparison(combined_df, 'prevalence')
 
 
 # plot parasite density comparisons with reference
