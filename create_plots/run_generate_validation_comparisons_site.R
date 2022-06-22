@@ -15,8 +15,8 @@ library(ggpubr)
 ####################################################################################################
 ##################### setup: filepaths, info on simulations run, source scripts ####################
 ####################################################################################################
-# Note: these first three filephaths should be grabbed from the manifest once we move the scripts to python
-simulation_output_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/s220506"
+# Note: these first three filepaths should be grabbed from the manifest once we move the scripts to python
+simulation_output_filepath = "C:/Users/moniqueam/Documents/malaria-model_validation/simulations/output_220613"
 benchmark_simulation_filepath = "/Users/moniqueam/OneDrive - Bill & Melinda Gates Foundation/projects/EMOD_validation_recalibration/simulation_output/s220506"
 validation_repo_filepath = "/Users/moniqueam/Documents/malaria-model_validation/"
 
