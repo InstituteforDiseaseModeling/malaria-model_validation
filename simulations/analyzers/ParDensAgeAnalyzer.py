@@ -41,9 +41,9 @@ class ParDensAgeAnalyzer(BaseAnalyzer):
         for year, fname in zip(range(self.start_year, self.end_year), self.filenames):  # , 2020
             for age in list(range(0, len(agebins))):
                 for dens in list(range(0, len(par_bins))):
-                    d = data[fname]['DataByTimeAndPfPRBinsAndAgeBins']['Smeared PfPR by Parasitemia and Age Bin'][:12]
+                    d = data[fname]['DataByTimeAndPfPRBinsAndAgeBins']['PfPR by Parasitemia and Age Bin'][:12]
                     par_dens = [x[dens][age] for x in d]
-                    d = data[fname]['DataByTimeAndPfPRBinsAndAgeBins']['Smeared PfPR by Gametocytemia and Age Bin'][:12]
+                    d = data[fname]['DataByTimeAndPfPRBinsAndAgeBins']['PfPR by Gametocytemia and Age Bin'][:12]
                     gam_dens = [x[dens][age] for x in d]
                     d = data[fname]['DataByTimeAndAgeBins']['Average Population by Age Bin'][:12]
                     pop = [x[age] for x in d]

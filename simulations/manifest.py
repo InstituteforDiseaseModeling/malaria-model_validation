@@ -22,6 +22,7 @@ download_folder = CURRENT_DIR / "download"
 schema_file = download_folder / "schema.json"
 # The script is going to use this to store the downloaded Eradication binary. Create 'download' directory or change to your preferred (existing) location.
 eradication_path = download_folder / "Eradication"
+# eradication_path = CURRENT_DIR / "download/Eradication_NU220613"
 # Create 'Assets' directory or change to a path you prefer. idmtools will upload files found here.
 assets_input_dir = CURRENT_DIR / "Assets"
 plugins_folder = download_folder / "reporter_plugins"
@@ -43,6 +44,6 @@ requirements = PROJECT_DIR / "requirements.txt"
 
 # Define Comps platform
 platform_name = "Calculon"
-priority = 'Normal'
+priority = 'BelowNormal'
 node_group_private = 'idm_48cores'
 node_group = 'idm_abcd'
