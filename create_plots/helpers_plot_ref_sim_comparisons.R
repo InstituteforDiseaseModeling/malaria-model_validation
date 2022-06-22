@@ -97,6 +97,8 @@ plot_prev_ref_sim_comparison = function(combined_df){
   
   # convert dataframe to long format
   combined_df_long = pivot_longer(data=combined_df, cols=c('reference', 'simulation', 'benchmark'), names_to='source', values_to='prevalence')
+  combined_df_long = combined_df_long[!is.na(combined_df_long$prevalence),]
+  combined_df_long = combined_df_long[!is.na(combined_df_long$ref_year),]
   
   gg = ggplot(combined_df_long, aes(x=mean_age, y=prevalence, color=source, shape=source, group=ref_year)) +
     geom_line(aes(group=interaction(source, ref_year))) +

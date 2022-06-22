@@ -111,7 +111,7 @@ get_dens_loglikelihood = function(combined_df, sim_column='simulation'){
 ####################################################################################################### 
 
 
-calc_mean_rel_diff = function(combined_df){
+calc_mean_rel_diff = function(combined_df, sim_colname='simulation'){
   #' Calculate the mean relative difference between reference and matched simulation values across ages.
   #'    For a given age, calculate (reference - simulation)/reference. Report the mean across all ages.
   #' 
@@ -119,13 +119,16 @@ calc_mean_rel_diff = function(combined_df){
   #' @return A dataframe with the mean absolute difference and the mean magnitude of the relative difference between all pairs of reference and simulation values
   
   if('site_month' %in% colnames(combined_df)) combined_df$Site = combined_df$site_month
-  combined_df$rel_diff = abs((combined_df$reference - combined_df$simulation) / combined_df$reference)
-  combined_df$abs_diff = abs(combined_df$reference - combined_df$simulation)
+  combined_df$rel_diff = abs((combined_df$reference - combined_df[[sim_colname]]) / combined_df$reference)
+  combined_df$abs_diff = abs(combined_df$reference - combined_df[[sim_colname]])
   mean_diff_df = combined_df %>% group_by(Site) %>%
-    summarise(mean_rel_diff = mean(rel_diff),
-              mean_abs_diff = mean(abs_diff))
+    summarise(mean_rel_diff = mean(rel_diff, na.rm=TRUE),
+              mean_abs_diff = mean(abs_diff, na.rm=TRUE))
+  mean_all_sites = data.frame('Site'='all_sites', 'mean_rel_diff'=mean(combined_df$rel_diff, na.rm=TRUE), 'mean_abs_diff'=mean(combined_df$abs_diff, na.rm=TRUE))
+  mean_diff_df = rbind(mean_diff_df, mean_all_sites)
   return(mean_diff_df)
 }
+
 
 
 calc_mean_rel_slope_diff = function(combined_df){
@@ -234,6 +237,52 @@ corr_ref_deriv_sim_points = function(combined_df){
   return(list(gg, lm_summary, combined_df))
 }
 
+
+
+
+######################################################################################
+# summarize new simulation success against benchmark simulation
+######################################################################################
+
+add_to_summary_table = function(combined_df, plot_output_filepath, validation_relationship_name, rel_change_threshold=0.1){
+  mean_diff_df_new = calc_mean_rel_diff(combined_df, sim_colname='simulation')
+  mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
+  colnames(mean_diff_df_bench)[colnames(mean_diff_df_bench) == 'mean_rel_diff'] = 'mean_rel_diff_bench'
+  colnames(mean_diff_df_bench)[colnames(mean_diff_df_bench) == 'mean_abs_diff'] = 'mean_abs_diff_bench'
+  mean_diff_df = merge(mean_diff_df_new, mean_diff_df_bench, by='Site')
+  
+  # determine which sites improved, got worse, or stayed close to the same for absolute difference
+  mean_diff_df$change_abs_diff = mean_diff_df$mean_abs_diff_bench - mean_diff_df$mean_abs_diff
+  mean_diff_df = mean_diff_df[!is.na(mean_diff_df$change_abs_diff),]
+  mean_diff_df$abs_diff_changed = abs(mean_diff_df$change_abs_diff)/mean_diff_df$mean_abs_diff_bench > rel_change_threshold
+  mean_diff_df$change_type = 'better'
+  mean_diff_df$change_type[mean_diff_df$change_abs_diff < 0] = 'worse'
+  mean_diff_df$change_type[!mean_diff_df$abs_diff_changed] = 'similar'
+
+  # save results as row in dataframe
+  summary_df = data.frame('validation_relationship'=validation_relationship_name, 
+                          'abs_diff_new'=mean_diff_df$mean_abs_diff[mean_diff_df$Site == 'all_sites'],
+                          'abs_diff_bench'=mean_diff_df$mean_abs_diff_bench[mean_diff_df$Site == 'all_sites'],
+                          # 'ave_rel_diff_new_sim'=mean_diff_df$mean_rel_diff[mean_diff_df$Site == 'all_sites'],
+                          # 'ave_rel_diff_bench_sim'=mean_diff_df$mean_rel_diff_bench[mean_diff_df$Site == 'all_sites'],
+                          'num_sites_better'=length(which(mean_diff_df$change_type[mean_diff_df$Site != 'all_sites'] =='better')),
+                          'num_sites_similar'=length(which(mean_diff_df$change_type[mean_diff_df$Site != 'all_sites'] =='similar')),
+                          'num_sites_worse'=length(which(mean_diff_df$change_type[mean_diff_df$Site != 'all_sites'] =='worse')))
+  
+  # write to csv, adding as new row if csv already exists but relationship doesn't
+  summary_filepath = paste0(plot_output_filepath, '/summary_table_sim_benchmark.csv')
+  if(file.exists(summary_filepath)){
+    # add rows to existing csv
+    existing_summaries = read.csv(summary_filepath)
+    if(validation_relationship_name %in% existing_summaries$validation_relationship){
+      existing_summaries[which(existing_summaries$validation_relationship == validation_relationship_name),] = summary_df[1,]
+      summary_df = existing_summaries
+    }else{
+      summary_df = rbind(existing_summaries, summary_df)
+    }
+  } 
+  write.csv(summary_df, summary_filepath, row.names=FALSE)
+}
 
 
 
