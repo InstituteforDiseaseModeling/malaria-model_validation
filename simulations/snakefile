@@ -90,267 +90,267 @@ rule save_exp_to_suite:
 
 rule chonyi_1999_run_sim:
     input: 
-    output: 'COMPS_ID/chonyi_1999_exp_submit'
+    output: './COMPS_ID/chonyi_1999_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="chonyi_1999", n=5))
 
 rule chonyi_1999_analyzer:
-    input: 'COMPS_ID/chonyi_1999_exp_submit'
-    output: 'COMPS_ID/chonyi_1999_analyzers'
+    input: './COMPS_ID/chonyi_1999_exp_submit'
+    output: './COMPS_ID/chonyi_1999_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="chonyi_1999"))
 
 rule chonyi_1999_download:
-    input: 'COMPS_ID/chonyi_1999_analyzers'
-    output: 'COMPS_ID/chonyi_1999_download'
+    input: './COMPS_ID/chonyi_1999_analyzers'
+    output: './COMPS_ID/chonyi_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="chonyi_1999"))
     
 rule ngerenya_1999_run_sim:
     input: 
-    output: 'COMPS_ID/ngerenya_1999_exp_submit'
+    output: './COMPS_ID/ngerenya_1999_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="ngerenya_1999", n=5))
 
 rule ngerenya_1999_analyzer:
-    input: 'COMPS_ID/ngerenya_1999_exp_submit'
-    output: 'COMPS_ID/ngerenya_1999_analyzers'
+    input: './COMPS_ID/ngerenya_1999_exp_submit'
+    output: './COMPS_ID/ngerenya_1999_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="ngerenya_1999"))
 
 rule ngerenya_1999_download:
-    input: 'COMPS_ID/ngerenya_1999_analyzers'
-    output: 'COMPS_ID/ngerenya_1999_download'
+    input: './COMPS_ID/ngerenya_1999_analyzers'
+    output: './COMPS_ID/ngerenya_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="ngerenya_1999"))
     
 rule dielmo_1990_run_sim:
     input: 
-    output: 'COMPS_ID/dielmo_1990_exp_submit'
+    output: './COMPS_ID/dielmo_1990_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="dielmo_1990", n=5))
 
 rule dielmo_1990_analyzer:
-    input: 'COMPS_ID/dielmo_1990_exp_submit'
-    output: 'COMPS_ID/dielmo_1990_analyzers'
+    input: './COMPS_ID/dielmo_1990_exp_submit'
+    output: './COMPS_ID/dielmo_1990_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="dielmo_1990"))
 
 rule dielmo_1990_download:
-    input: 'COMPS_ID/dielmo_1990_analyzers'
-    output: 'COMPS_ID/dielmo_1990_download'
+    input: './COMPS_ID/dielmo_1990_analyzers'
+    output: './COMPS_ID/dielmo_1990_download'
     run:
         shell(get_command(script="download_wi.py", site="dielmo_1990"))
     
 rule ndiop_1993_run_sim:
     input: 
-    output: 'COMPS_ID/ndiop_1993_exp_submit'
+    output: './COMPS_ID/ndiop_1993_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="ndiop_1993", n=5))
 
 rule ndiop_1993_analyzer:
-    input: 'COMPS_ID/ndiop_1993_exp_submit'
-    output: 'COMPS_ID/ndiop_1993_analyzers'
+    input: './COMPS_ID/ndiop_1993_exp_submit'
+    output: './COMPS_ID/ndiop_1993_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="ndiop_1993"))
 
 rule ndiop_1993_download:
-    input: 'COMPS_ID/ndiop_1993_analyzers'
-    output: 'COMPS_ID/ndiop_1993_download'
+    input: './COMPS_ID/ndiop_1993_analyzers'
+    output: './COMPS_ID/ndiop_1993_download'
     run:
         shell(get_command(script="download_wi.py", site="ndiop_1993"))
     
 rule ebolakounou_1997_run_sim:
     input: 
-    output: 'COMPS_ID/ebolakounou_1997_exp_submit'
+    output: './COMPS_ID/ebolakounou_1997_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="ebolakounou_1997", n=5))
 
 rule ebolakounou_1997_analyzer:
-    input: 'COMPS_ID/ebolakounou_1997_exp_submit'
-    output: 'COMPS_ID/ebolakounou_1997_analyzers'
+    input: './COMPS_ID/ebolakounou_1997_exp_submit'
+    output: './COMPS_ID/ebolakounou_1997_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="ebolakounou_1997"))
 
 rule ebolakounou_1997_download:
-    input: 'COMPS_ID/ebolakounou_1997_analyzers'
-    output: 'COMPS_ID/ebolakounou_1997_download'
+    input: './COMPS_ID/ebolakounou_1997_analyzers'
+    output: './COMPS_ID/ebolakounou_1997_download'
     run:
         shell(get_command(script="download_wi.py", site="ebolakounou_1997"))
     
 rule koundou_1997_run_sim:
     input: 
-    output: 'COMPS_ID/koundou_1997_exp_submit'
+    output: './COMPS_ID/koundou_1997_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="koundou_1997", n=5))
 
 rule koundou_1997_analyzer:
-    input: 'COMPS_ID/koundou_1997_exp_submit'
-    output: 'COMPS_ID/koundou_1997_analyzers'
+    input: './COMPS_ID/koundou_1997_exp_submit'
+    output: './COMPS_ID/koundou_1997_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="koundou_1997"))
 
 rule koundou_1997_download:
-    input: 'COMPS_ID/koundou_1997_analyzers'
-    output: 'COMPS_ID/koundou_1997_download'
+    input: './COMPS_ID/koundou_1997_analyzers'
+    output: './COMPS_ID/koundou_1997_download'
     run:
         shell(get_command(script="download_wi.py", site="koundou_1997"))
     
 rule dongubougou_1999_run_sim:
     input: 
-    output: 'COMPS_ID/dongubougou_1999_exp_submit'
+    output: './COMPS_ID/dongubougou_1999_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="dongubougou_1999", n=5))
 
 rule dongubougou_1999_analyzer:
-    input: 'COMPS_ID/dongubougou_1999_exp_submit'
-    output: 'COMPS_ID/dongubougou_1999_analyzers'
+    input: './COMPS_ID/dongubougou_1999_exp_submit'
+    output: './COMPS_ID/dongubougou_1999_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="dongubougou_1999"))
 
 rule dongubougou_1999_download:
-    input: 'COMPS_ID/dongubougou_1999_analyzers'
-    output: 'COMPS_ID/dongubougou_1999_download'
+    input: './COMPS_ID/dongubougou_1999_analyzers'
+    output: './COMPS_ID/dongubougou_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="dongubougou_1999"))
     
 rule sotuba_1999_run_sim:
     input: 
-    output: 'COMPS_ID/sotuba_1999_exp_submit'
+    output: './COMPS_ID/sotuba_1999_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="sotuba_1999", n=5))
 
 rule sotuba_1999_analyzer:
-    input: 'COMPS_ID/sotuba_1999_exp_submit'
-    output: 'COMPS_ID/sotuba_1999_analyzers'
+    input: './COMPS_ID/sotuba_1999_exp_submit'
+    output: './COMPS_ID/sotuba_1999_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="sotuba_1999"))
 
 rule sotuba_1999_download:
-    input: 'COMPS_ID/sotuba_1999_analyzers'
-    output: 'COMPS_ID/sotuba_1999_download'
+    input: './COMPS_ID/sotuba_1999_analyzers'
+    output: './COMPS_ID/sotuba_1999_download'
     run:
         shell(get_command(script="download_wi.py", site="sotuba_1999"))
     
 rule matsari_1970_run_sim:
     input: 
-    output: 'COMPS_ID/matsari_1970_exp_submit'
+    output: './COMPS_ID/matsari_1970_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="matsari_1970", n=20))
 
 rule matsari_1970_analyzer:
-    input: 'COMPS_ID/matsari_1970_exp_submit'
-    output: 'COMPS_ID/matsari_1970_analyzers'
+    input: './COMPS_ID/matsari_1970_exp_submit'
+    output: './COMPS_ID/matsari_1970_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="matsari_1970"))
 
 rule matsari_1970_download:
-    input: 'COMPS_ID/matsari_1970_analyzers'
-    output: 'COMPS_ID/matsari_1970_download'
+    input: './COMPS_ID/matsari_1970_analyzers'
+    output: './COMPS_ID/matsari_1970_download'
     run:
         shell(get_command(script="download_wi.py", site="matsari_1970"))
     
 rule rafin_marke_1970_run_sim:
     input: 
-    output: 'COMPS_ID/rafin_marke_1970_exp_submit'
+    output: './COMPS_ID/rafin_marke_1970_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="rafin_marke_1970", n=20))
 
 rule rafin_marke_1970_analyzer:
-    input: 'COMPS_ID/rafin_marke_1970_exp_submit'
-    output: 'COMPS_ID/rafin_marke_1970_analyzers'
+    input: './COMPS_ID/rafin_marke_1970_exp_submit'
+    output: './COMPS_ID/rafin_marke_1970_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="rafin_marke_1970"))
 
 rule rafin_marke_1970_download:
-    input: 'COMPS_ID/rafin_marke_1970_analyzers'
-    output: 'COMPS_ID/rafin_marke_1970_download'
+    input: './COMPS_ID/rafin_marke_1970_analyzers'
+    output: './COMPS_ID/rafin_marke_1970_download'
     run:
         shell(get_command(script="download_wi.py", site="rafin_marke_1970"))
     
 rule sugungum_1970_run_sim:
     input: 
-    output: 'COMPS_ID/sugungum_1970_exp_submit'
+    output: './COMPS_ID/sugungum_1970_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="sugungum_1970", n=20))
 
 rule sugungum_1970_analyzer:
-    input: 'COMPS_ID/sugungum_1970_exp_submit'
-    output: 'COMPS_ID/sugungum_1970_analyzers'
+    input: './COMPS_ID/sugungum_1970_exp_submit'
+    output: './COMPS_ID/sugungum_1970_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="sugungum_1970"))
 
 rule sugungum_1970_download:
-    input: 'COMPS_ID/sugungum_1970_analyzers'
-    output: 'COMPS_ID/sugungum_1970_download'
+    input: './COMPS_ID/sugungum_1970_analyzers'
+    output: './COMPS_ID/sugungum_1970_download'
     run:
         shell(get_command(script="download_wi.py", site="sugungum_1970"))
     
 rule navrongo_2000_run_sim:
     input: 
-    output: 'COMPS_ID/navrongo_2000_exp_submit'
+    output: './COMPS_ID/navrongo_2000_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="navrongo_2000", n=20))
 
 rule navrongo_2000_analyzer:
-    input: 'COMPS_ID/navrongo_2000_exp_submit'
-    output: 'COMPS_ID/navrongo_2000_analyzers'
+    input: './COMPS_ID/navrongo_2000_exp_submit'
+    output: './COMPS_ID/navrongo_2000_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="navrongo_2000"))
 
 rule navrongo_2000_download:
-    input: 'COMPS_ID/navrongo_2000_analyzers'
-    output: 'COMPS_ID/navrongo_2000_download'
+    input: './COMPS_ID/navrongo_2000_analyzers'
+    output: './COMPS_ID/navrongo_2000_download'
     run:
         shell(get_command(script="download_wi.py", site="navrongo_2000"))
     
 rule laye_2007_run_sim:
     input: 
-    output: 'COMPS_ID/laye_2007_exp_submit'
+    output: './COMPS_ID/laye_2007_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="laye_2007", n=20))
 
 rule laye_2007_analyzer:
-    input: 'COMPS_ID/laye_2007_exp_submit'
-    output: 'COMPS_ID/laye_2007_analyzers'
+    input: './COMPS_ID/laye_2007_exp_submit'
+    output: './COMPS_ID/laye_2007_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="laye_2007"))
 
 rule laye_2007_download:
-    input: 'COMPS_ID/laye_2007_analyzers'
-    output: 'COMPS_ID/laye_2007_download'
+    input: './COMPS_ID/laye_2007_analyzers'
+    output: './COMPS_ID/laye_2007_download'
     run:
         shell(get_command(script="download_wi.py", site="laye_2007"))
     
 rule dapelogo_2007_run_sim:
     input: 
-    output: 'COMPS_ID/dapelogo_2007_exp_submit'
+    output: './COMPS_ID/dapelogo_2007_exp_submit'
     priority: 50
     run:
         shell(get_command(script="run_sims.py", site="dapelogo_2007", n=20))
 
 rule dapelogo_2007_analyzer:
-    input: 'COMPS_ID/dapelogo_2007_exp_submit'
-    output: 'COMPS_ID/dapelogo_2007_analyzers'
+    input: './COMPS_ID/dapelogo_2007_exp_submit'
+    output: './COMPS_ID/dapelogo_2007_analyzers'
     run:
         shell(get_command(script="run_analyzers.py", site="dapelogo_2007"))
 
 rule dapelogo_2007_download:
-    input: 'COMPS_ID/dapelogo_2007_analyzers'
-    output: 'COMPS_ID/dapelogo_2007_download'
+    input: './COMPS_ID/dapelogo_2007_analyzers'
+    output: './COMPS_ID/dapelogo_2007_download'
     run:
         shell(get_command(script="download_wi.py", site="dapelogo_2007"))
     
