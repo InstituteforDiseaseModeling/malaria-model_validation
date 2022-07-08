@@ -6,4 +6,3 @@ class BaseTest(unittest.TestCase):
         super(BaseTest, self).setUp()
         print(f"Running test: {self._testMethodName}\n")
         pass
-
