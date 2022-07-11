@@ -7,20 +7,25 @@ from simulations.load_inputs import load_sites
 import simulations.manifest as manifest
 from simulations.helpers import get_comps_id_filename
 
+configfile: "./snakemake_config.json"
+
 sites, nSims, script_names = load_sites()
 
 id_folder = manifest.comps_id_folder
-input_files = [manifest.suite_id_file]
+input_files = [manifest.suite_id_file, manifest.eradication_found, manifest.sif_id]
 experiment_files = list()
 analyzers_files = list()
 
 
-def get_command(script="run_sims.py", python_version: str=None, site: str=None, n: int=0):
+def get_command(script="run_sims.py", python_version: str=None, site: str=None, n: int=0,
+                use_local_eradication: bool=False):
     extra_arguments = ''
     if site:
         extra_arguments += ' -s ' + site
     if n:
         extra_arguments += ' -n ' + str(n)
+    if use_local_eradication:
+        extra_arguments += ' -l ' + use_local_eradication
 
     if python_version:
         command = python_version + " " + script  + extra_arguments
@@ -83,15 +88,32 @@ rule clean_download:
 rule save_exp_to_suite:
     input: experiment_files
     output: f'{manifest.suite_id_file}'
-    priority: 10
+    priority: 1
     run:
         shell(get_command(script="add_suite.py"))
 
+rule get_eradication:
+    input:
+    output: f'{manifest.eradication_found}'
+    priority: 10
+    run:
+        shell(get_command(script="get_eradication.py", use_local_eradication=config['use_local_eradication']))
+
+rule sif_id:
+    input:
+    output: f'{manifest.sif_id}'
+    priority: 10
+    run:
+        if config['singularity_id']:
+            with open(manifest.sif_id, 'w') as sif_file:
+                sif_file.write(config['singularity_id'])
+        else:
+            print("Not using singularity image.")
 
 rule chonyi_1999_run_sim:
     input: 
     output: 'COMPS_ID/chonyi_1999_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="chonyi_1999", n=5))
 
@@ -110,7 +132,7 @@ rule chonyi_1999_download:
 rule ngerenya_1999_run_sim:
     input: 
     output: 'COMPS_ID/ngerenya_1999_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="ngerenya_1999", n=5))
 
@@ -129,7 +151,7 @@ rule ngerenya_1999_download:
 rule dielmo_1990_run_sim:
     input: 
     output: 'COMPS_ID/dielmo_1990_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="dielmo_1990", n=5))
 
@@ -148,7 +170,7 @@ rule dielmo_1990_download:
 rule ndiop_1993_run_sim:
     input: 
     output: 'COMPS_ID/ndiop_1993_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="ndiop_1993", n=5))
 
@@ -167,7 +189,7 @@ rule ndiop_1993_download:
 rule ebolakounou_1997_run_sim:
     input: 
     output: 'COMPS_ID/ebolakounou_1997_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="ebolakounou_1997", n=5))
 
@@ -186,7 +208,7 @@ rule ebolakounou_1997_download:
 rule koundou_1997_run_sim:
     input: 
     output: 'COMPS_ID/koundou_1997_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="koundou_1997", n=5))
 
@@ -205,7 +227,7 @@ rule koundou_1997_download:
 rule dongubougou_1999_run_sim:
     input: 
     output: 'COMPS_ID/dongubougou_1999_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="dongubougou_1999", n=5))
 
@@ -224,7 +246,7 @@ rule dongubougou_1999_download:
 rule sotuba_1999_run_sim:
     input: 
     output: 'COMPS_ID/sotuba_1999_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="sotuba_1999", n=5))
 
@@ -243,7 +265,7 @@ rule sotuba_1999_download:
 rule matsari_1970_run_sim:
     input: 
     output: 'COMPS_ID/matsari_1970_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="matsari_1970", n=20))
 
@@ -262,7 +284,7 @@ rule matsari_1970_download:
 rule rafin_marke_1970_run_sim:
     input: 
     output: 'COMPS_ID/rafin_marke_1970_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="rafin_marke_1970", n=20))
 
@@ -281,7 +303,7 @@ rule rafin_marke_1970_download:
 rule sugungum_1970_run_sim:
     input: 
     output: 'COMPS_ID/sugungum_1970_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="sugungum_1970", n=20))
 
@@ -300,7 +322,7 @@ rule sugungum_1970_download:
 rule navrongo_2000_run_sim:
     input: 
     output: 'COMPS_ID/navrongo_2000_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="navrongo_2000", n=20))
 
@@ -319,7 +341,7 @@ rule navrongo_2000_download:
 rule laye_2007_run_sim:
     input: 
     output: 'COMPS_ID/laye_2007_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="laye_2007", n=20))
 
@@ -338,7 +360,7 @@ rule laye_2007_download:
 rule dapelogo_2007_run_sim:
     input: 
     output: 'COMPS_ID/dapelogo_2007_exp_submit'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="run_sims.py", site="dapelogo_2007", n=20))
 
