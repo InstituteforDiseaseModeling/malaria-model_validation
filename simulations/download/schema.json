@@ -1,8 +1,8 @@
 {
     "Version": {
-        "DTK_Branch": "Malaria-Ongoing(6ee63023a)",
-        "DTK_Build_Date": "Nov 18 2021",
-        "DTK_Version": "2.20.5097.0"
+        "DTK_Branch": "Malaria-Ongoing(57329cf3a6)",
+        "DTK_Build_Date": "Jun 13 2022",
+        "DTK_Version": "2.20.5194.0"
     },
     "config": {
         "Climate.ByData": {
@@ -483,7 +483,7 @@
                 "default": 1,
                 "description": "Number of infection updates executed during each timestep. A timestep defaults to one day.",
                 "max": 144,
-                "min": 0,
+                "min": 1,
                 "type": "integer"
             },
             "Local_Migration_Roundtrip_Duration": {
@@ -612,7 +612,7 @@
                 "type": "float"
             },
             "Enable_Disease_Mortality": {
-                "default": 1,
+                "default": 0,
                 "depends-on": {
                     "Simulation_Type": "GENERIC_SIM,VECTOR_SIM,STI_SIM,ENVIRONMENTAL_SIM,MALARIA_SIM,TBHIV_SIM,TYPHOID_SIM,PY_SIM"
                 },
@@ -3732,6 +3732,14 @@
             }
         },
         "Report": {
+            "Inset_Chart_Has_IP": {
+                "default": [],
+                "depends-on": {
+                    "Enable_Default_Reporting": 1
+                },
+                "description": "A channel is added to InsetChart for each value of each IP provided.  The channel name will be HasIP_<Key:Value> and will be the fraction of the population that has that value for that IPKey.",
+                "type": "Vector String"
+            },
             "Inset_Chart_Has_Interventions": {
                 "default": [],
                 "depends-on": {
@@ -3742,11 +3750,20 @@
             }
         },
         "ReportEventRecorder": {
+            "Report_Event_Recorder_End_Day": {
+                "default": 3.40282e+38,
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "The day of the simulation to stop collecting data.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
             "Report_Event_Recorder_Events": {
                 "Built-in": [
                     "Births",
                     "EveryUpdate",
-                    "EveryTimeStep",
                     "NewInfectionEvent",
                     "TBActivation",
                     "NewClinicalCase",
@@ -3794,6 +3811,7 @@
                     "STIPreEmigrating",
                     "STIPostImmigrating",
                     "STINewInfection",
+                    "STIExposed",
                     "NewExternalHIVInfection",
                     "NodePropertyChange",
                     "HappyBirthday",
@@ -3804,7 +3822,13 @@
                     "VectorToHumanTransmission",
                     "HumanToVectorTransmission",
                     "ReceivedInfectiousBites",
-                    "InfectionCleared"
+                    "InfectionCleared",
+                    "WouldHaveDied",
+                    "WouldHaveHadAIDS",
+                    "WouldHaveEnteredLatentStage",
+                    "HIVInfectionStageEnteredLatent",
+                    "HIVInfectionStageEnteredAIDS",
+                    "HIVInfectionStageEnteredOnART"
                 ],
                 "default": [],
                 "depends-on": {
@@ -3830,6 +3854,68 @@
                 "description": "A list of the IndividualProperty key:value pairs, as defined in the demographics file, that individuals must have to be targeted by this intervention.",
                 "type": "Dynamic String Set",
                 "value_source": "<demographics>::*.Individual_Properties.*.Property"
+            },
+            "Report_Event_Recorder_Max_Age_Years": {
+                "default": 9.3228e+35,
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "Maximum age in years of people to collect data on",
+                "max": 9.3228e+35,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Event_Recorder_Min_Age_Years": {
+                "default": 0,
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "Minimum age in years of people to collect data on",
+                "max": 9.3228e+35,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Event_Recorder_Must_Have_IP_Key_Value": {
+                "default": "",
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                "type": "string"
+            },
+            "Report_Event_Recorder_Must_Have_Intervention": {
+                "default": "",
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                "type": "string"
+            },
+            "Report_Event_Recorder_Node_IDs_Of_Interest": {
+                "ascending": 0,
+                "default": [],
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "Data will be collected for the nodes in this list.",
+                "max": 2147480000.0,
+                "min": 0,
+                "type": "Vector Uint32"
+            },
+            "Report_Event_Recorder_PropertyChange_IP_Key_Of_Interest": {
+                "default": "",
+                "description": "If the string is not empty, then the recorder will add the PropertyChange event to the list of events that the report is listening to. However, it will only record the events where the property changed the value of the given key.",
+                "type": "string"
+            },
+            "Report_Event_Recorder_Start_Day": {
+                "default": 0,
+                "depends-on": {
+                    "Report_Event_Recorder": 1
+                },
+                "description": "The day of the simulation to start collecting data.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
             }
         },
         "ReportEventRecorderCoordinator": {
@@ -3892,6 +3978,14 @@
             }
         },
         "ReportMalaria": {
+            "Inset_Chart_Has_IP": {
+                "default": [],
+                "depends-on": {
+                    "Enable_Default_Reporting": 1
+                },
+                "description": "A channel is added to InsetChart for each value of each IP provided.  The channel name will be HasIP_<Key:Value> and will be the fraction of the population that has that value for that IPKey.",
+                "type": "Vector String"
+            },
             "Inset_Chart_Has_Interventions": {
                 "default": [],
                 "depends-on": {
@@ -4444,7 +4538,7 @@
                 "depends-on": {
                     "Enable_Immunity": 1
                 },
-                "description": "Controls whether or not individuals in the population have immunity at the beginning of the simulation. If set to 0, individuals are not initialized with immunity but may acquire immunity. If set to 1, you must indicate the type of distribution to use for immunity in the configuration parameter Immunity_Initialization_Distribution_Type and the distribution values in the demographics file.",
+                "description": "Controls whether or not individuals in the population have immunity at the beginning of the simulation. If set to 0, individuals are not initialized with immunity but may acquire immunity. If set to 1, you must indicate the type of distribution to use for immunity in the configuration parameter Susceptibility_Initialization_Distribution_Type and the distribution values in the demographics file.",
                 "type": "bool"
             },
             "Enable_Maternal_Protection": {
@@ -5005,7 +5099,7 @@
                     "type": "Vector Float"
                 },
                 "Distribution_Times": {
-                    "ascending": 0,
+                    "ascending": 1,
                     "default": [],
                     "description": "A vector of integers for simulation times at which distribution of events occurs in a CalendarEventCoordinator.",
                     "max": 2147480000.0,
@@ -5077,6 +5171,10 @@
                     "default": 0,
                     "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                     "type": "bool"
+                },
+                "Targeting_Config": {
+                    "description": "TBD",
+                    "type": "idmType:AdditionalRestrictions"
                 },
                 "class": "CalendarEventCoordinator"
             },
@@ -5366,11 +5464,14 @@
                     "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                     "type": "bool"
                 },
+                "Targeting_Config": {
+                    "description": "TBD",
+                    "type": "idmType:AdditionalRestrictions"
+                },
                 "Trigger_Condition_List": {
                     "Built-in": [
                         "Births",
                         "EveryUpdate",
-                        "EveryTimeStep",
                         "NewInfectionEvent",
                         "TBActivation",
                         "NewClinicalCase",
@@ -5418,6 +5519,7 @@
                         "STIPreEmigrating",
                         "STIPostImmigrating",
                         "STINewInfection",
+                        "STIExposed",
                         "NewExternalHIVInfection",
                         "NodePropertyChange",
                         "HappyBirthday",
@@ -5428,7 +5530,13 @@
                         "VectorToHumanTransmission",
                         "HumanToVectorTransmission",
                         "ReceivedInfectiousBites",
-                        "InfectionCleared"
+                        "InfectionCleared",
+                        "WouldHaveDied",
+                        "WouldHaveHadAIDS",
+                        "WouldHaveEnteredLatentStage",
+                        "HIVInfectionStageEnteredLatent",
+                        "HIVInfectionStageEnteredAIDS",
+                        "HIVInfectionStageEnteredOnART"
                     ],
                     "default": [],
                     "description": "The list of events that are of interest to the community health worker (CHW). If one of these events occurs, the individual or node is put into a queue to receive the CHW's intervention. The CHW processes the queue when the event coordinator is updated.",
@@ -5461,8 +5569,8 @@
                 },
                 "Number_Repetitions": {
                     "default": 1,
-                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.",
-                    "max": 1000,
+                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.  A value of -1 implies an infinite number of repetitions.",
+                    "max": 10000,
                     "min": -1,
                     "type": "integer"
                 },
@@ -5523,6 +5631,10 @@
                     "default": 0,
                     "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                     "type": "bool"
+                },
+                "Targeting_Config": {
+                    "description": "TBD",
+                    "type": "idmType:AdditionalRestrictions"
                 },
                 "Timesteps_Between_Repetitions": {
                     "default": -1,
@@ -5773,8 +5885,8 @@
                 },
                 "Number_Repetitions": {
                     "default": 1,
-                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.",
-                    "max": 1000,
+                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.  A value of -1 implies an infinite number of repetitions.",
+                    "max": 10000,
                     "min": -1,
                     "type": "integer"
                 },
@@ -5862,6 +5974,10 @@
                     "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                     "type": "bool"
                 },
+                "Targeting_Config": {
+                    "description": "TBD",
+                    "type": "idmType:AdditionalRestrictions"
+                },
                 "Timesteps_Between_Repetitions": {
                     "default": -1,
                     "description": "The repetition interval.",
@@ -5884,7 +6000,7 @@
                 "Number_Repetitions": {
                     "default": 1,
                     "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.",
-                    "max": 1000,
+                    "max": 10000,
                     "min": -1,
                     "type": "integer"
                 },
@@ -5941,8 +6057,8 @@
                 },
                 "Number_Repetitions": {
                     "default": 1,
-                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.",
-                    "max": 1000,
+                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.  A value of -1 implies an infinite number of repetitions.",
+                    "max": 10000,
                     "min": -1,
                     "type": "integer"
                 },
@@ -6013,6 +6129,10 @@
                     "default": 0,
                     "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                     "type": "bool"
+                },
+                "Targeting_Config": {
+                    "description": "TBD",
+                    "type": "idmType:AdditionalRestrictions"
                 },
                 "Timesteps_Between_Repetitions": {
                     "default": -1,
@@ -6106,8 +6226,8 @@
                 },
                 "Number_Repetitions": {
                     "default": 1,
-                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.",
-                    "max": 1000,
+                    "description": "The number of times an intervention is given, used with Timesteps_Between_Repetitions.  A value of -1 implies an infinite number of repetitions.",
+                    "max": 10000,
                     "min": -1,
                     "type": "integer"
                 },
@@ -6193,6 +6313,10 @@
                     "default": 0,
                     "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                     "type": "bool"
+                },
+                "Targeting_Config": {
+                    "description": "TBD",
+                    "type": "idmType:AdditionalRestrictions"
                 },
                 "Timesteps_Between_Repetitions": {
                     "default": -1,
@@ -6285,7 +6409,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -6333,6 +6456,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -6343,7 +6467,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The event that triggers the drug intervention campaign.",
@@ -6607,7 +6737,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -6655,6 +6784,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -6665,7 +6795,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The event that should occur at the end of the delay period.",
@@ -6716,7 +6852,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -6764,6 +6899,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -6774,7 +6910,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The name of the event to broadcast to selected nodes.",
@@ -6838,7 +6980,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -6886,6 +7027,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -6896,7 +7038,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The name of the event to be broadcast when the intervention is distributed to an individual. See the list of available events for possible values.",
@@ -6924,7 +7072,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -6972,6 +7119,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -6982,7 +7130,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The name of the event to be broadcast when the intervention is distributed to an individual. See the list of available events for possible values.",
@@ -7022,7 +7176,7 @@
                         "type": "enum"
                     },
                     "Waning_Config": {
-                        "description": "The configuration of Ivermectin killing efficacy and waning over time.",
+                        "description": "The configuration of the vaccine's efficacy and waning over time.",
                         "type": "idmType:WaningEffect"
                     },
                     "class": "ControlledVaccine",
@@ -7435,15 +7589,10 @@
                         "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
                         "type": "string"
                     },
-                    "Negative_Diagnosis_Config": {
-                        "description": "If 'Event_Or_Config' is set to 'Config', this parameter defines a new intervention to be given to the person on a negative test result.",
-                        "type": "idmAbstractType:IndividualIntervention"
-                    },
                     "Negative_Diagnosis_Event": {
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -7491,6 +7640,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -7501,7 +7651,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If 'Event_Or_Config' is set to 'Event', this parameter defines the event to be broadcasted on a negative test result.",
@@ -7514,15 +7670,10 @@
                         "type": "Constrained String",
                         "value_source": "'<demographics>::*.Individual_Properties.*.Property':'<demographics>::*.Individual_Properties.*.Values'"
                     },
-                    "Positive_Diagnosis_Config": {
-                        "description": "The intervention distributed to individuals if they test positive. Only used when Event_Or_Config is set to Config.",
-                        "type": "idmAbstractType:IndividualIntervention"
-                    },
                     "Positive_Diagnosis_Event": {
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -7570,6 +7721,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -7580,7 +7732,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -7807,7 +7965,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -7855,6 +8012,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -7865,7 +8023,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If 'Event_Or_Config' is set to 'Event', this parameter defines the event to be broadcasted on a negative test result.",
@@ -7886,7 +8050,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -7934,6 +8097,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -7944,7 +8108,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -8587,7 +8757,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -8635,6 +8804,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -8645,7 +8815,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The event that is broadcast when an individual discards their bed net, either by replacing an existing net or due to the expiration timer.",
@@ -8839,7 +9015,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -8887,6 +9062,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -8897,7 +9073,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts when a new net is received, either the first net or a replacement net.",
@@ -8916,7 +9098,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -8964,6 +9145,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -8974,7 +9156,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts each time step in which a bed net is used.",
@@ -9529,7 +9717,7 @@
                         "type": "enum"
                     },
                     "Waning_Config": {
-                        "description": "The configuration of Ivermectin killing efficacy and waning over time.",
+                        "description": "The configuration of the vaccine's efficacy and waning over time.",
                         "type": "idmType:WaningEffect"
                     },
                     "class": "SimpleBoosterVaccine",
@@ -9608,7 +9796,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -9656,6 +9843,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -9666,7 +9854,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -9695,7 +9889,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -9743,6 +9936,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -9753,7 +9947,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The event of an actual intervention sought. Selects a class for the intervention and configures the parameters specific for that intervention class. See the list of available events for possible values.",
@@ -9964,7 +10164,7 @@
                         "type": "enum"
                     },
                     "Waning_Config": {
-                        "description": "The configuration of Ivermectin killing efficacy and waning over time.",
+                        "description": "The configuration of the vaccine's efficacy and waning over time.",
                         "type": "idmType:WaningEffect"
                     },
                     "class": "SimpleVaccine",
@@ -10084,7 +10284,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -10132,6 +10331,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -10142,7 +10342,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If 'Event_Or_Config' is set to 'Event', this parameter defines the event to be broadcasted on a negative test result.",
@@ -10163,7 +10369,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -10211,6 +10416,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -10221,7 +10427,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -10257,7 +10469,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -10305,6 +10516,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -10315,7 +10527,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The event that is broadcast when an individual discards their bed net, either by replacing an existing net or due to the expiration timer.",
@@ -10535,7 +10753,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -10583,6 +10800,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -10593,7 +10811,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts when a new net is received, either the first net or a replacement net.",
@@ -10616,7 +10840,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -10664,6 +10887,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -10674,7 +10898,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts each time step in which a bed net is used.",
@@ -10699,6 +10929,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Insecticide_Name": {
                         "default": "UNINITIALIZED STRING",
@@ -10756,6 +10991,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Intervention_Name": {
                         "default": "ArtificialDiet",
                         "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
@@ -10792,6 +11032,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Duration": {
                         "default": -1,
@@ -10872,6 +11117,10 @@
                         "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                         "type": "bool"
                     },
+                    "Targeting_Config": {
+                        "description": "TBD",
+                        "type": "idmType:AdditionalRestrictions"
+                    },
                     "class": "BirthTriggeredIV",
                     "iv_type": "NodeTargeted"
                 },
@@ -10897,6 +11146,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Intervention_Name": {
                         "default": "BroadcastNodeEvent",
@@ -10987,6 +11241,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Insecticide_Name": {
                         "default": "UNINITIALIZED STRING",
                         "description": "The name of the insecticide defined in <config.Insecticides> for this intervention.  If insecticides are being used, then this must be defined as one of those values.  If they are not being used, then this does not needed to be specified or can be empty string.  It cannot have a value if <config.Insecticides> does not define anything.",
@@ -11051,6 +11310,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "EIR_Type": {
                         "default": "MONTHLY",
                         "description": "Choose whether you want the EIR read in to be monthly or daily.",
@@ -11108,6 +11372,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Habitat_Target": {
                         "default": "NONE",
@@ -11183,6 +11452,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Infectious_Bite_Count": {
                         "default": 1,
                         "description": "The number of infectious bites.",
@@ -11223,6 +11497,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Duration_At_Node_Constant": {
                         "default": 6,
@@ -11621,6 +11900,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Intervention_Name": {
                         "default": "MosquitoRelease",
                         "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
@@ -11670,7 +11954,7 @@
                     },
                     "Released_Type": {
                         "default": "FIXED_NUMBER",
-                        "description": "If 'FRACTION', the 'Released_Fraction' parameter is used to specify the fraction of the current population to release.  If 'FIXED_NUMBER; then 'Released_Number' is used to specify an exact count of mosquitos to release.",
+                        "description": "If 'FRACTION', the 'Released_Fraction' parameter is used to specify the fraction of the current population to release.  If 'FIXED_NUMBER', then 'Released_Number' is used to specify an exact count of mosquitos to release.",
                         "enum": [
                             "FIXED_NUMBER",
                             "FRACTION"
@@ -11760,6 +12044,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Intervention_Name": {
                         "default": "MultiNodeInterventionDistributor",
                         "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
@@ -11813,6 +12102,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Duration": {
                         "default": -1,
                         "description": "The number of days to continue this intervention.",
@@ -11863,7 +12157,6 @@
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -11911,6 +12204,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -11921,7 +12215,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": "",
                         "description": "The event to broadcast if an intervention cannot be distributed due to the Blackout_Period.",
@@ -11956,6 +12256,11 @@
                     "Distribute_On_Return_Home": {
                         "default": 0,
                         "description": "When set to true (1), individuals will receive an intervention upon returning home if that intervention was originally distributed while the individual was away.",
+                        "type": "bool"
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
                         "type": "bool"
                     },
                     "Duration": {
@@ -12041,11 +12346,14 @@
                         "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                         "type": "bool"
                     },
+                    "Targeting_Config": {
+                        "description": "TBD",
+                        "type": "idmType:AdditionalRestrictions"
+                    },
                     "Trigger_Condition_List": {
                         "Built-in": [
                             "Births",
                             "EveryUpdate",
-                            "EveryTimeStep",
                             "NewInfectionEvent",
                             "TBActivation",
                             "NewClinicalCase",
@@ -12093,6 +12401,7 @@
                             "STIPreEmigrating",
                             "STIPostImmigrating",
                             "STINewInfection",
+                            "STIExposed",
                             "NewExternalHIVInfection",
                             "NodePropertyChange",
                             "HappyBirthday",
@@ -12103,7 +12412,13 @@
                             "VectorToHumanTransmission",
                             "HumanToVectorTransmission",
                             "ReceivedInfectiousBites",
-                            "InfectionCleared"
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
                         ],
                         "default": [],
                         "description": "A list of events that trigger a health seeking intervention.",
@@ -12126,6 +12441,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Intervention_Name": {
                         "default": "NodePropertyValueChanger",
@@ -12229,6 +12549,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Insecticide_Name": {
                         "default": "UNINITIALIZED STRING",
                         "description": "The name of the insecticide defined in <config.Insecticides> for this intervention.  If insecticides are being used, then this must be defined as one of those values.  If they are not being used, then this does not needed to be specified or can be empty string.  It cannot have a value if <config.Insecticides> does not define anything.",
@@ -12271,6 +12596,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Habitat_Target": {
                         "default": "NONE",
@@ -12317,6 +12647,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Intervention_Name": {
                         "default": "ScaleLarvalHabitat",
                         "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
@@ -12355,6 +12690,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Insecticide_Name": {
                         "default": "UNINITIALIZED STRING",
@@ -12406,6 +12746,11 @@
                         "type": "Dynamic String Set",
                         "value_source": ""
                     },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
                     "Insecticide_Name": {
                         "default": "UNINITIALIZED STRING",
                         "description": "The name of the insecticide defined in <config.Insecticides> for this intervention.  If insecticides are being used, then this must be defined as one of those values.  If they are not being used, then this does not needed to be specified or can be empty string.  It cannot have a value if <config.Insecticides> does not define anything.",
@@ -12455,6 +12800,11 @@
                         "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
                         "type": "Dynamic String Set",
                         "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
                     },
                     "Expiration_Constant": {
                         "default": 6,
@@ -12717,6 +13067,53 @@
             },
             "class": "Action"
         },
+        "idmType:AdditionalRestrictions": {
+            "HasIP": {
+                "IP_Key_Value": {
+                    "default": "",
+                    "description": "TBD",
+                    "type": "Constrained String",
+                    "value_source": "'<demographics>::*.Individual_Properties.*.Property':'<demographics>::*.Individual_Properties.*.Values'"
+                },
+                "Is_Equal_To": {
+                    "default": 1,
+                    "description": "TBD",
+                    "type": "bool"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "class": "HasIP"
+            },
+            "HasIntervention": {
+                "Intervention_Name": {
+                    "default": "",
+                    "description": "TBD",
+                    "type": "string"
+                },
+                "Is_Equal_To": {
+                    "default": 1,
+                    "description": "TBD",
+                    "type": "bool"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "class": "HasIntervention"
+            },
+            "TargetingLogic": {
+                "Logic": {
+                    "description": "TBD",
+                    "type": "idmType:Vector2d idmType:AdditionalRestrictions"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "class": "TargetingLogic",
+                "type_name": "idmType:Vector2d idmType:AdditionalRestrictions",
+                "type_schema": "idmType:AdditionalRestrictions"
+            }
+        },
         "idmType:AgeAndProbability": {
             "Age": {
                 "default": 0,
@@ -12894,12 +13291,17 @@
                     "min": 0,
                     "type": "Vector Float"
                 },
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
+                },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
                 },
                 "Max_Number_Reports": {
                     "default": 1,
@@ -12908,19 +13310,28 @@
                     "min": 0,
                     "type": "integer"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Pretty_Format": {
                     "default": 0,
                     "description": "True (1) sets pretty JSON formatting. The default, false (0), saves space.",
                     "type": "bool"
-                },
-                "Report_Description": {
-                    "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
-                    "type": "string"
                 },
                 "Reporting_Interval": {
                     "default": 1000000.0,
@@ -12942,9 +13353,60 @@
                 "class": "MalariaImmunityReport"
             },
             "MalariaPatientJSONReport": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
+                },
                 "Sim_Types": [
                     "MALARIA_SIM"
                 ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
                 "class": "MalariaPatientJSONReport"
             },
             "MalariaSqlReport": {
@@ -12991,16 +13453,16 @@
                     "min": 0,
                     "type": "Vector Float"
                 },
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
-                "Individual_Property_Filter": {
+                "Filename_Suffix": {
                     "default": "",
-                    "description": "Individual property (and value) to filter on",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
                 },
                 "Infectiousness_Bins": {
@@ -13018,9 +13480,23 @@
                     "min": 0,
                     "type": "integer"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Parasitemia_Bins": {
                     "ascending": 1,
@@ -13034,11 +13510,6 @@
                     "default": 0,
                     "description": "True (1) sets pretty JSON formatting. The default, false (0), saves space.",
                     "type": "bool"
-                },
-                "Report_Description": {
-                    "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
-                    "type": "string"
                 },
                 "Reporting_Interval": {
                     "default": 1000000.0,
@@ -13060,9 +13531,9 @@
                 "class": "MalariaSummaryReport"
             },
             "MalariaSurveyJSONAnalyzer": {
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13071,7 +13542,6 @@
                     "Built-in": [
                         "Births",
                         "EveryUpdate",
-                        "EveryTimeStep",
                         "NewInfectionEvent",
                         "TBActivation",
                         "NewClinicalCase",
@@ -13119,6 +13589,7 @@
                         "STIPreEmigrating",
                         "STIPostImmigrating",
                         "STINewInfection",
+                        "STIExposed",
                         "NewExternalHIVInfection",
                         "NodePropertyChange",
                         "HappyBirthday",
@@ -13129,17 +13600,35 @@
                         "VectorToHumanTransmission",
                         "HumanToVectorTransmission",
                         "ReceivedInfectiousBites",
-                        "InfectionCleared"
+                        "InfectionCleared",
+                        "WouldHaveDied",
+                        "WouldHaveHadAIDS",
+                        "WouldHaveEnteredLatentStage",
+                        "HIVInfectionStageEnteredLatent",
+                        "HIVInfectionStageEnteredAIDS",
+                        "HIVInfectionStageEnteredOnART"
                     ],
                     "default": [],
                     "description": "The list of triggers for the events included in the report.",
                     "type": "Vector Constrained String",
                     "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
                 },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
                 "IP_Key_To_Collect": {
                     "default": "",
                     "description": "Name of the Individual Property Key whose value to collect.  Empty string means collect values for all IPs.",
                     "type": "string"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
                 },
                 "Max_Number_Reports": {
                     "default": 1,
@@ -13148,19 +13637,35 @@
                     "min": 0,
                     "type": "integer"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Pretty_Format": {
                     "default": 0,
                     "description": "True (1) sets pretty JSON formatting. The default, false (0), saves space.",
                     "type": "bool"
-                },
-                "Report_Description": {
-                    "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
-                    "type": "string"
                 },
                 "Reporting_Interval": {
                     "default": 1000000.0,
@@ -13202,9 +13707,9 @@
                 "class": "ReportDrugStatus"
             },
             "ReportEventCounter": {
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -13213,7 +13718,6 @@
                     "Built-in": [
                         "Births",
                         "EveryUpdate",
-                        "EveryTimeStep",
                         "NewInfectionEvent",
                         "TBActivation",
                         "NewClinicalCase",
@@ -13261,6 +13765,7 @@
                         "STIPreEmigrating",
                         "STIPostImmigrating",
                         "STINewInfection",
+                        "STIExposed",
                         "NewExternalHIVInfection",
                         "NodePropertyChange",
                         "HappyBirthday",
@@ -13271,21 +13776,55 @@
                         "VectorToHumanTransmission",
                         "HumanToVectorTransmission",
                         "ReceivedInfectiousBites",
-                        "InfectionCleared"
+                        "InfectionCleared",
+                        "WouldHaveDied",
+                        "WouldHaveHadAIDS",
+                        "WouldHaveEnteredLatentStage",
+                        "HIVInfectionStageEnteredLatent",
+                        "HIVInfectionStageEnteredAIDS",
+                        "HIVInfectionStageEnteredOnART"
                     ],
                     "default": [],
                     "description": "The list of triggers for the events included in the report.",
                     "type": "Vector Constrained String",
                     "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
-                },
-                "Report_Description": {
+                "Filename_Suffix": {
                     "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Sim_Types": [
                     "*"
@@ -13346,21 +13885,49 @@
                 "class": "ReportInfectionStatsMalaria"
             },
             "ReportInterventionPopAvg": {
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
-                },
-                "Report_Description": {
+                "Filename_Suffix": {
                     "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
                     "type": "string"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Sim_Types": [
                     "MALARIA_SIM"
@@ -13382,6 +13949,16 @@
                     "min": 0,
                     "type": "float"
                 },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Has_IP": {
+                    "default": [],
+                    "description": "A channel is added to InsetChart for each value of each IP provided.  The channel name will be HasIP_<Key:Value> and will be the fraction of the population that has that value for that IPKey.",
+                    "type": "Vector String"
+                },
                 "Has_Interventions": {
                     "default": [],
                     "description": "A channel is added to the report for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
@@ -13393,31 +13970,36 @@
                     "type": "bool"
                 },
                 "Max_Age_Years": {
-                    "default": 125,
+                    "default": 9.3228e+35,
                     "description": "Maximum age in years of people to collect data on",
-                    "max": 125,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
                 "Min_Age_Years": {
                     "default": 0,
                     "description": "Minimum age in years of people to collect data on",
-                    "max": 125,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
                 },
                 "Node_IDs_Of_Interest": {
                     "ascending": 0,
                     "default": [],
                     "description": "Data will be collected for the nodes in this list.",
                     "max": 2147480000.0,
-                    "min": -2147480000.0,
-                    "type": "Vector Int"
-                },
-                "Report_File_Name": {
-                    "default": "ReportMalariaFiltered.json",
-                    "description": "Name of the file to be written",
-                    "type": "string"
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Sim_Types": [
                     "MALARIA_SIM"
@@ -13439,6 +14021,16 @@
                     "min": 0,
                     "type": "float"
                 },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Has_IP": {
+                    "default": [],
+                    "description": "A channel is added to InsetChart for each value of each IP provided.  The channel name will be HasIP_<Key:Value> and will be the fraction of the population that has that value for that IPKey.",
+                    "type": "Vector String"
+                },
                 "Has_Interventions": {
                     "default": [],
                     "description": "A channel is added to the report for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
@@ -13450,31 +14042,36 @@
                     "type": "bool"
                 },
                 "Max_Age_Years": {
-                    "default": 125,
+                    "default": 9.3228e+35,
                     "description": "Maximum age in years of people to collect data on",
-                    "max": 125,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
                 },
                 "Min_Age_Years": {
                     "default": 0,
                     "description": "Minimum age in years of people to collect data on",
-                    "max": 125,
+                    "max": 9.3228e+35,
                     "min": 0,
                     "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
                 },
                 "Node_IDs_Of_Interest": {
                     "ascending": 0,
                     "default": [],
                     "description": "Data will be collected for the nodes in this list.",
                     "max": 2147480000.0,
-                    "min": -2147480000.0,
-                    "type": "Vector Int"
-                },
-                "Report_File_Name": {
-                    "default": "ReportMalariaFiltered.json",
-                    "description": "Name of the file to be written",
-                    "type": "string"
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Sim_Types": [
                     "MALARIA_SIM"
@@ -13532,6 +14129,11 @@
                 "Stratify_By_Gender": {
                     "default": 1,
                     "description": "1 (default) implies stratify by gender, 0 implies do not",
+                    "type": "bool"
+                },
+                "Stratify_By_Has_Clinical_Symptoms": {
+                    "default": 0,
+                    "description": "If set to 1, the data will have an extra stratification for people who have clinical symptoms and those that do not.  Default is 0 or no extra stratification.",
                     "type": "bool"
                 },
                 "class": "ReportNodeDemographicsMalaria"
@@ -13607,26 +14209,59 @@
                 "class": "ReportPluginAgeAtInfectionHistogram"
             },
             "ReportSimpleMalariaTransmissionJSON": {
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Include_Human_To_Vector_Transmission": {
+                    "default": 0,
+                    "description": "If set to 1, Human-to-Vector transmission events will be included.  One can identify these events because the 'acquireIndividualId'=0 and transmitTime=acquireTime.  WARNING:  This can make the file size quite large.",
+                    "type": "bool"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Pretty_Format": {
                     "default": 0,
                     "description": "True (1) sets pretty JSON formatting. The default, false (0), saves space.",
                     "type": "bool"
-                },
-                "Report_Description": {
-                    "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
-                    "type": "string"
                 },
                 "Sim_Types": [
                     "MALARIA_SIM"
@@ -13639,6 +14274,12 @@
                     "type": "float"
                 },
                 "class": "ReportSimpleMalariaTransmissionJSON"
+            },
+            "ReportSimulationStats": {
+                "Sim_Types": [
+                    "*"
+                ],
+                "class": "ReportSimulationStats"
             },
             "ReportVectorGenetics": {
                 "Allele_Combinations_For_Stratification": {
@@ -13665,12 +14306,17 @@
                     "description": "1 implies genomes are combined if for each locus (ignoring gender) the set of allele of the two genomes are the same (i.e. 1-0 is similar to 0-1).",
                     "type": "bool"
                 },
-                "Duration_Days": {
+                "End_Day": {
                     "default": 3.40282e+38,
-                    "description": "The number of days over which to collect report data.",
+                    "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
+                },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
                 },
                 "Gender": {
                     "default": "VECTOR_FEMALE",
@@ -13692,14 +14338,13 @@
                     "description": "1 implies to add the columns for vectors in the different states (i.e Eggs, Larva, etc).",
                     "type": "bool"
                 },
-                "Nodeset_Config": {
-                    "description": "An object that specifies for which nodes the report will collect data.",
-                    "type": "idmAbstractType:NodeSet"
-                },
-                "Report_Description": {
-                    "default": "",
-                    "description": "Augments the filename of the report. If multiple CSV reports are being generated, this allows you to distinguish among the multiple reports.",
-                    "type": "string"
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Sim_Types": [
                     "VECTOR_SIM",
@@ -13742,7 +14387,7 @@
             },
             "ReportVectorMigration": {
                 "End_Day": {
-                    "default": 372,
+                    "default": 3.40282e+38,
                     "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
@@ -13754,7 +14399,7 @@
                     "DENGUE_SIM"
                 ],
                 "Start_Day": {
-                    "default": 365,
+                    "default": 0,
                     "description": "The day of the simulation to start collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
@@ -13839,18 +14484,42 @@
                     "min": 0,
                     "type": "float"
                 },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
                 "Node_IDs_Of_Interest": {
                     "ascending": 0,
                     "default": [],
                     "description": "Data will be collected for the nodes in this list.",
                     "max": 2147480000.0,
-                    "min": -2147480000.0,
-                    "type": "Vector Int"
-                },
-                "Report_File_Name": {
-                    "default": "SpatialReportMalariaFiltered.json",
-                    "description": "Name of the file to be written",
-                    "type": "string"
+                    "min": 0,
+                    "type": "Vector Uint32"
                 },
                 "Reporting_Interval": {
                     "default": 1,
@@ -13991,11 +14660,14 @@
                 "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                 "type": "bool"
             },
+            "Targeting_Config": {
+                "description": "TBD",
+                "type": "idmType:AdditionalRestrictions"
+            },
             "Trigger_Condition_List": {
                 "Built-in": [
                     "Births",
                     "EveryUpdate",
-                    "EveryTimeStep",
                     "NewInfectionEvent",
                     "TBActivation",
                     "NewClinicalCase",
@@ -14043,6 +14715,7 @@
                     "STIPreEmigrating",
                     "STIPostImmigrating",
                     "STINewInfection",
+                    "STIExposed",
                     "NewExternalHIVInfection",
                     "NodePropertyChange",
                     "HappyBirthday",
@@ -14053,7 +14726,13 @@
                     "VectorToHumanTransmission",
                     "HumanToVectorTransmission",
                     "ReceivedInfectiousBites",
-                    "InfectionCleared"
+                    "InfectionCleared",
+                    "WouldHaveDied",
+                    "WouldHaveHadAIDS",
+                    "WouldHaveEnteredLatentStage",
+                    "HIVInfectionStageEnteredLatent",
+                    "HIVInfectionStageEnteredAIDS",
+                    "HIVInfectionStageEnteredOnART"
                 ],
                 "default": [],
                 "description": "A list of events that will trigger an intervention.",
@@ -14165,6 +14844,10 @@
                 "default": 0,
                 "description": "When set to true (1), the intervention is only distributed to individuals that began the simulation in the node (i.e. those that claim the node as their residence).",
                 "type": "bool"
+            },
+            "Targeting_Config": {
+                "description": "TBD",
+                "type": "idmType:AdditionalRestrictions"
             },
             "Trigger_Condition_List": {
                 "default": [],
@@ -14870,7 +15553,7 @@
                 "type": "Vector Int"
             },
             "Property_Restrictions_Within_Node": {
-                "description": "A list of the IndividualProperty key:value pairs, as defined in the demographics file, that individuals must have to be targeted by this intervention.",
+                "description": "A list of JSON objects where each object has Individual Property (IP) Keys as JSON keys and IP Values as JSON values (like 'Risk' : 'HIGH').  The values in the object are AND'd together while the objects are OR'd together.  An individual's IP values must meet the logic in order to receive the intervention.",
                 "type": "idmType:PropertyRestrictions"
             },
             "Start_Day": {
@@ -14907,6 +15590,7 @@
             },
             "class": "TraitModifier"
         },
+        "idmType:Vector2d idmType:AdditionalRestrictions": "idmType:AdditionalRestrictions",
         "idmType:VectorAllele": {
             "Initial_Allele_Frequency": {
                 "default": 0,
@@ -14973,7 +15657,7 @@
             "Alleles_Driven": {
                 "default": [],
                 "depends-on": {
-                    "Driver_Type": "CLASSIC,INTEGRAL_AUTONOMOUS"
+                    "Driver_Type": "CLASSIC,INTEGRAL_AUTONOMOUS,DAISY_CHAIN"
                 },
                 "description": "If the drive can be activated, then these elements define the probabilities of how alleles are copied.",
                 "item_type": "idmType:AlleleDriven",
@@ -14981,12 +15665,13 @@
             },
             "Driver_Type": {
                 "default": "CLASSIC",
-                "description": "This indicates the type of driver.  CLASSIC-The driver can only drive if the one gamete has the driving allele and the other has a specific allele to be replaced; INTEGRAL_AUTONOMOUS-At least one of the gametes must have the driver.  Alleles can still be driven if the driving allele is in both gametes or even if the driving allele cannot replace the allele in the other gamete.",
+                "description": "This indicates the type of driver.  CLASSIC-The driver can only drive if the one gamete has the driving allele and the other has a specific allele to be replaced; INTEGRAL_AUTONOMOUS-At least one of the gametes must have the driver.  Alleles can still be driven if the driving allele is in both gametes or even if the driving allele cannot replace the allele in the other gamete.  X_SHRED can be used to reduce the number of female eggs produced while Y_SHRED does the opposite and reduced the number of male eggs produced.  DAISY_CHAIN can be used for drives that do not drive themselves but can be driven by another allele.",
                 "enum": [
                     "CLASSIC",
                     "INTEGRAL_AUTONOMOUS",
                     "X_SHRED",
-                    "Y_SHRED"
+                    "Y_SHRED",
+                    "DAISY_CHAIN"
                 ],
                 "type": "enum"
             },

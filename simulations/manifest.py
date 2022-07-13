@@ -13,8 +13,10 @@ eradication_path = CURRENT_DIR / "download/Eradication"
 assets_input_dir = CURRENT_DIR / "Assets"
 plugins_folder = CURRENT_DIR / "download/reporter_plugins"
 analyzed_ouptut_path = PROJECT_DIR / "EMOD_validation_recalibration/simulation_output"
-comps_id_folder = "./COMPS_ID/"
+comps_id_folder = "COMPS_ID/"
 suite_id_file = comps_id_folder + 'Suite'
+eradication_found = comps_id_folder + 'eradication_found'
+sif_id = comps_id_folder + 'sif.id'
 
 # TODO: remove following lines
 input_files_path = PROJECT_DIR / "simulation_inputs"
