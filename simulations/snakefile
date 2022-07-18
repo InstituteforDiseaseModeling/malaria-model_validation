@@ -7,7 +7,6 @@ from simulations.load_inputs import load_sites
 import simulations.manifest as manifest
 from simulations.helpers import get_comps_id_filename
 
-configfile: "./snakemake_config.json"
 
 sites, nSims, script_names = load_sites()
 
@@ -97,16 +96,16 @@ rule get_eradication:
     output: f'{manifest.eradication_found}'
     priority: 10
     run:
-        shell(get_command(script="get_eradication.py", use_local_eradication=config['use_local_eradication']))
+        shell(get_command(script="get_eradication.py", use_local_eradication=manifest.use_local_eradication))
 
 rule sif_id:
     input:
     output: f'{manifest.sif_id}'
     priority: 10
     run:
-        if config['singularity_id']:
+        if manifest.singularity_id:
             with open(manifest.sif_id, 'w') as sif_file:
-                sif_file.write(config['singularity_id'])
+                sif_file.write(manifest.singularity_id)
         else:
             print("Not using singularity image.")
 
