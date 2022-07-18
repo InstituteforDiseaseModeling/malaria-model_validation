@@ -8,6 +8,8 @@ from simulations.get_eradication import get_eradication
 import pathlib
 import json
 
+latest_version = '2.21.4332.0'
+
 
 class RunSimsTest(BaseTest):
     @classmethod
@@ -44,10 +46,11 @@ class RunSimsTest(BaseTest):
             config = task.transient_assets.assets[1]
             with open("inputs/new_config.json", "w") as config_file:
                 # for debugging
-                config_file.write(config.content)
+                json.dump(config.content, config_file, indent=4, sort_keys=True)
+                # config_file.write(config.content)
             new_config_dict = json.loads(config.content)['parameters']
 
-            with open("inputs/old_my_config.json", "r") as config_file:
+            with open(f"inputs/{latest_version}_old_my_config.json", "r") as config_file:
                 old_config_dict = json.load(config_file)['parameters']
 
             self.assertEqual(i, new_config_dict["Run_Number"])
@@ -72,7 +75,7 @@ class RunSimsTest(BaseTest):
             with open(demog.absolute_path, 'r') as demog_file:
                 new_demog_dict = json.load(demog_file)
 
-            with open("inputs/old_demog.json", "r") as demog_file:
+            with open(f"inputs/{latest_version}_old_demog.json", "r") as demog_file:
                 old_demog_dict = json.load(demog_file)
             self.assertDictEqual(new_demog_dict, old_demog_dict)
         pass
@@ -89,7 +92,7 @@ class RunSimsTest(BaseTest):
                 campaign_file.write(campaign.content)
             new_campaign_dict = json.loads(campaign.content)
 
-            with open("inputs/old_campaign.json", "r") as campaign_file:
+            with open(f"inputs/{latest_version}_old_campaign.json", "r") as campaign_file:
                 old_campaign_dict = json.load(campaign_file)
             self.assertDictEqual(new_campaign_dict, old_campaign_dict)
         pass
@@ -106,7 +109,7 @@ class RunSimsTest(BaseTest):
                 custom_reports_file.write(custom_reports.content)
             new_custom_reports_dict = json.loads(custom_reports.content)
 
-            with open("inputs/old_custom_reports.json", "r") as custom_reports_file:
+            with open(f"inputs/{latest_version}_old_custom_reports.json", "r") as custom_reports_file:
                 old_custom_reports_dict = json.load(custom_reports_file)
             self.assertDictEqual(new_custom_reports_dict, old_custom_reports_dict)
         pass
