@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 import argparse
-import os.path
-import pathlib
-import shutil
 
 # idmtools
 from idmtools.builders import SimulationBuilder
@@ -15,9 +12,6 @@ from emodpy_malaria.reporters.builtin import add_report_intervention_pop_avg
 
 from simulations.helpers import set_param_fn, update_sim_random_seed, set_simulation_scenario_for_characteristic_site, \
     set_simulation_scenario_for_matched_site, get_comps_id_filename
-
-# emod_malaria
-import emod_malaria.bootstrap as dtk
 
 import simulations.params as params
 from simulations import manifest as manifest
