@@ -46,9 +46,10 @@ class RunSimsTest(BaseTest):
             config = task.transient_assets.assets[1]
             with open("inputs/new_config.json", "w") as config_file:
                 # for debugging
-                json.dump(config.content, config_file, indent=4, sort_keys=True)
+                new_config_dict = json.loads(config.content)
+                json.dump(new_config_dict, config_file, indent=4, sort_keys=True)
                 # config_file.write(config.content)
-            new_config_dict = json.loads(config.content)['parameters']
+            new_config_dict = new_config_dict['parameters']
 
             with open(f"inputs/{latest_version}_old_my_config.json", "r") as config_file:
                 old_config_dict = json.load(config_file)['parameters']
@@ -89,8 +90,9 @@ class RunSimsTest(BaseTest):
             campaign = task.transient_assets.assets[2]
             with open("inputs/new_campaign.json", "w") as campaign_file:
                 # for debugging
-                campaign_file.write(campaign.content)
-            new_campaign_dict = json.loads(campaign.content)
+                new_campaign_dict = json.loads(campaign.content)
+                json.dump(new_campaign_dict, campaign_file, indent=4, sort_keys=True)
+                # campaign_file.write(campaign.content)
 
             with open(f"inputs/{latest_version}_old_campaign.json", "r") as campaign_file:
                 old_campaign_dict = json.load(campaign_file)
@@ -106,8 +108,9 @@ class RunSimsTest(BaseTest):
             custom_reports = task.transient_assets.assets[3]
             with open("inputs/new_custom_reports.json", "w") as custom_reports_file:
                 # for debugging
-                custom_reports_file.write(custom_reports.content)
-            new_custom_reports_dict = json.loads(custom_reports.content)
+                new_custom_reports_dict = json.loads(custom_reports.content)
+                json.dump(new_custom_reports_dict, custom_reports_file, indent=4, sort_keys=True)
+                # custom_reports_file.write(custom_reports.content)
 
             with open(f"inputs/{latest_version}_old_custom_reports.json", "r") as custom_reports_file:
                 old_custom_reports_dict = json.load(custom_reports_file)

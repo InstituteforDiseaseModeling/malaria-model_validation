@@ -1,0 +1,367 @@
+{
+    "Custom_Reports": {
+        "Use_Explicit_Dlls": 1
+    },
+    "Reports": [
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 365,
+            "Filename_Suffix": "Monthly_Report_0",
+            "Infectiousness_Bins": [
+                0,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 0,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 730,
+            "Filename_Suffix": "Monthly_Report_1",
+            "Infectiousness_Bins": [
+                0,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 365,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 1095,
+            "Filename_Suffix": "Monthly_Report_2",
+            "Infectiousness_Bins": [
+                0,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 730,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 1460,
+            "Filename_Suffix": "Monthly_Report_3",
+            "Infectiousness_Bins": [
+                0,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 1095,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 1825,
+            "Filename_Suffix": "Monthly_Report_4",
+            "Infectiousness_Bins": [
+                0,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 1460,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 365,
+            "Filename_Suffix": "Infectiousness_Monthly_Report_0",
+            "Infectiousness_Bins": [
+                0,
+                5,
+                20,
+                50,
+                80,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 0,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 730,
+            "Filename_Suffix": "Infectiousness_Monthly_Report_1",
+            "Infectiousness_Bins": [
+                0,
+                5,
+                20,
+                50,
+                80,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 365,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 1095,
+            "Filename_Suffix": "Infectiousness_Monthly_Report_2",
+            "Infectiousness_Bins": [
+                0,
+                5,
+                20,
+                50,
+                80,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 730,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 1460,
+            "Filename_Suffix": "Infectiousness_Monthly_Report_3",
+            "Infectiousness_Bins": [
+                0,
+                5,
+                20,
+                50,
+                80,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 1095,
+            "class": "MalariaSummaryReport"
+        },
+        {
+            "Age_Bins": [
+                5.0,
+                15.0,
+                80.0
+            ],
+            "Enabled": 1,
+            "End_Day": 1825,
+            "Filename_Suffix": "Infectiousness_Monthly_Report_4",
+            "Infectiousness_Bins": [
+                0,
+                5,
+                20,
+                50,
+                80,
+                100
+            ],
+            "Max_Number_Reports": 1000,
+            "Must_Have_IP_Key_Value": "",
+            "Must_Have_Intervention": "",
+            "Node_IDs_Of_Interest": [],
+            "Parasitemia_Bins": [
+                0,
+                50,
+                500,
+                4000,
+                6000,
+                8000,
+                10000,
+                50000,
+                500000,
+                5000000
+            ],
+            "Pretty_Format": 0,
+            "Reporting_Interval": 30,
+            "Start_Day": 1460,
+            "class": "MalariaSummaryReport"
+        }
+    ]
+}
