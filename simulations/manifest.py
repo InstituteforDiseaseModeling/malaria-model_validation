@@ -1,3 +1,7 @@
+
+# This is a user-modifiable Python file designed to be a set of simple input file and directory settings that you can choose and change.
+from pathlib import Path
+
 # ========================================================
 """
 This section contains the most important parameters that you may want to change before running the snakemake workflow.
@@ -8,11 +12,7 @@ singularity_id: the AC id for singularity image that the simulation will be run 
 """
 use_local_eradication = 0
 singularity_id = "8df53802-53f3-ec11-a9f9-b88303911bc1"
-
 # ========================================================
-
-# This is a user-modifiable Python file designed to be a set of simple input file and directory settings that you can choose and change.
-from pathlib import Path
 
 CURRENT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = CURRENT_DIR.parent
