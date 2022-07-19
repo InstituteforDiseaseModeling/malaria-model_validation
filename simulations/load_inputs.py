@@ -18,3 +18,7 @@ def load_sites():
     nSims = coord_df['nSims'].tolist()
     script_names = coord_df['run_script_name']
     return sites, nSims, script_names
+
+
+if __name__ == '__main__':
+    load_sites()

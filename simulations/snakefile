@@ -46,8 +46,11 @@ print( input_files )
 
 rule run:
     input: input_files
-    output:
-    shell: ""
+    output: manifest.comps_id_folder + 'workflow_completed'
+    run:
+        with open(manifest.comps_id_folder + 'workflow_completed', 'w') as file:
+            file.write('Workflow is completed.')
+
 
 rule clean:
     input: 
