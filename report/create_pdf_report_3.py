@@ -280,21 +280,21 @@ section_and_content = {'Introduction':
     #           None]},
 
     'Comparisons from prior EMOD publications':
-         {'Incidence and prevalence by age':
+        {'Incidence and prevalence by age':
              ['The top plots come from McCarthy et al. 2015 and the bottom plots come from Selvaraj et al. 2018.',
              ['_prior_recalibration_published_figures/McCarthy_2015_age_pfpr_incidence.png',
-             '_prior_recalibration_published_figures/Selvaraj_2018_age_incidence.png'],
-             None],
+              '_prior_recalibration_published_figures/Selvaraj_2018_age_incidence.png'],
+              None],
          'Infectiousness to vectors':
              ['The following plot comes from Selvaraj et al. 2018',
              ['_prior_recalibration_published_figures/Selvaraj_2018_infectiousness.png'],
-             None],
+              None],
          'Parasite densities':
              ['The following plots come from Selvaraj et al. 2018',
              ['_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities.png',
-             '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities2.png',
-             '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities3.png'],
-             None]},
+              '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities2.png',
+              '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities3.png'],
+              None]},
 }
 
 for i, (section_tile, section_content) in enumerate(section_and_content.items()):
