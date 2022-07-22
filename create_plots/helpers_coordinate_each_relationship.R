@@ -67,7 +67,9 @@ generate_age_incidence_outputs = function(coord_csv, simulation_output_filepath,
   if('benchmark' %in% colnames(combined_df)){
     compare_benchmarks_output = compare_benchmark(combined_df)
     ggsave(filename=paste0(plot_output_filepath, '/scatter_benchmark_incidence_age.png'), plot=compare_benchmarks_output, height=4.5, width=8, units='in')
-    # TODO: add likelihood component
+    mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
+    
+    add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath, validation_relationship_name='age_incidence')
   }
 }
 
@@ -132,6 +134,8 @@ generate_age_prevalence_outputs = function(coord_csv, simulation_output_filepath
     colnames(bench_sim_loglik)[which(colnames(bench_sim_loglik)=='loglikelihood')] = 'loglikelihood_benchmark_sim'
     loglikelihood_comparison = merge(new_sim_loglik, bench_sim_loglik)
     write.csv(loglikelihood_comparison, paste0(plot_output_filepath, '/loglikelihood_prevalence_age.csv'), row.names=FALSE)
+    
+    add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath, validation_relationship_name='age_prevalence')
   }
 }
 
@@ -178,6 +182,9 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
     ggsave(filename=paste0(plot_output_filepath, '/site_compare_gamet_dens_age_', all_sites[ss], '.png'), plot=line_plot_list[[ss]], width=8, height=6, units='in')
   }  
   
+  
+  
+  
   if('benchmark' %in% colnames(combined_df_asex)){
     compare_benchmarks_output = compare_benchmark(combined_df_asex)
     ggsave(filename=paste0(plot_output_filepath, '/scatter_benchmark_asex_dens.png'), plot=compare_benchmarks_output, height=4.5, width=8, units='in')
@@ -198,6 +205,10 @@ generate_parasite_density_outputs = function(coord_csv, simulation_output_filepa
 
     loglik_df = merge(loglik_df_asex, loglik_df_gamet, all=TRUE)
     write.csv(loglik_df, paste0(plot_output_filepath, '/loglikelihoods_par_dens.csv'))
+    
+    add_to_summary_table(combined_df=combined_df_asex, plot_output_filepath=plot_output_filepath, validation_relationship_name='asexual_par_dens')
+    add_to_summary_table(combined_df=combined_df_gamet, plot_output_filepath=plot_output_filepath, validation_relationship_name='gamet_par_dens')
+    
   }
 }
 
@@ -231,6 +242,7 @@ generate_infectiousness_outputs = function(coord_csv, simulation_output_filepath
     ggsave(filename=paste0(plot_output_filepath, '/scatter_benchmark_infectiousness.png'), plot=compare_benchmarks_output, height=4.5, width=8, units='in')
     
     # TODO: add likelihood and other quantitative comparisons
+    add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath, validation_relationship_name='infectiousness')
     
   }
 }
@@ -262,13 +274,14 @@ generate_age_infection_duration_outputs = function(coord_csv, simulation_output_
 
   for (ss in 1:length(available_sites)){
     cur_site = available_sites[ss]
-    sim_dir = paste0(simulation_output_filepath, '/', cur_site)
-    sim_data = get_sim_survey(sim_dir=sim_dir, ref_df=ref_df)
-    
+
     filepath_ref = paste0(base_reference_filepath, '/', coord_csv$infection_duration_ref[which(coord_csv$site == cur_site)])
     ref_df = read.csv(filepath_ref)
     ref_df = ref_df[tolower(ref_df$site) == tolower(cur_site),]
     ref_df$date = as.Date(ref_df$date)
+    
+    sim_dir = paste0(simulation_output_filepath, '/', cur_site)
+    sim_data = get_sim_survey(sim_dir=sim_dir, ref_df=ref_df)
     
     
     # create and save comparison plots
