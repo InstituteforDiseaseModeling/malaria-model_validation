@@ -1,0 +1,6 @@
+"validation_relationship","abs_diff_new","abs_diff_bench","num_sites_better","num_sites_similar","num_sites_worse"
+"age_incidence",0.940410751285507,0.936619808598781,0,8,0
+"age_prevalence",0.265591370037216,0.265726338331594,0,17,0
+"asexual_par_dens",0.188549310757321,0.188549227674238,0,15,0
+"gamet_par_dens",0.24166101865864,0.241674029969951,0,15,0
+"infectiousness",0.141413317850761,0.141415406518112,0,6,0
