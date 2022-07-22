@@ -156,7 +156,7 @@ else:
     suite_id = 'NA'
 
 version_file_filepath = manifest.CURRENT_DIR / manifest.version_file
-if suite_id_filepath.is_file():
+if version_file_filepath.is_file():
     with open(version_file_filepath, 'r') as version_file:
         era_version = version_file.readline().rstrip()
         era_branch = version_file.readline().rstrip()
