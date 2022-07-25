@@ -8,7 +8,7 @@ from simulations.get_eradication import get_eradication
 import pathlib
 import json
 
-latest_version = '2.21.4332.0'
+latest_version = '2.20.5194.0'
 
 
 class RunSimsTest(BaseTest):
