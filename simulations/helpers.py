@@ -11,7 +11,7 @@ from emodpy_malaria.reporters.builtin import add_malaria_summary_report, Malaria
 from emodpy_malaria import malaria_config as malconf
 from emodpy_malaria.interventions.drug_campaign import add_drug_campaign
 from emodpy_malaria.interventions.treatment_seeking import add_treatment_seeking
-from emodpy_malaria.interventions.inputeir import InputEIR
+from emodpy_malaria.interventions.inputeir import add_scheduled_input_eir
 from emod_api.interventions.common import BroadcastEvent
 import simulations.manifest as manifest
 
@@ -114,10 +114,11 @@ def set_simulation_scenario(simulation, site, csv_path):
         else:
             summary_report_age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 19, 39, 59, 85]
 
-        add_malaria_summary_report(simulation.task, manifest=manifest, start_day=report_start_day, duration_days=1000000,
+        add_malaria_summary_report(simulation.task, manifest=manifest, start_day=report_start_day,
+                                   end_day=1000000 + report_start_day,
                                    reporting_interval=365, age_bins=summary_report_age_bins,
                                    infectiousness_bins=[0, 100], max_number_reports=2000,
-                                   parasitemia_bins=density_bins_df, report_description='Annual_Report')
+                                   parasitemia_bins=density_bins_df, filename_suffix='Annual_Report')
 
     if coord_df.at[site, 'include_MonthlyMalariaSummaryReport']:
         if (not pd.isna(coord_df.at[site, 'monthly_summary_report_age_bins'])) and (not (coord_df.at[site, 'monthly_summary_report_age_bins'] == '')):
@@ -128,18 +129,19 @@ def set_simulation_scenario(simulation, site, csv_path):
             summary_report_age_bins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 19, 39, 59, 85]
 
         for yy in range(report_start_day, simulation_duration, 365):
-            add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, duration_days=365,
+            add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, end_day=365 + yy,
                                        reporting_interval=30, age_bins=summary_report_age_bins,
                                        infectiousness_bins=[0, 100], max_number_reports=1000,
-                                       parasitemia_bins=density_bins_df, report_description='Monthly_Report_%i' % int(round(yy/365)))
+                                       parasitemia_bins=density_bins_df,
+                                       filename_suffix='Monthly_Report_%i' % int(round(yy/365)))
 
         if coord_df.at[site, 'infectiousness_to_mosquitos']:
             for yy in range(report_start_day, simulation_duration, 365):
-                add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, duration_days=365,
+                add_malaria_summary_report(simulation.task, manifest=manifest, start_day=yy, end_day=365 + yy,
                                            reporting_interval=30, age_bins=summary_report_age_bins,
                                            infectiousness_bins=[0, 5, 20, 50, 80, 100], max_number_reports=1000,
                                            parasitemia_bins=density_bins_df,
-                                           report_description='Infectiousness_Monthly_Report_%i' % int(round(yy / 365)))
+                                           filename_suffix='Infectiousness_Monthly_Report_%i' % int(round(yy / 365)))
 
     if coord_df.at[site, 'include_MalariaPatientReport']:
         patient_report = MalariaPatientJSONReport()  # Create the reporter
@@ -178,9 +180,8 @@ def build_camp(site, coord_df):
     # set monthly eir for site - TODO - change to daily EIR
     monthly_eirs = pd.read_csv(manifest.input_files_path / coord_df.at[site, 'EIR_filepath'])
     # TODO - currently recycles first 12 values; should update to use multiple years if provided
-    camp.add(InputEIR(camp, monthly_eir=monthly_eirs.loc[monthly_eirs.index[0:12], site].tolist(),
-             start_day=0, age_dependence="SURFACE_AREA_DEPENDENT"))
-
+    add_scheduled_input_eir(camp, monthly_eir=monthly_eirs.loc[monthly_eirs.index[0:12], site].tolist(),
+                            start_day=0, age_dependence="SURFACE_AREA_DEPENDENT")
 
     # === INTERVENTIONS === #
 

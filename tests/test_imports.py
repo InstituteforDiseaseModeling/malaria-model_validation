@@ -2,19 +2,13 @@ import unittest
 from BaseTest import BaseTest
 
 
-class MyImportTestClass(object):
-    def __init__(self):
-        self.expected_items = None
-        self.found_items = None
-
+class ImportTest(BaseTest):
     def setUp(self) -> None:
-        super(MyImportTestClass, self).setUp()
+        super(BaseTest, self).setUp()
         self.expected_items = None
         self.found_items = None
         pass
 
-
-class ImportTest(BaseTest, MyImportTestClass):
     def verify_expected_items_present(self, namespace):
         self.found_items = dir(namespace)
         for item in self.expected_items:

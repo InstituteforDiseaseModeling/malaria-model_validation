@@ -17,53 +17,18 @@ import simulations.params as params
 from simulations import manifest as manifest
 
 
-def submit_sim(site=None, nSims=1, characteristic=False, priority=manifest.priority):
+def submit_sim(site=None, nSims=1, characteristic=False, priority=manifest.priority, my_manifest=manifest,
+               not_use_singularity=False):
     """
     This function is designed to be a parameterized version of the sequence of things we do 
     every time we run an emod experiment. 
     """
-
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform(manifest.platform_name, priority=priority, node_group=manifest.node_group)
-
-    # create EMODTask 
-    print("Creating EMODTask (from files)...")
-
-    task = EMODTask.from_default2(config_path="my_config.json",
-                                  eradication_path=str(manifest.eradication_path),
-                                  ep4_custom_cb=None,
-                                  campaign_builder=None,
-                                  schema_path=str(manifest.schema_file),
-                                  param_custom_cb=set_param_fn,
-                                  demog_builder=None,
-                                  )
-
-    # add html intervention-visualizer asset to COMPS
-    add_inter_visualizer = False
-    if add_inter_visualizer:
-        task.common_assets.add_asset(manifest.intervention_visualizer_path)
-        add_report_intervention_pop_avg(task, manifest)
-
-    # Create simulation sweep with builder
-    builder = SimulationBuilder()
-
-    exp_name = "validation_" + site
-
-    # Sweep run number
-    builder.add_sweep_definition(update_sim_random_seed, range(nSims))
-
-    # Sweep sites and seeds - based on values in simulation_coordinator csv
-    # builder.add_sweep_definition(set_simulation_scenario, [site])
-
-    if characteristic:
-        builder.add_sweep_definition(set_simulation_scenario_for_characteristic_site, [site])
-    else:
-        builder.add_sweep_definition(set_simulation_scenario_for_matched_site, [site])
-
-    # create experiment from builder
+    platform = Platform(my_manifest.platform_name, priority=priority, node_group=my_manifest.node_group)
     print("Prompting for COMPS creds if necessary...")
-    experiment = Experiment.from_builder(builder, task, name=exp_name)
+
+    experiment = create_exp(characteristic, nSims, site, my_manifest, not_use_singularity)
 
     # The last step is to call run() on the ExperimentManager to run the simulations.
     experiment.run(wait_until_done=False, platform=platform)
@@ -75,6 +40,52 @@ def submit_sim(site=None, nSims=1, characteristic=False, priority=manifest.prior
     print()
     print(experiment.uid.hex)
     return experiment.uid.hex
+
+
+def create_exp(characteristic, nSims, site, my_manifest, not_use_singularity):
+    task = _create_task(my_manifest)
+
+    if not not_use_singularity:
+        task.set_sif(my_manifest.sif_id)
+    builder, exp_name = _create_builder(characteristic, nSims, site)
+    # create experiment from builder
+
+    experiment = Experiment.from_builder(builder, task, name=exp_name)
+    return experiment
+
+
+def _create_builder(characteristic, nSims, site):
+    # Create simulation sweep with builder
+    builder = SimulationBuilder()
+    exp_name = "validation_" + site
+    # Sweep run number
+    builder.add_sweep_definition(update_sim_random_seed, range(nSims))
+    # Sweep sites and seeds - based on values in simulation_coordinator csv
+    # builder.add_sweep_definition(set_simulation_scenario, [site])
+    if characteristic:
+        builder.add_sweep_definition(set_simulation_scenario_for_characteristic_site, [site])
+    else:
+        builder.add_sweep_definition(set_simulation_scenario_for_matched_site, [site])
+    return builder, exp_name
+
+
+def _create_task(my_manifest):
+    # create EMODTask
+    print("Creating EMODTask (from files)...")
+    task = EMODTask.from_default2(config_path="my_config.json",
+                                  eradication_path=str(my_manifest.eradication_path),
+                                  ep4_custom_cb=None,
+                                  campaign_builder=None,
+                                  schema_path=str(my_manifest.schema_file),
+                                  param_custom_cb=set_param_fn,
+                                  demog_builder=None,
+                                  )
+    # add html intervention-visualizer asset to COMPS
+    add_inter_visualizer = False
+    if add_inter_visualizer:
+        task.common_assets.add_asset(my_manifest.intervention_visualizer_path)
+        add_report_intervention_pop_avg(task, my_manifest)
+    return task
 
 
 if __name__ == "__main__":
@@ -89,10 +100,13 @@ if __name__ == "__main__":
                         default="test_site")  # params.sites[0]) # todo: not sure if we want to make this required argument
     parser.add_argument('--nSims', '-n', type=int, help='number of simulations', default=params.nSims)
     parser.add_argument('--characteristic', '-c', action='store_true', help='site-characteristic sweeps')
+    parser.add_argument('--not_use_singularity', '-i', action='store_true',
+                        help='not using singularity image to run in Comps')
     parser.add_argument('--priority', '-p', type=str,
                         choices=['Lowest', 'BelowNormal', 'Normal', 'AboveNormal', 'Highest'],
                         help='Comps priority', default=manifest.priority)
 
     args = parser.parse_args()
 
-    submit_sim(site=args.site, nSims=args.nSims, characteristic=args.characteristic, priority=args.priority)
+    submit_sim(site=args.site, nSims=args.nSims, characteristic=args.characteristic, priority=args.priority,
+               not_use_singularity=args.not_use_singularity)
