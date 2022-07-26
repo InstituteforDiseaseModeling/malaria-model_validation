@@ -1,6 +1,6 @@
 -i https://packages.idmod.org/api/pypi/pypi-production/simple
 idmtools-cli~=1.6.4
-emodpy-malaria~=1.0
+emodpy-malaria~=2.0
 fpdf2
 seaborn
 sklearn

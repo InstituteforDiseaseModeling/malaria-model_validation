@@ -196,24 +196,18 @@ section_and_content = {'Introduction':
             None,
             None]},
     'Results summary':
-        {'Validation test performance':
+        {'Performance compared to model version from calibration':
             [
-                'The table below shows the number of sites examined in each validation relationship and '
-                'the fraction of sites that passed each of several tests for that validation '
-                'relationship.\n\n'
-                'PLACEHOLDER TABLE: These are made up numbers!',
+                'The table below shows, for each validation relationship (rows), the mean absolute difference between '
+                'all reference and matched simulation datapoints for both the new (first column) and benchmark (second '
+                'column) simulations. The final three columns of the table show the number of sites where the new '
+                'simulations matched the reference dataset better, similarly, or worse compared to the benchmark '
+                'simulations.'
+                ''
+                '\n\n',
                 None,
-                None],
-            # '_plots/placeholder_results_summary_table.csv'],
-            'Performance compared to model version from calibration':
-                [
-                    'The number of sites where the current simulation match to the reference data was found '
-                    'to be substantially WORSE than the version used in calibration are shown in the table '
-                    'below. \n\n'
-                    'PLACEHOLDER TABLE: These are made up numbers!',
-                    None,
-                    None]},
-    # '_plots/placeholder_results_summary_sites_worse_than_calib.csv']},
+                '_plots/summary_table_sim_benchmark.csv'],
+         },
     'Visual comparison of reference data and matched simulations':
         {'Incidence by age':
             [
@@ -249,7 +243,7 @@ section_and_content = {'Introduction':
                     'Observed infections are divided into two groups. "Censored" infections refer to infections where the individual was positive at the first or final survey of the study (so the infection may have extended beyond the period observed). '
                     '"Start & finish observed" infections refer to infections were the individual was observed to have a negative test at the start and end of the infection. The two types of infection duration records are illustrated in the figure below.\n'
                     'In the plot panel below, columns correspond to the age group (in years) and rows correspond to whether or not the start and end of the infection was observed.',
-                    ['_plots/site_compare_age_infect_duration_navrongo_2000.png'],
+                    ['_plots/site_compare_infect_duration_age_navrongo_2000.png'],
                     None],
             'Asexual parasite density by age':
                 ['The plots below compare the distribution of parasite densities across ages and '
@@ -257,7 +251,7 @@ section_and_content = {'Introduction':
                  'to a site. Note that some of the reference datasets have small sample sizes, '
                  'especially in the youngest age groups.',
                  ['_plots/%s' % ff for ff in os.listdir('./_plots') if
-                  re.match(r'site_compare_par_dens_age.*\.', ff)],
+                  re.match(r'site_compare_asex_dens_age.*\.', ff)],
                  None],
             'Gametocyte density by age':
                 ['The plots below compare the distribution of gametocyte densities across ages and '
@@ -310,22 +304,22 @@ section_and_content = {'Introduction':
     #           None,
     #           None]},
 
-    # 'Comparisons from prior EMOD publications':
-    #      {'Incidence and prevalence by age':
-    #          ['The top plots come from McCarthy et al. 2015 and the bottom plots come from Selvaraj et al. 2018.',
-    #           ['_prior_recalibration_published_figures/McCarthy_2015_age_pfpr_incidence.png',
-    #            '_prior_recalibration_published_figures/Selvaraj_2018_age_incidence.png'],
-    #           None],
-    #      'Infectiousness to vectors':
-    #          ['The following plot comes from Selvaraj et al. 2018',
-    #           ['_prior_recalibration_published_figures/Selvaraj_2018_infectiousness.png'],
-    #           None],
-    #      'Parasite densities':
-    #          ['The following plots come from Selvaraj et al. 2018',
-    #           ['_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities.png',
-    #            '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities2.png',
-    #            '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities3.png'],
-    #           None]},
+    'Comparisons from prior EMOD publications':
+        {'Incidence and prevalence by age':
+             ['The top plots come from McCarthy et al. 2015 and the bottom plots come from Selvaraj et al. 2018.',
+              ['_prior_recalibration_published_figures/McCarthy_2015_age_pfpr_incidence.png',
+               '_prior_recalibration_published_figures/Selvaraj_2018_age_incidence.png'],
+              None],
+         'Infectiousness to vectors':
+             ['The following plot comes from Selvaraj et al. 2018',
+             ['_prior_recalibration_published_figures/Selvaraj_2018_infectiousness.png'],
+             None],
+         'Parasite densities':
+             ['The following plots come from Selvaraj et al. 2018',
+             ['_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities.png',
+             '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities2.png',
+             '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities3.png'],
+             None]},
 }
 
 for i, (section_tile, section_content) in enumerate(section_and_content.items()):

@@ -41,7 +41,7 @@ authors = [
 
 setuptools.setup(
     name="malaria_model_validation",
-    version="0.0.1",
+    version="1.0.0",
     author=[author[0] for author in authors],
     author_email=[author[1] for author in authors],
     description="malaria-model_validation package",
@@ -56,7 +56,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent"
     ],
-    package_data={'simulation_inputs': ['*/*.csv', '*.csv'],
+    package_data={'simulation_inputs': ['*/*.csv', '*.csv', '*/*.json'],
                   'simulations': ['snakefile_bak']},
     include_package_data=True,
     exclude_package_data={'': ['tests']},

@@ -12,7 +12,7 @@ def generate_rule(site, n, script_name="run_sims.py"):
 rule {site}_run_sim:
     input: 
     output: '{exp_id_file}'
-    priority: 50
+    priority: 5
     run:
         shell(get_command(script="{script_name}", site="{site}", n={n}))
 
