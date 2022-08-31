@@ -677,7 +677,7 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
         filepath_ref = os.path.join(base_reference_filepath,
                                     coord_csv[coord_csv['site'] == cur_site]['infectiousness_to_mosquitos_ref'].iloc[0])
         ref_df_cur = pd.read_csv(filepath_ref)
-        # todo: local variable 'upper_ages' is assigned to but never used
+        # todo: local variable 'upper_ages' is assigned to but never used, undefined name 'sim_df_cur'
         upper_ages = sorted(sim_df_cur['agebin'].unique())
         ref_df_cur = ref_df_cur[ref_df_cur['site'].str.lower() == str(cur_site).lower()]
         ref_months = ref_df_cur['month'].unique()
