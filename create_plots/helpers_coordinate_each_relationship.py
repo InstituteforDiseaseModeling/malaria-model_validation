@@ -18,7 +18,7 @@ from create_plots.helpers_plot_ref_sim_comparisons import plot_inc_ref_sim_compa
     compare_benchmark, plot_par_dens_ref_sim_comparison, plot_infectiousness_ref_sim_comparison, \
     plot_infection_duration_dist, plot_infection_duration_dist_by_age, create_barplot_frac_comparison
 from create_plots.helpers_likelihood_and_metrics import calc_mean_rel_diff, calc_mean_rel_slope_diff, \
-    get_prev_loglikelihood, get_dens_loglikelihood, corr_ref_sim_points, corr_ref_deriv_sim_points
+    get_prev_loglikelihood, get_dens_loglikelihood, corr_ref_sim_points, corr_ref_deriv_sim_points, add_to_summary_table
 
 
 # todo: create one base generate output function for all
@@ -85,8 +85,10 @@ def generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_r
         compare_benchmarks_output.save(filename=os.path.join(plot_output_filepath,
                                                              'scatter_benchmark_incidence_age.png'),
                                        height=4.5, width=8, units='in')
-        # todo: add likelihood component
+        mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
 
+        add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath,
+                             validation_relationship_name='age_incidence')
 
 
 # Prevalence by age
@@ -160,6 +162,8 @@ def generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_
         loglikelihood_comparison = pd.merge(new_sim_loglik, bench_sim_loglik)
         loglikelihood_comparison.to_csv(os.path.join(plot_output_filepath, 'loglikelihood_prevalence_age.csv'),
                                         index=False)
+        add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath,
+                             validation_relationship_name='age_prevalence')
 
 
 # Parasite density by age
@@ -238,6 +242,10 @@ def generate_parasite_density_outputs(coord_csv, simulation_output_filepath, bas
         loglik_df = pd.merge(loglik_df_asex, loglik_df_gamet, how="outer")
         loglik_df.to_csv(os.path.join(plot_output_filepath, 'loglikelihoods_par_dens.csv'),
                                         index=False)
+        add_to_summary_table(combined_df=combined_df_asex, plot_output_filepath=plot_output_filepath,
+                             validation_relationship_name='asexual_par_dens')
+        add_to_summary_table(combined_df=combined_df_gamet, plot_output_filepath=plot_output_filepath,
+                             validation_relationship_name='gamet_par_dens')
 
 
 # Infectiousness to vectors
@@ -277,6 +285,8 @@ def generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_
                                                              'scatter_benchmark_infectiousness.png'),
                                        height=4.5, width=8, units='in')
         # todo: add likelihood and other quantitative comparisons
+        add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath,
+                             validation_relationship_name='infectiousness')
 
 
 # Duration of infection
