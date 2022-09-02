@@ -9,6 +9,7 @@
 #  The loglikelihood evaluations are approximate and generally assume that the mean simulated value is the 'true'
 #       population value and ask how likely it was to observe the reference dataset (given the study sample size).
 
+import os
 import pandas as pd
 from scipy import stats
 import warnings
@@ -132,7 +133,7 @@ def get_dens_loglikelihood(combined_df, sim_column='simulation'):
 
 
 # region other quantitative comparison metrics
-def calc_mean_rel_diff(combined_df):
+def calc_mean_rel_diff(combined_df, sim_colname='simulation'):
     """
     Calculate the mean relative difference between reference and matched simulation values across ages.
     For a given age, calculate (reference - simulation)/reference. Report the mean across all ages.
@@ -145,16 +146,20 @@ def calc_mean_rel_diff(combined_df):
     """
     if 'site_month' in combined_df.columns:
         combined_df['Site'] = combined_df['site_month']
-    combined_df['rel_diff'] = abs((combined_df['reference'] - combined_df['simulation']) / combined_df['reference'])
-    combined_df['abs_diff'] = abs(combined_df['reference'] - combined_df['simulation'])
+    combined_df['rel_diff'] = abs((combined_df['reference'] - combined_df[sim_colname]) / combined_df['reference'])
+    combined_df['abs_diff'] = abs(combined_df['reference'] - combined_df[sim_colname])
     # todo: need code review
     # mean_diff_df = combined_df % > % group_by(Site) % > %
     # summarise(mean_rel_diff=mean(rel_diff),
     #           mean_abs_diff=mean(abs_diff))
     mean_diff_df = combined_df.group_by(['Site']).agg(
-        mean_rel_diff=('rel_diff', np.mean),
-        mean_abs_diff=('abs_diff', np.mean)
+        mean_rel_diff=('rel_diff', np.nanmean),
+        mean_abs_diff=('abs_diff', np.nanmean)
     )
+    mean_all_sites = pd.DataFrame({'Site': 'all_sites',
+                                   'mean_rel_diff': np.nanmean(combined_df['rel_diff']),
+                                   'mean_abs_diff': np.nanmean(combined_df['abs_diff'])})
+    mean_diff_df = pd.concat([mean_diff_df, mean_all_sites])
 
     return mean_diff_df
 
@@ -314,4 +319,53 @@ def corr_ref_deriv_sim_points(combined_df):
     lm_summary = lm_summary[lm_summary['term'] != 'intercept_']
     lm_summary.rename({'estimate': 'slope'}, inplace=True)
     return gg, lm_summary, combined_df
+# endregion
+
+
+# region summarize new simulation success against benchmark simulation
+def add_to_summary_table(combined_df, plot_output_filepath, validation_relationship_name,
+                         rel_change_threshold=0.1):
+
+    mean_diff_df_new = calc_mean_rel_diff(combined_df, sim_colname='simulation')
+    mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
+    mean_diff_df_bench.rename({'mean_rel_diff': 'mean_rel_diff_bench',
+                               'mean_abs_diff': 'mean_abs_diff_bench'}, inplace=True)
+    mean_diff_df = pd.merge(mean_diff_df_new, mean_diff_df_bench, by='Site',how='outer')
+
+    # determine which sites improved, got worse, or stayed close to the same for absolute difference
+    mean_diff_df['change_abs_diff'] = mean_diff_df['mean_abs_diff_bench'] - mean_diff_df['mean_abs_diff']
+    mean_diff_df = mean_diff_df[mean_diff_df['change_abs_diff'].notnull()]
+    #todo: need code review in the following line:
+    # R code: mean_diff_df$abs_diff_changed = abs(mean_diff_df$change_abs_diff)/mean_diff_df$mean_abs_diff_bench > rel_change_threshold
+    mean_diff_df['abs_diff_changed'] = abs(mean_diff_df['change_abs_diff']) / mean_diff_df['mean_abs_diff_bench'] > rel_change_threshold
+    mean_diff_df['change_type'] = 'better'
+    mean_diff_df[mean_diff_df['change_abs_diff'] < 0]['change_type'] = 'worse'
+    mean_diff_df[~mean_diff_df['abs_diff_changed']]['change_type'] = 'similar'
+
+    # save results as row in dataframe
+    summary_df = pd.DataFrame({'validation_relationship': validation_relationship_name,
+                               'abs_diff_new': mean_diff_df[mean_diff_df['Site'] == 'all_sites']['mean_abs_diff'],
+                               'abs_diff_bench': mean_diff_df[mean_diff_df['Site'] == 'all_sites']['mean_abs_diff_bench'],
+                               # 'ave_rel_diff_new_sim'=mean_diff_df$mean_rel_diff[mean_diff_df$Site == 'all_sites'],
+                               # 'ave_rel_diff_bench_sim'=mean_diff_df$mean_rel_diff_bench[mean_diff_df$Site == 'all_sites'],
+                               'num_sites_better': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') &
+                                                                    (mean_diff_df['change_type'] == 'better')]),
+                               'num_sites_similar': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') &
+                                                                     (mean_diff_df['change_type'] == 'similar')]),
+                               'num_sites_worse': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') &
+                                                                   (mean_diff_df['change_type'] == 'worse')])})
+
+    # write to csv, adding as new row if csv already exists but relationship doesn't
+    summary_filepath = os.path.join(plot_output_filepath, 'summary_table_sim_benchmark.csv')
+    if os.path.exists(summary_filepath):
+        # add rows to existing csv
+        existing_summaries = pd.read_csv(summary_filepath)
+    if validation_relationship_name in existing_summaries['validation_relationship']:
+        existing_summaries[existing_summaries['validation_relationship'] == validation_relationship_name] = \
+            summary_df.iloc[0]
+        summary_df = existing_summaries
+    else:
+        summary_df = pd.concat([existing_summaries, summary_df])
+
+    summary_df.to_csv(summary_filepath, header=False)
 # endregion
