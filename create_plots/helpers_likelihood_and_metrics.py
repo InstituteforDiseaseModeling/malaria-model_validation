@@ -339,8 +339,8 @@ def add_to_summary_table(combined_df, plot_output_filepath, validation_relations
     # R code: mean_diff_df$abs_diff_changed = abs(mean_diff_df$change_abs_diff)/mean_diff_df$mean_abs_diff_bench > rel_change_threshold
     mean_diff_df['abs_diff_changed'] = abs(mean_diff_df['change_abs_diff']) / mean_diff_df['mean_abs_diff_bench'] > rel_change_threshold
     mean_diff_df['change_type'] = 'better'
-    mean_diff_df[mean_diff_df['change_abs_diff'] < 0]['change_type'] = 'worse'
-    mean_diff_df[~mean_diff_df['abs_diff_changed']]['change_type'] = 'similar'
+    mean_diff_df['change_type'][mean_diff_df['change_abs_diff'] < 0] = 'worse'
+    mean_diff_df['change_type'][~mean_diff_df['abs_diff_changed']] = 'similar'
 
     # save results as row in dataframe
     summary_df = pd.DataFrame({'validation_relationship': validation_relationship_name,
