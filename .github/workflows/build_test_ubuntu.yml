@@ -39,6 +39,8 @@ jobs:
         name: install package
         run: |
             pip install ${{ steps.wheel.outputs.wheel-file }} --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
+            # todo: remove this after emodpy-malaria has a new release
+            pip install emod-malaria --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple --force-reinstall --no-cache-dir
             pip freeze
       - name: run tests
         run: python3 -m unittest discover .
