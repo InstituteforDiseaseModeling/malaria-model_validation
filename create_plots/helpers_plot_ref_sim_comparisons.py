@@ -100,7 +100,7 @@ def plot_ref_sim_comparison(combined_df, data_column_name):
                                value_vars=['reference', 'simulation', 'benchmark'],
                                var_name='source', value_name=data_column_name
                                )
-    combined_df_long = combined_df_long[combined_df_long['prevalence'].notnull()]
+    combined_df_long = combined_df_long[combined_df_long[data_column_name].notnull()]
     combined_df_long = combined_df_long[combined_df_long['ref_year'].notnull()]
     gg = (ggplot(combined_df_long,
                  aes(x='mean_age', y=data_column_name, color='source', shape='source', group='ref_year'))
