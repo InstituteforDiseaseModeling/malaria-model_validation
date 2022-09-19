@@ -218,32 +218,16 @@ def corr_ref_sim_points(combined_df):
           + theme_classic()
           + themes.theme(plot_title=themes.element_text(size=12)))
 
-    # todo: need code review. nest and unnest functions are from datar library
-    # datar library has a conflict on Pandas version with idmtools, please see: https://github.com/InstituteforDiseaseModeling/malaria-model_validation/pull/17#issuecomment-1159284541
-    # https://stackoverflow.com/questions/59068394/is-there-a-pandas-equivalent-to-the-tidyr-nest-function
-    # https://github.com/pwwang/datar/blob/master/datar/tidyr/nest.py
-    # R code:
-    # lm_fit = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(simulation
-    # ~ reference, data =.)), tidied = map(model, tidy)) % > % unnest(tidied)
-    # lm_info = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(simulation
-    # ~ reference, data =.)), tidied = map(model, glance)) % > % unnest(tidied)
-    lm = LinearRegression()
-    lm_fit = combined_df >> nest(data=~f.Site)
-    lm_fit['model'] = lm_fit.apply(
-        lambda data: ~lm.fit(data['simulation'], data['reference']))  # todo: need to find equivalent in Python
-    lm_fit['tidied'] = lm_fit.apply(lambda data: tidy(data.model))  # todo: need to find equivalent in Python
-    lm_fit = lm_fit >> unnest(f.tidied)
-
-    lm_info = combined_df >> nest(data=~f.Site)
-    lm_info['model'] = lm_info.apply(
-        lambda data: ~lm.fit(data.simulation, data.reference))  # todo: need to find equivalent in Python
-    lm_info['tidied'] = lm_info.apply(lambda data: glance(data.model))  # todo: need to find equivalent in Python
-    lm_info = lm_info >> unnest(f.tidied)
-
-    lm_summary = pd.merge(lm_fit[['Site', 'term', 'estimate']], lm_info[['Site', 'r.squared', 'p.value', 'nobs']],
-                          by='Site', how='outer')
-    lm_summary = lm_summary[lm_summary['term'] != 'intercept_']
-    lm_summary.rename({'estimate': 'slope'}, inplace=True)
+    # create data frame with information about linear regression and correlation for each Site
+    lm_summary = pd.DataFrame()
+    groups = combined_df.groupby("Site")
+    for name, group in groups:
+        # remove rows without both simulation and reference values
+        group = group.dropna(axis=0, how='any', subset=['simulation', 'reference'])
+        slope, intercept, r_value, p_value, std_err = stats.linregress(group['reference'], group['simulation'])
+        new_row_dict = {'Site':name, 'slope':slope, 'r.squared':r_value**2, 'p.value':p_value, 'nobs':len(group)}
+        lm_summary = lm_summary.append(new_row_dict, ignore_index=True)
+    
     return gg, lm_summary
 
 
