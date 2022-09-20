@@ -85,9 +85,9 @@ def get_dens_loglikelihood(combined_df, sim_column='simulation'):
     # rows with NA are created for the 'missing' bins - but check that there aren't values in the simulation either)
     # todo: need code review
     ref_rows_na = combined_df['ref_bin_count'].isna()
-    if len(ref_rows_na):
-        sim_rows_0 = combined_df[sim_column] < 0.0001
-        if ref_rows_na.equals(sim_rows_0):
+    if any(ref_rows_na):
+        sim_rows_0 = sum(combined_df[sim_column] < 0.0001)
+        if ref_rows_na.equals(sum(sim_rows_0)):
             combined_df = combined_df[~ref_rows_na]
         else:
             warnings.warn("There may be a mismatch in the age bins from the reference data and simulation data for at "
@@ -117,9 +117,23 @@ def get_dens_loglikelihood(combined_df, sim_column='simulation'):
                 # log(dmultinom(c(3, 4), prob=c(0.3, 0.7)))
                 # [1] - 1.48327
                 # loglikelihood = loglikelihood + log(dmultinom(x=cur_df$ref_bin_count, prob=cur_df[[sim_column]]))
-                loglikelihood = loglikelihood + stats.multinomial.logpmf(x=list(cur_df['ref_bin_count']),
-                                                                         n=sum(cur_df['ref_bin_count']),
-                                                                         p=list(cur_df[sim_column]))
+                import numpy as np
+                from scipy.special import xlogy, gammaln
+                import math
+
+                x = np.array(list(cur_df['ref_bin_count']))
+                n = sum(cur_df['ref_bin_count'])
+                p = np.array(list(cur_df[sim_column]))
+
+                # stats.multinomial.logpmf(x=x, n=n, p =p)
+                # state.multinomial sometimes return nan value, replace it with the following line
+                try:
+                    result = math.log(np.exp(gammaln(n + 1) + np.sum(xlogy(x, p) - gammaln(x + 1), axis=-1)))
+                    loglikelihood += result
+                except Exception as ex:
+                    print(x, n, p)
+                    print(ex)
+                    loglikelihood = -np.inf
             else:
                 warnings.warn(f'Either the sum of individuals across bins in the reference dataset does not match the '
                               f'reported total number of individuals included or different density bins are used in '
@@ -300,31 +314,6 @@ def corr_ref_deriv_sim_points(combined_df):
     # lm_summary = lm_summary[lm_summary$term != '(Intercept)',]
     # colnames(lm_summary)[colnames(lm_summary) == 'estimate'] = 'slope'
     return gg, lm_summary, combined_df
-    """
-    # todo: same as line 216, need code review
-    # R code:
-    # lm_fit = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(sim_slope_to_next
-    # ~ ref_slope_to_next, data =.)), tidied = map(model, tidy)) % > % unnest(tidied)
-    # lm_info = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(sim_slope_to_next
-    # ~ ref_slope_to_next, data =.)), tidied = map(model, glance)) % > % unnest(tidied)
-    lm = LinearRegression()
-    lm_fit = combined_df >> nest(data=~f.Site)
-    lm_fit['model'] = lm_fit.apply(lambda data: ~lm.fit(data.sim_slope_to_next, data.ref_slope_to_next))  # todo: need to find equivalent in Python
-    lm_fit['tidied'] = lm_fit.apply(lambda data: tidy(data.model))  # todo: need to find equivalent in Python
-    lm_fit = lm_fit >> unnest(f.tidied)
-
-    lm_info = combined_df >> nest(data=~f.Site)
-    lm_info['model'] = lm_info.apply(lambda data: ~lm.fit(data.sim_slope_to_next, data.ref_slope_to_next))  # todo: need to find equivalent in Python
-    lm_info['tidied'] = lm_info.apply(lambda data: glance(data.model))  # todo: need to find equivalent in Python
-    lm_info = lm_info >> unnest(f.tidied)
-
-    lm_summary = pd.merge(lm_fit[['Site', 'term', 'estimate']], lm_info[['Site', 'r.squared', 'p.value', 'nobs']],
-                          by='Site', how='outer')
-    lm_summary = lm_summary[lm_summary['term'] != 'intercept_']
-    lm_summary.rename({'estimate': 'slope'}, inplace=True)
-    return gg, lm_summary, combined_df
-    """
-
 # endregion
 
 
