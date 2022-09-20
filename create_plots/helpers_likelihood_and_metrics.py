@@ -344,12 +344,9 @@ def add_to_summary_table(combined_df, plot_output_filepath, validation_relations
                                'abs_diff_bench': mean_diff_df[mean_diff_df['Site'] == 'all_sites']['mean_abs_diff_bench'],
                                # 'ave_rel_diff_new_sim'=mean_diff_df$mean_rel_diff[mean_diff_df$Site == 'all_sites'],
                                # 'ave_rel_diff_bench_sim'=mean_diff_df$mean_rel_diff_bench[mean_diff_df$Site == 'all_sites'],
-                               'num_sites_better': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') &
-                                                                    (mean_diff_df['change_type'] == 'better')]),
-                               'num_sites_similar': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') &
-                                                                     (mean_diff_df['change_type'] == 'similar')]),
-                               'num_sites_worse': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') &
-                                                                   (mean_diff_df['change_type'] == 'worse')])})
+                               'num_sites_better': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') & (mean_diff_df['change_type'] == 'better')]),
+                               'num_sites_similar': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') & (mean_diff_df['change_type'] == 'similar')]),
+                               'num_sites_worse': len(mean_diff_df[(mean_diff_df['Site'] != 'all_sites') & (mean_diff_df['change_type'] == 'worse')])})
 
     # write to csv, adding as new row if csv already exists but relationship doesn't
     summary_filepath = os.path.join(plot_output_filepath, 'summary_table_sim_benchmark.csv')
