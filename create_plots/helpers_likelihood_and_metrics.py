@@ -14,10 +14,9 @@ import pandas as pd
 from scipy import stats
 import warnings
 import numpy as np
-from datar.all import f, nest, unnest
 from plotnine import ggplot, aes, geom_point, xlab, ylab, coord_fixed, geom_abline, theme_classic, themes, \
     ggtitle, geom_smooth
-from sklearn.linear_model import LinearRegression
+import collections
 
 
 # region: loglikelihood functions for each validation relationship
@@ -118,15 +117,15 @@ def get_dens_loglikelihood(combined_df, sim_column='simulation'):
                 # log(dmultinom(c(3, 4), prob=c(0.3, 0.7)))
                 # [1] - 1.48327
                 # loglikelihood = loglikelihood + log(dmultinom(x=cur_df$ref_bin_count, prob=cur_df[[sim_column]]))
-                loglikelihood = loglikelihood + stats.multinomial.logpmf(x=cur_df['ref_bin_count'],
-                                                                         n = sum(cur_df['ref_bin_count']),
-                                                                         p=cur_df[sim_column])
+                loglikelihood = loglikelihood + stats.multinomial.logpmf(x=list(cur_df['ref_bin_count']),
+                                                                         n=sum(cur_df['ref_bin_count']),
+                                                                         p=list(cur_df[sim_column]))
             else:
                 warnings.warn(f'Either the sum of individuals across bins in the reference dataset does not match the '
                               f'reported total number of individuals included or different density bins are used in '
                               f'the reference and simulation. This site-age is being skipped: {ss} - {aa}')
 
-        loglik_df = pd.concat([loglik_df, pd.DataFrame({'site_month': ss, 'loglikelihood': loglikelihood})])
+        loglik_df = pd.concat([loglik_df, pd.DataFrame({'site_month': [ss], 'loglikelihood': [loglikelihood]})])
 
     return loglik_df
 # endregion
@@ -152,13 +151,14 @@ def calc_mean_rel_diff(combined_df, sim_colname='simulation'):
     # mean_diff_df = combined_df % > % group_by(Site) % > %
     # summarise(mean_rel_diff=mean(rel_diff),
     #           mean_abs_diff=mean(abs_diff))
-    mean_diff_df = combined_df.group_by(['Site']).agg(
+    mean_diff_df = combined_df.groupby(['Site']).agg(
         mean_rel_diff=('rel_diff', np.nanmean),
         mean_abs_diff=('abs_diff', np.nanmean)
-    )
-    mean_all_sites = pd.DataFrame({'Site': 'all_sites',
-                                   'mean_rel_diff': np.nanmean(combined_df['rel_diff']),
-                                   'mean_abs_diff': np.nanmean(combined_df['abs_diff'])})
+    ).reset_index()
+
+    mean_all_sites = pd.DataFrame({'Site': ['all_sites'],
+                                   'mean_rel_diff': [np.nanmean(combined_df['rel_diff'])],
+                                   'mean_abs_diff': [np.nanmean(combined_df['abs_diff'])]})
     mean_diff_df = pd.concat([mean_diff_df, mean_all_sites])
 
     return mean_diff_df
@@ -182,10 +182,10 @@ def calc_mean_rel_slope_diff(combined_df):
                                   / combined_df['ref_slope_to_next'])
     combined_df['abs_diff'] = abs(combined_df['ref_slope_to_next'] - combined_df['sim_slope_to_next'])
     # todo: should we replace all numpy.mean with numpy.nanmean() to ignore the nan values
-    mean_slope_diff_df = combined_df.group_by(['Site']).agg(
+    mean_slope_diff_df = combined_df.groupby(['Site']).agg(
         mean_rel_slope_diff=('rel_diff', np.nanmean),
         mean_abs_slpe_diff=('abs_diff', np.nanmean)
-    )
+    ).reset_index()
 
     return mean_slope_diff_df
 
@@ -219,15 +219,18 @@ def corr_ref_sim_points(combined_df):
           + themes.theme(plot_title=themes.element_text(size=12)))
 
     # create data frame with information about linear regression and correlation for each Site
-    lm_summary = pd.DataFrame()
+    lm_summary = collections.defaultdict(list)
     groups = combined_df.groupby("Site")
     for name, group in groups:
         # remove rows without both simulation and reference values
         group = group.dropna(axis=0, how='any', subset=['simulation', 'reference'])
         slope, intercept, r_value, p_value, std_err = stats.linregress(group['reference'], group['simulation'])
-        new_row_dict = {'Site':name, 'slope':slope, 'r.squared':r_value**2, 'p.value':p_value, 'nobs':len(group)}
-        lm_summary = lm_summary.append(new_row_dict, ignore_index=True)
-    
+        lm_summary['Site'].append(name)
+        lm_summary['slope'].append(slope)
+        lm_summary['r.squared'].append(r_value**2)
+        lm_summary['p.value'].append(p_value)
+        lm_summary['nobs'].append(len(group))
+    lm_summary = pd.DataFrame(lm_summary)
     return gg, lm_summary
 
 
@@ -260,12 +263,12 @@ def corr_ref_deriv_sim_points(combined_df):
             sim_val_cur = cur_df[cur_df['mean_age'] == cur_ages[aa]]['simulation'].iloc[0]
             sim_val_next = cur_df[cur_df['mean_age'] == cur_ages[aa + 1]]['simulation'].iloc[0]
             sim_slope = (sim_val_next - sim_val_cur) / (cur_ages[aa + 1] - cur_ages[aa])
-            combined_df[combined_df_row]['sim_slope_to_next'] = sim_slope
+            combined_df['sim_slope_to_next'][combined_df_row] = sim_slope
 
             ref_val_cur = cur_df[cur_df['mean_age'] == cur_ages[aa]]['reference'].iloc[0]
             ref_val_next = cur_df[cur_df['mean_age'] == cur_ages[aa + 1]]['reference'].iloc[0]
             ref_slope = (ref_val_next - ref_val_cur) / (cur_ages[aa + 1] - cur_ages[aa])
-            combined_df[combined_df_row]['ref_slope_to_next'] = ref_slope
+            combined_df['ref_slope_to_next'][combined_df_row] = ref_slope
 
     min_value = min(combined_df['ref_slope_to_next'].min(skipna=True), combined_df['sim_slope_to_next'].min(skipna=True))
     max_value = max(combined_df['ref_slope_to_next'].max(skipna=True), combined_df['sim_slope_to_next'].max(skipna=True))
@@ -281,6 +284,23 @@ def corr_ref_deriv_sim_points(combined_df):
           + theme_classic()
           + themes.theme(plot_title=themes.element_text(size=12)))
 
+    # create data frame with information about linear regression and correlation for each Site
+    lm_summary = collections.defaultdict(list)
+    groups = combined_df.groupby("Site")
+    for name, group in groups:
+        # remove rows without both simulation and reference values
+        group = group.dropna(axis=0, how='any', subset=['sim_slope_to_next', 'ref_slope_to_next'])
+        slope, intercept, r_value, p_value, std_err = stats.linregress(group['ref_slope_to_next'], group['sim_slope_to_next'])
+        lm_summary['Site'].append(name)
+        lm_summary['slope'].append(slope)
+        lm_summary['r.squared'].append(r_value ** 2)
+        lm_summary['p.value'].append(p_value)
+        lm_summary['nobs'].append(len(group))
+    lm_summary = pd.DataFrame(lm_summary)
+    # lm_summary = lm_summary[lm_summary$term != '(Intercept)',]
+    # colnames(lm_summary)[colnames(lm_summary) == 'estimate'] = 'slope'
+    return gg, lm_summary, combined_df
+    """
     # todo: same as line 216, need code review
     # R code:
     # lm_fit = combined_df % > % nest(data=-Site) % > % mutate(model=map(data, ~lm(sim_slope_to_next
@@ -303,6 +323,8 @@ def corr_ref_deriv_sim_points(combined_df):
     lm_summary = lm_summary[lm_summary['term'] != 'intercept_']
     lm_summary.rename({'estimate': 'slope'}, inplace=True)
     return gg, lm_summary, combined_df
+    """
+
 # endregion
 
 
@@ -312,9 +334,10 @@ def add_to_summary_table(combined_df, plot_output_filepath, validation_relations
 
     mean_diff_df_new = calc_mean_rel_diff(combined_df, sim_colname='simulation')
     mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
-    mean_diff_df_bench.rename({'mean_rel_diff': 'mean_rel_diff_bench',
-                               'mean_abs_diff': 'mean_abs_diff_bench'}, inplace=True)
-    mean_diff_df = pd.merge(mean_diff_df_new, mean_diff_df_bench, by='Site',how='outer')
+    mean_diff_df_bench.rename(columns={'mean_rel_diff': 'mean_rel_diff_bench',
+                                       'mean_abs_diff': 'mean_abs_diff_bench'},
+                              inplace=True)
+    mean_diff_df = pd.merge(mean_diff_df_new, mean_diff_df_bench, on='Site',how='outer')
 
     # determine which sites improved, got worse, or stayed close to the same for absolute difference
     mean_diff_df['change_abs_diff'] = mean_diff_df['mean_abs_diff_bench'] - mean_diff_df['mean_abs_diff']
@@ -323,8 +346,8 @@ def add_to_summary_table(combined_df, plot_output_filepath, validation_relations
     # R code: mean_diff_df$abs_diff_changed = abs(mean_diff_df$change_abs_diff)/mean_diff_df$mean_abs_diff_bench > rel_change_threshold
     mean_diff_df['abs_diff_changed'] = abs(mean_diff_df['change_abs_diff']) / mean_diff_df['mean_abs_diff_bench'] > rel_change_threshold
     mean_diff_df['change_type'] = 'better'
-    mean_diff_df['change_type'][mean_diff_df['change_abs_diff'] < 0] = 'worse'
-    mean_diff_df['change_type'][~mean_diff_df['abs_diff_changed']] = 'similar'
+    mean_diff_df.loc[mean_diff_df['change_abs_diff'] < 0, 'change_type'] = 'worse'
+    mean_diff_df.loc[~mean_diff_df['abs_diff_changed'], 'change_type'] = 'similar'
 
     # save results as row in dataframe
     summary_df = pd.DataFrame({'validation_relationship': validation_relationship_name,
@@ -344,12 +367,12 @@ def add_to_summary_table(combined_df, plot_output_filepath, validation_relations
     if os.path.exists(summary_filepath):
         # add rows to existing csv
         existing_summaries = pd.read_csv(summary_filepath)
-    if validation_relationship_name in existing_summaries['validation_relationship']:
-        existing_summaries[existing_summaries['validation_relationship'] == validation_relationship_name] = \
-            summary_df.iloc[0]
-        summary_df = existing_summaries
-    else:
-        summary_df = pd.concat([existing_summaries, summary_df])
+        if validation_relationship_name in existing_summaries['validation_relationship']:
+            existing_summaries[existing_summaries['validation_relationship'] == validation_relationship_name] = \
+                summary_df.iloc[0]
+            summary_df = existing_summaries
+        else:
+            summary_df = pd.concat([existing_summaries, summary_df])
 
-    summary_df.to_csv(summary_filepath, header=False)
+    summary_df.to_csv(summary_filepath, header=True, index=False)
 # endregion

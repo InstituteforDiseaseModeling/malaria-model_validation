@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import beta
 from pandas.api.types import CategoricalDtype
-from datetime import date
+from datetime import datetime
 
 
 # todo: not sure how to define color with rbg numbers. using the builtin colors for now
@@ -95,13 +95,16 @@ def plot_ref_sim_comparison(combined_df, data_column_name):
     """
     # todo: try with melt function instead
     # it seems to work
+    id_vars = [column for column in combined_df.columns if column not in ['reference', 'simulation', 'benchmark']]
     combined_df_long = pd.melt(combined_df.reset_index(),
-                               id_vars=['mean_age', 'Site', 'ref_pop_size', 'ref_year', 'metric'],
+                               id_vars=id_vars,
+                               #id_vars=['mean_age', 'Site', 'ref_pop_size', 'ref_year', 'metric'],
                                value_vars=['reference', 'simulation', 'benchmark'],
                                var_name='source', value_name=data_column_name
                                )
     combined_df_long = combined_df_long[combined_df_long[data_column_name].notnull()]
     combined_df_long = combined_df_long[combined_df_long['ref_year'].notnull()]
+    facet_wrap_col = 'Site' if data_column_name == 'incidence' else 'site_month'
     gg = (ggplot(combined_df_long,
                  aes(x='mean_age', y=data_column_name, color='source', shape='source', group='ref_year'))
           # todo: need to find equivalent of interaction() in Python
@@ -114,7 +117,7 @@ def plot_ref_sim_comparison(combined_df, data_column_name):
           + scale_fill_manual(values=fill_manual)
           + xlab('age (midpoint of age bin)')
           + ylab(data_column_name)
-          + facet_wrap('Site', ncol=4)
+          + facet_wrap(facet_wrap_col, ncol=4)
           + theme_bw()
           )
 
@@ -162,11 +165,18 @@ def plot_par_dens_ref_sim_comparison(combined_df):
            - 2) A list of ggplots comparing the reference and simulation density frequencies. Each plot corresponds to a site.
            - 3) A vector of site names, with the same ordering as the list of plots (element 2)
     """
-    # todo: define but not used
     months_of_year = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     # convert dataframe to long format
-    combined_df_long = pd.wide_to_long(df=combined_df, stubnames=['reference', 'simulation', 'benchmark'],
-                                       j='source', i='density_frequency')
+    # combined_df_long = pd.wide_to_long(df=combined_df, stubnames=['reference', 'simulation', 'benchmark'],
+    #                                   j='source', i='density_frequency')
+    # pd.wide_to_long doesn't allow stubname this is identical to a column name, try with pd.melt
+
+    id_vars = [column for column in combined_df.columns if column not in ['reference', 'simulation', 'benchmark']]
+    combined_df_long = pd.melt(combined_df.reset_index(),
+                               id_vars=id_vars,
+                               value_vars=['reference', 'simulation', 'benchmark'],
+                               var_name='source', value_name='density_frequency'
+                               )
 
     # = = = = = = = = = #
     # stacked barplots
@@ -189,7 +199,7 @@ def plot_par_dens_ref_sim_comparison(combined_df):
     gg1 = (ggplot(combined_df_long, aes(fill='densitybin', y='density_frequency', x='mean_age'))
            + geom_bar(position="stack", stat="identity")
            # + scale_fill_manual(values=colors, limits=names(colors))
-           + scale_fill_brewer(palette = "BrBG")
+           + scale_fill_brewer(type='div', palette="BrBG")
            + facet_grid('site_month~source'))
 
     # = = = = = = = = = = = = = = = = = = #
@@ -208,29 +218,29 @@ def plot_par_dens_ref_sim_comparison(combined_df):
         combined_df['max_ref'] = np.nan
         eligible_rows = ((combined_df['ref_bin_count'] > 0) & (combined_df['ref_bin_count'] < combined_df['ref_total'])
                          & (combined_df['source'] == 'reference'))
-        combined_df[eligible_rows]['min_ref'] = beta.ppf(p=alpha / 2,
+        combined_df[eligible_rows]['min_ref'] = beta.ppf(q=alpha / 2,
                                                          a=combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5,
                                                          b=combined_df[eligible_rows]['ref_total'].iloc[0] - combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
-        combined_df[eligible_rows]['max_ref'] = beta.ppf(p=1 - alpha / 2,
+        combined_df[eligible_rows]['max_ref'] = beta.ppf(q=1 - alpha / 2,
                                                          a=combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5,
                                                          b=combined_df[eligible_rows]['ref_total'].iloc[0] - combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
 
         # change facet values to intuitive labels
-        combined_df['month'] = months_of_year[combined_df['month']]
+        combined_df['month'] = combined_df['month'].apply(lambda x: months_of_year[x-1])
         month_cat = CategoricalDtype(categories=months_of_year, ordered=True)
         combined_df['month'] = combined_df['month'].astype(month_cat)
         all_age_bins = sorted(combined_df['agebin'].unique())
-        age_bin_labels = ['<=' + all_age_bins[1] + " years"]
+        age_bin_labels = ['<=' + str(all_age_bins[0]) + " years"]
         for aa in range(len(all_age_bins) - 1):
-            age_bin_labels.append(all_age_bins[aa] + '-' + all_age_bins[aa + 1] + ' years')
+            age_bin_labels.append(str(all_age_bins[aa]) + '-' + str(all_age_bins[aa + 1]) + ' years')
 
-        combined_df['agebin_index'] = combined_df['agebin'].isin(all_age_bins)
-        combined_df['agebin'] = age_bin_labels[combined_df['agebin_index']]
+        combined_df['agebin_index'] = combined_df['agebin'].map(dict(zip(all_age_bins, range(len(all_age_bins)))))
+        combined_df['agebin'] = combined_df['agebin_index'].apply(lambda x: age_bin_labels[x])
         age_bin_labels_cat = CategoricalDtype(categories=age_bin_labels, ordered=True)
         combined_df['agebin'] = combined_df['agebin'].astype(age_bin_labels_cat)
 
         # plot lineplot of simulation and reference densities
-        gg2 = (ggplot(combined_df, aes(x='densitybin', y='density_frequency', color='source'), alpha=0.8)
+        gg2 = (ggplot(combined_df, aes(x='densitybin', y='density_frequency', color='source'))
                + geom_line(aes(group='source'), size=1)
                + geom_point(aes(size='source', shape='source'))
                + geom_errorbar(aes(ymin='min_ref', ymax='max_ref'), width=0.2)
@@ -242,11 +252,11 @@ def plot_par_dens_ref_sim_comparison(combined_df):
                + scale_color_manual(values=color_manual)
                + scale_shape_manual(values=shape_manual)
                + scale_size_manual(values=size_manual)
-               + facet_grid('agebin~month'))
+               + facet_grid('month~agebin')) # 'agebin~month' will throw error when try to say this plot: IndexError: index 0 is out of bounds for axis 0 with size 0
 
         line_plot_list.append(gg2)
 
-    return list(gg1, line_plot_list, all_sites)
+    return gg1, line_plot_list, all_sites
 
 
 #create infectiousness plots
@@ -264,8 +274,12 @@ def plot_infectiousness_ref_sim_comparison(combined_df):
     """
     months_of_year = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     # convert dataframe to long format
-    combined_df_long = pd.wide_to_long(df=combined_df, stubnames=['reference', 'simulation', 'benchmark'],
-                                       j='source', i='density_frequency')
+    id_vars = [column for column in combined_df.columns if column not in ['reference', 'simulation', 'benchmark']]
+    combined_df_long = pd.melt(combined_df.reset_index(),
+                               id_vars=id_vars,
+                               value_vars=['reference', 'simulation', 'benchmark'],
+                               var_name='source', value_name='infectiousness_bin_freq'
+                               )
 
     line_plot_list = list()
     all_sites = combined_df_long['Site'].unique()
@@ -274,22 +288,23 @@ def plot_infectiousness_ref_sim_comparison(combined_df):
         combined_df = combined_df_long[combined_df_long['Site'] == cur_site]
 
         # change facet values to intuitive labels
-        combined_df['month'] = months_of_year[combined_df['month']]
+        combined_df['month'] = combined_df['month'].apply(lambda x: months_of_year[x-1])
         month_cat = CategoricalDtype(categories=months_of_year, ordered=True)
         combined_df['month'] = combined_df['month'].astype(month_cat)
         all_age_bins = sorted(combined_df['agebin'].unique())
-        age_bin_labels = ['<=' + all_age_bins[1] + " years"]
+        age_bin_labels = ['<=' + str(all_age_bins[0]) + " years"]
         for aa in range(len(all_age_bins) - 1):
-            age_bin_labels.append(all_age_bins[aa] + '-' + all_age_bins[aa + 1] + ' years')
+            age_bin_labels.append(str(all_age_bins[aa]) + '-' + str(all_age_bins[aa + 1]) + ' years')
 
-        combined_df['agebin_index'] = combined_df['agebin'].isin(all_age_bins)
-        combined_df['agebin'] = age_bin_labels[combined_df['agebin_index']]
+        combined_df['agebin_index'] = combined_df['agebin'].map(dict(zip(all_age_bins, range(len(all_age_bins)))))
+        combined_df['agebin'] = combined_df['agebin_index'].apply(lambda x: age_bin_labels[x])
         age_bin_labels_cat = CategoricalDtype(categories=age_bin_labels, ordered=True)
         combined_df['agebin'] = combined_df['agebin'].astype(age_bin_labels_cat)
 
+        # plot lineplot of simulation and reference densities
         gg2 = (ggplot(combined_df, aes(x='densitybin', y='fraction_infected_bin', color='source',
                                        size='infectiousness_bin_freq', fill='source'))
-               + geom_point(pch=21)
+               + geom_point() #pch=21
                + scale_x_log10()
                + ylab('percent of mosquitoes infected upon feeding')
                + xlab('gametocyte density')
@@ -298,11 +313,11 @@ def plot_infectiousness_ref_sim_comparison(combined_df):
                + ggtitle(cur_site)
                + scale_color_manual(values=color_manual)
                + scale_fill_manual(values=color_manual)
-               + facet_grid('agebin~month'))
+               + facet_grid('month~agebin'))
 
         line_plot_list.append(gg2)
 
-    return list(line_plot_list, all_sites)
+    return line_plot_list, all_sites
 
 
 # infection duration plotting functions
@@ -338,7 +353,7 @@ def get_frac_state_swaps(data, pos_thresh_dens):
         neg_count = len(ind_pos) - pos_count
 
         # denominators for each (number of each type that had an observation after then (i.e., they could have been observed to change))
-        last_obs_pos = (data_cur['DENSITY'].iloc[len(data_cur)] > pos_thresh_dens)
+        last_obs_pos = (data_cur['DENSITY'].iloc[len(data_cur) - 1] > pos_thresh_dens)
         sum_denom_pos = sum_denom_pos + pos_count - 1 if last_obs_pos else sum_denom_pos + pos_count
         sum_denom_neg = sum_denom_neg + neg_count if last_obs_pos else sum_denom_neg + neg_count -1
 
@@ -373,7 +388,6 @@ def get_time_pos(data, pos_thresh_dens):
     sample_censored = list()  # Boolean indicating whether the positivity duration might have been longer unobserved
     sample_ages = list()
     sample_seeds = list()
-    cur_index = 0
 
     if not ('seed' in data.columns):
         data['seed'] = 0
@@ -429,19 +443,20 @@ def get_time_pos(data, pos_thresh_dens):
             for tt in pos_index:
                 # indicate whether this period of positivity was censored
                 # todo: need code review: the 4 lists are empty lists, should use append() instead of assigning by index
-                sample_censored[cur_index] = (tt == 0 or tt == len(num_in_a_row['lengths']))
-                sample_ages[cur_index] = cur_age
-                sample_seeds[cur_index] = ss
+                sample_censored.append(tt == 0 or tt == len(num_in_a_row['lengths']))
+                sample_ages.append(cur_age)
+                sample_seeds.append(ss)
 
                 # get the first and last positive sample day observed for this period of positivity
                 first_index = start_index_num_in_a_row[tt]
                 last_index = first_index + num_in_a_row['lengths'][tt] - 1  # todo: why -1
                 first_positive_sample_day = data_cur['date'].iloc[first_index]
                 last_positive_sample_day = data_cur['date'].iloc[last_index]
-
-                days_positive[cur_index] = (date(last_positive_sample_day) - date(first_positive_sample_day)).days
-
-                cur_index = cur_index + 1
+                if isinstance(last_positive_sample_day, str):
+                    last_positive_sample_day = datetime.strptime(last_positive_sample_day, '%Y-%m-%d')
+                if isinstance(first_positive_sample_day, str):
+                    first_positive_sample_day = datetime.strptime(first_positive_sample_day, '%Y-%m-%d')
+                days_positive.append((last_positive_sample_day - first_positive_sample_day).days)
 
     return pd.DataFrame({'days_positive': days_positive,
                          'censored': sample_censored,

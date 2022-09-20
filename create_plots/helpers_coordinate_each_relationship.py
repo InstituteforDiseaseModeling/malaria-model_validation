@@ -52,6 +52,8 @@ def generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_r
     # additional quantitative comparisons and metrics between simulation and reference data
     # correlations between new simulation and reference dataset values
     correlation_output = corr_ref_sim_points(combined_df)
+    correlation_output[0].save(filename=os.path.join(plot_output_filepath, 'corr_ref_sim_points_incidence_age.png'), height=9, width=8,
+                 units='in')
     correlation_df = correlation_output[1]
     slope_correlation_output = corr_ref_deriv_sim_points(combined_df)
     slope_correlation_df = slope_correlation_output[1]
@@ -61,6 +63,11 @@ def generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_r
     #                               common.legend = TRUE)  # , legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
     # correlation_plots.save(filename=os.path.join(plot_output_filepath, 'scatter_regression_incidence_age.png'),
     #                        height=4.5, width=8, units='in')
+    correlation_output[0].save(filename=os.path.join(plot_output_filepath, 'scatter_regression_incidence_age_correlation.png'),
+                               height=4.5, width=8, units='in')
+    slope_correlation_output[0].save(
+        filename=os.path.join(plot_output_filepath, 'scatter_regression_incidence_age_slope_correlation.png'),
+        height=4.5, width=8, units='in')
 
     # metrics comparing simulation to reference VALUE
     mean_diff_df = calc_mean_rel_diff(combined_df)
@@ -121,6 +128,8 @@ def generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_
     # additional quantitative comparisons and metrics
     # correlations between new simulation and reference dataset values
     correlation_output = corr_ref_sim_points(combined_df)
+    correlation_output[0].save(filename=os.path.join(plot_output_filepath, 'corr_ref_sim_points_prevalence_age.png'), height=9, width=8,
+                                units='in')
     correlation_df = correlation_output[1]
     slope_correlation_output = corr_ref_deriv_sim_points(combined_df)
     slope_correlation_df = slope_correlation_output[1]
@@ -145,7 +154,7 @@ def generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_
     # quantitative_comparison_slope_df = merge(mean_slope_diff_df, slope_correlation_df[,c('Site', 'derivative_corr_r_squared')], all=TRUE)
     # quantitative_comparison_df = merge(quantitative_comparison_df, quantitative_comparison_slope_df, all=TRUE)
     quantitative_comparison_df = pd.merge(quantitative_comparison_df, mean_slope_diff_df, how="outer")
-    quantitative_comparison_df.to_csv(os.path.join(plot_output_filepath, 'comparison_metric_table_incidence_age.csv'),
+    quantitative_comparison_df.to_csv(os.path.join(plot_output_filepath, 'comparison_metric_table_prevalence_age.csv'),
                                       index=False)
 
     # compare simulation and benchmark simulation results
@@ -213,7 +222,7 @@ def generate_parasite_density_outputs(coord_csv, simulation_output_filepath, bas
     for ss in range(len(all_sites)):
         line_plot_list[ss].save(filename=os.path.join(plot_output_filepath,
                                                       'site_compare_gamet_dens_age_' + all_sites[ss] + '.png'),
-               plot=line_plot_list[[ss]], width=8, height=6, units='in')
+                                width=8, height=6, units='in')
 
     # compare simulation and benchmark simulation results
     if 'benchmark' in combined_df_asex.columns:
@@ -275,8 +284,9 @@ def generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_
     plot_list = plot_output[0]
     all_sites = plot_output[1]
     for ss in range(len(all_sites)):
-        plot_list[ss].save(filename=os.path.join(plot_output_filepath, 'site_compare_infectiousness_',
-                                                      all_sites[ss], '.png'), width=7.5, height=6, units='in')
+        plot_list[ss].save(filename=os.path.join(plot_output_filepath,
+                                                 'site_compare_infectiousness_' + all_sites[ss] + '.png'),
+                           width=7.5, height=6, units='in')
 
     # compare simulation and benchmark simulation results
     if 'benchmark' in combined_df.columns:

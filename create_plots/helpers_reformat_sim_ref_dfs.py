@@ -52,10 +52,10 @@ def get_age_bin_averages(sim_df):
     # get the simulation mean across runs
     if (sim_df['Pop'] == sim_df['Pop'].iloc[1]).all():
         # get average across all years in age bins and across simulation run seeds
-        age_agg_sim_df = sim_df.group_by(['month', 'mean_age', 'agebin', 'densitybin', 'Site']).agg(
-            asexual_par_dens_freq=('asexual_par_dens_freq', np.mean),
-            gametocyte_dens_freq=('gametocyte_dens_freq', np.mean),
-            Pop=('Pop', np.mean))
+        age_agg_sim_df = sim_df.groupby(['month', 'mean_age', 'agebin', 'densitybin', 'Site']).agg(
+            asexual_par_dens_freq=('asexual_par_dens_freq', np.nanmean),
+            gametocyte_dens_freq=('gametocyte_dens_freq', np.nanmean),
+            Pop=('Pop', np.nanmean)).reset_index()
         return age_agg_sim_df
     else:
         warnings.warn("Different population sizes found across years within an age group... "
@@ -166,10 +166,10 @@ def combine_higher_dens_freqs(sim_df_cur, max_ref_dens, max_magnitude_difference
         # get sum of frequencies within higher bins
         all_higher_dens = sim_df_cur[sim_df_cur['densitybin'] >= max_ref_dens]
         sim_agg_higher_dens = all_higher_dens.group_by(['month', 'agebin', 'Site']).agg(
-            densitybin=('densitybin', np.min),
-            asexual_par_dens_freq=('asexual_par_dens_freq', np.sum),
-            gametocyte_dens_freq=('gametocyte_dens_freq', np.sum),
-            Pop=('Pop', np.mean)
+            densitybin=('densitybin', np.nanmin),
+            asexual_par_dens_freq=('asexual_par_dens_freq', np.nansum),
+            gametocyte_dens_freq=('gametocyte_dens_freq', np.nansum),
+            Pop=('Pop', np.nanmean)
         )
         # remove higher density bins from df
         cur_df_lower = sim_df_cur[sim_df_cur['densitybin'] < max_ref_dens]
@@ -202,18 +202,19 @@ def get_fraction_in_infectious_bin(sim_df):
                       'this suggests a bug.')
 
     # aggregate individuals within an age bin (across years)
-    sim_df_agg1 = sim_df.group_by(['Site', 'month', 'Run_Number', 'agebin', 'densitybin', 'infectiousness_bin']).agg(
-        infectiousness_bin_count=('infectiousness_bin_count', np.sum),
-        Pop=('Pop', np.sum)
-    )
+    sim_df_agg1 = sim_df.groupby(['Site', 'month', 'Run_Number', 'agebin', 'densitybin', 'infectiousness_bin']).agg(
+        infectiousness_bin_count=('infectiousness_bin_count', np.nansum),
+        Pop=('Pop', np.nansum)
+    ).reset_index()
 
     # get total within each group (for denominator)
-    sim_df_group_total = sim_df_agg1.group_by(['Site', 'month', 'Run_Number', 'agebin', 'densitybin']).agg(
-        infectiousness_group_sum=('infectiousness_bin_count', np.sum),
-        Pop=('Pop', np.sum)
-    )
+    sim_df_group_total = sim_df_agg1.groupby(['Site', 'month', 'Run_Number', 'agebin', 'densitybin']).agg(
+        infectiousness_group_sum=('infectiousness_bin_count', np.nansum),
+        Pop=('Pop', np.nansum)
+    ).reset_index()
     # calculate proportion of all individuals in a group fell in each infectiousness bin
-    sim_df_agg1 = pd.merge(sim_df_agg1, sim_df_group_total, how='outer')
+    sim_df_agg1 = pd.merge(sim_df_agg1, sim_df_group_total, on=['Site', 'month', 'Run_Number', 'agebin', 'densitybin'],
+                    how='outer')
     sim_df_agg1['group_infectiousness_freq'] = sim_df_agg1['infectiousness_bin_count'] / \
                                                sim_df_agg1['infectiousness_group_sum']
     # # check that sum within a group is 1
@@ -221,16 +222,16 @@ def get_fraction_in_infectious_bin(sim_df):
     # sum(sim_subset$group_infectiousness_freq)
 
     # get simulation average across seeds and within age groups (assuming equal population sizes for all ages in bin)
-    sim_df_agg2 = sim_df_agg1.group_by(['Site', 'month', 'agebin', 'densitybin', 'infectiousness_bin']).agg(
-        infect_sd=('group_infectiousness_freq', np.std),
-        infectiousness_bin_freq=('group_infectiousness_freq', np.mean)
-    )
+    sim_df_agg2 = sim_df_agg1.groupby(['Site', 'month', 'agebin', 'densitybin', 'infectiousness_bin']).agg(
+        infect_sd=('group_infectiousness_freq', np.nanstd),
+        infectiousness_bin_freq=('group_infectiousness_freq', np.nanmean)
+    ).reset_index()
 
     # check that the sum within all groups is 1
     # todo: this variable is defined but not used
-    sim_df_check = sim_df_agg2.group_by(['Site', 'month', 'agebin', 'densitybin']).agg(
-        infectiousness_dens_bin_sum=('infectiousness_bin_freq', np.sum)
-    )
+    sim_df_check = sim_df_agg2.groupby(['Site', 'month', 'agebin', 'densitybin']).agg(
+        infectiousness_dens_bin_sum=('infectiousness_bin_freq', np.nansum)
+    ).reset_index()
 
     if not all(sim_df_check['infectiousness_dens_bin_sum'] - 0.001 < 1) or \
             not all(sim_df_check['infectiousness_dens_bin_sum'] + 0.001 > 1):
@@ -392,6 +393,7 @@ def prepare_prev_df(coord_csv, simulation_output_filepath, base_reference_filepa
         # remove rows with population = 0 (this is relevant for cohort simulations where there is only one age group
         # in each year and all other age groups are zero)
         sim_df_cur = sim_df_cur[sim_df_cur['Pop'] > 0]
+        sim_df_cur['month'] = sim_df_cur['month'].astype(str)
 
         if benchmark_simulation_filepath is not None:
             # read in and format data from benchmark simulations to match reference dataset
@@ -403,29 +405,32 @@ def prepare_prev_df(coord_csv, simulation_output_filepath, base_reference_filepa
             # remove rows with population = 0 (this is relevant for cohort simulations where there is only one age
             # group in each year and all other age groups are zero)
             bench_df_cur = bench_df_cur[bench_df_cur['Pop'] > 0]
+            bench_df_cur['month'] = bench_df_cur['month'].astype(str)
+
         else:
             bench_df_cur = pd.DataFrame()
 
         # determine whether reference is for a single month or averaged over multiple months - subset from simulations to match
         if (len(ref_df_cur['month'].unique()) == 1) and \
-                (isinstance(ref_df_cur['month'].iloc[0], str)):  # check whether multiple months are listed in a character string
+                (not str(ref_df_cur['month'].iloc[0]).isdigit()):  # check whether multiple months are listed in a character string
             # todo: need code review
             # included_months = as.numeric(unlist(strsplit(ref_df_cur$month[1], ",")))
             included_months = ref_df_cur['month'].iloc[0].split(",")
-            included_months = [float(x) for x in included_months]
+            included_months = [str(int(x)) for x in included_months]
 
-            sim_df_cur = sim_df_cur[sim_df_cur['month'].isin(included_months)]
-            bench_df_cur = bench_df_cur[bench_df_cur['month'].isin(included_months)]
+            sim_df_cur = sim_df_cur[sim_df_cur['month'].astype(str).isin(included_months)]
+            bench_df_cur = bench_df_cur[bench_df_cur['month'].astype(str).isin(included_months)]
             if len(included_months) > 1:
                 sim_df_cur['month'] = 'multiple'
                 ref_df_cur['month'] = 'multiple'
             if len(bench_df_cur) > 0:
                 bench_df_cur['month'] = 'multiple'
 
-        elif all(ref_df_cur['month'].str.isnumeric()):
+        elif all(ref_df_cur['month'].astype(str).str.isnumeric()):
             included_months = ref_df_cur['month'].unique()
-            sim_df_cur = sim_df_cur[sim_df_cur['month'].isin(included_months)]
-            bench_df_cur = bench_df_cur[bench_df_cur['month'].isin(included_months)]
+            included_months = [str(int(month)) for month in included_months]
+            sim_df_cur = sim_df_cur[sim_df_cur['month'].astype(str).isin(included_months)]
+            bench_df_cur = bench_df_cur[bench_df_cur['month'].astype(str).isin(included_months)]
         else:
             warnings.warn(f'The month format in the {cur_site} reference dataset was not recognized.')
 
@@ -444,7 +449,7 @@ def prepare_prev_df(coord_csv, simulation_output_filepath, base_reference_filepa
                            'mean_age': ref_df['mean_age'],
                            'Site': ref_df['Site'],
                            'month': ref_df['month'],
-                           'site_month': ref_df['Site'] + '_month' + ref_df['month'],
+                           'site_month': ref_df['Site'] + '_month' + ref_df['month'].astype('str'),
                            'total_sampled': ref_df['total_sampled'],
                            'num_pos': ref_df['num_pos'],
                            'ref_year': ref_df['year']})
@@ -452,34 +457,34 @@ def prepare_prev_df(coord_csv, simulation_output_filepath, base_reference_filepa
     # format new simulation output
     # get simulation average across seeds
     # todo: add a common method to create sim_df and bench_df
-    sim_df = sim_df.group_by(['Site', 'mean_age', 'month']).agg(
-        prevalence=('prevalence', np.mean)
-    )
+    sim_df = sim_df.groupby(['Site', 'mean_age', 'month']).agg(
+        prevalence=('prevalence', np.nanmean)
+    ).reset_index()
     sim_df['Site'] = sim_df['Site'].str.lower()
     sim_df = pd.DataFrame({'simulation':  sim_df['prevalence'],
                            'mean_age': sim_df['mean_age'],
                            'Site': sim_df['Site'],
                            'month': sim_df['month'],
-                           'site_month': sim_df['Site'] + '_month' + sim_df['month']})
+                           'site_month': sim_df['Site'] + '_month' + sim_df['month'].astype('str')})
 
     # format benchmark simulations
     if len(bench_df) > 0:
         # get simulation average across seeds
-        bench_df = bench_df.group_by(['Site', 'mean_age', 'month']).agg(
-            prevalence=('prevalence', np.mean)
-        )
+        bench_df = bench_df.groupby(['Site', 'mean_age', 'month']).agg(
+            prevalence=('prevalence', np.nanmean)
+        ).reset_index()
         bench_df['Site'] = bench_df['Site'].str.lower()
         bench_df = pd.DataFrame({'benchmark': bench_df['prevalence'],
-                               'mean_age': bench_df['mean_age'],
-                               'Site': bench_df['Site'],
-                               'month': bench_df['month'],
-                               'site_month': bench_df['Site'] + '_month' + bench_df['month']})
+                                 'mean_age': bench_df['mean_age'],
+                                 'Site': bench_df['Site'],
+                                 'month': bench_df['month'],
+                                 'site_month': bench_df['Site'] + '_month' + bench_df['month'].astype('str')})
 
     # check that ages match between reference and simulation. if there is a small difference (<1 year, update simulation)
     sim_df, bench_df = match_sim_ref_ages(ref_df, sim_df, bench_df)
 
-    combined_df = pd.merge(ref_df, sim_df, how='outer')
-    combined_df = pd.merge(combined_df, bench_df, how='outer')
+    combined_df = pd.merge(ref_df, sim_df, on=['mean_age', 'site_month'], how='outer')
+    combined_df = pd.merge(bench_df, combined_df, on=['mean_age', 'site_month'], how='outer')
     combined_df['metric'] = 'prevalence'
     return combined_df
 
@@ -581,13 +586,13 @@ def prepare_dens_df(coord_csv, simulation_output_filepath, base_reference_filepa
     sim_df, bench_df = match_sim_ref_ages(ref_df, sim_df, bench_df)
 
     # format reference data
-    ref_df_asex = pd.DataFrame({'benchmark': ref_df['asexual_par_dens_freq'],
+    ref_df_asex = pd.DataFrame({'reference': ref_df['asexual_par_dens_freq'],
                                 'mean_age': ref_df['mean_age'],
                                 'agebin': ref_df['agebin'],
                                 'densitybin': ref_df['densitybin'],
                                 'Site': ref_df['Site'],
                                 'month': ref_df['month'],
-                                'site_month': ref_df['Site'] + '_month' + ref_df['month'],
+                                'site_month': ref_df['Site'] + '_month' + ref_df['month'].astype('str'),
                                 'ref_total': ref_df['bin_total_asex'],
                                 'ref_bin_count': ref_df['count_asex']})
     ref_df_gamet = pd.DataFrame({'reference': ref_df['gametocyte_dens_freq'],
@@ -596,7 +601,7 @@ def prepare_dens_df(coord_csv, simulation_output_filepath, base_reference_filepa
                                 'densitybin': ref_df['densitybin'],
                                 'Site': ref_df['Site'],
                                 'month': ref_df['month'],
-                                'site_month': ref_df['Site'] + '_month' + ref_df['month'],
+                                'site_month': ref_df['Site'] + '_month' + ref_df['month'].astype('str'),
                                 'ref_total': ref_df['bin_total_gamet'],
                                 'ref_bin_count': ref_df['count_gamet']})
 
@@ -607,14 +612,14 @@ def prepare_dens_df(coord_csv, simulation_output_filepath, base_reference_filepa
                                 'densitybin': sim_df['densitybin'],
                                 'Site': sim_df['Site'],
                                 'month': sim_df['month'],
-                                'site_month': sim_df['Site'] + '_month' + sim_df['month']})
+                                'site_month': sim_df['Site'] + '_month' + sim_df['month'].astype('str')})
     sim_df_gamet = pd.DataFrame({'simulation': sim_df['gametocyte_dens_freq'],
                                 'mean_age': sim_df['mean_age'],
                                 'agebin': sim_df['agebin'],
                                 'densitybin': sim_df['densitybin'],
                                 'Site': sim_df['Site'],
                                 'month': sim_df['month'],
-                                'site_month': sim_df['Site'] + '_month' + sim_df['month']})
+                                'site_month': sim_df['Site'] + '_month' + sim_df['month'].astype('str')})
 
     # format benchmark simulations
     if len(bench_df) > 0:
@@ -624,14 +629,14 @@ def prepare_dens_df(coord_csv, simulation_output_filepath, base_reference_filepa
                                     'densitybin': bench_df['densitybin'],
                                     'Site': bench_df['Site'],
                                     'month': bench_df['month'],
-                                    'site_month': bench_df['Site'] + '_month' + bench_df['month']})
+                                    'site_month': bench_df['Site'] + '_month' + bench_df['month'].astype('str')})
         bench_df_gamet = pd.DataFrame({'benchmark': bench_df['gametocyte_dens_freq'],
                                       'mean_age': bench_df['mean_age'],
                                       'agebin': bench_df['agebin'],
                                       'densitybin': bench_df['densitybin'],
                                       'Site': bench_df['Site'],
                                       'month': bench_df['month'],
-                                      'site_month': bench_df['Site'] + '_month' + bench_df['month']})
+                                      'site_month': bench_df['Site'] + '_month' + bench_df['month'].astype('str')})
 
     # combine reference and simulation dataframes
     combined_df_asex = pd.merge(ref_df_asex, sim_df_asex, how='outer')
@@ -677,8 +682,6 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
         filepath_ref = os.path.join(base_reference_filepath,
                                     coord_csv[coord_csv['site'] == cur_site]['infectiousness_to_mosquitos_ref'].iloc[0])
         ref_df_cur = pd.read_csv(filepath_ref)
-        # todo: local variable 'upper_ages' is assigned to but never used, undefined name 'sim_df_cur'
-        upper_ages = sorted(sim_df_cur['agebin'].unique())
         ref_df_cur = ref_df_cur[ref_df_cur['site'].str.lower() == str(cur_site).lower()]
         ref_months = ref_df_cur['month'].unique()
 
@@ -715,14 +718,14 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
 
         # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
         # standardize column names and merge simulation and reference data frames
-        ref_df_cur.rename(mapper={'site': 'Site'}, inplace=True)
+        ref_df_cur.rename(columns={'site': 'Site'}, inplace=True)
         ref_df_cur = pd.DataFrame({'reference': ref_df_cur['freq_frac_infect'],
                                    'agebin': ref_df_cur['agebin'],
                                    'densitybin': ref_df_cur['densitybin'],
                                    'fraction_infected_bin': ref_df_cur['fraction_infected_bin'],
                                    'Site': ref_df_cur['Site'],
                                    'month': ref_df_cur['month'],
-                                   'site_month': ref_df_cur['Site'] + '_month' + ref_df_cur['month'],
+                                   'site_month': ref_df_cur['Site'] + '_month' + ref_df_cur['month'].astype('str'),
                                    'ref_total': ref_df_cur['num_in_group'],
                                    'ref_bin_count': ref_df_cur['count']})
         sim_df_cur = pd.DataFrame({'simulation': sim_df_agg2['infectiousness_bin_freq'],
@@ -731,7 +734,7 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
                                    'fraction_infected_bin': sim_df_agg2['infectiousness_bin'],
                                    'Site': sim_df_agg2['Site'],
                                    'month': sim_df_agg2['month'],
-                                   'site_month': sim_df_agg2['Site'] + '_month' + sim_df_agg2['month']})
+                                   'site_month': sim_df_agg2['Site'] + '_month' + sim_df_agg2['month'].astype('str')})
 
         if len(bench_df_agg2) > 0:
             bench_df_cur = pd.DataFrame({'benchmark': bench_df_agg2['infectiousness_bin_freq'],
@@ -740,7 +743,7 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
                                          'fraction_infected_bin': bench_df_agg2['infectiousness_bin'],
                                          'Site': bench_df_agg2['Site'],
                                          'month': bench_df_agg2['month'],
-                                         'site_month': bench_df_agg2['Site'] + '_month' + bench_df_agg2['month']})
+                                         'site_month': bench_df_agg2['Site'] + '_month' + bench_df_agg2['month'].astype('str')})
 
         # add site into larger dataframe
         sim_df = pd.concat([sim_df, sim_df_cur])
@@ -855,4 +858,4 @@ def get_sim_survey(sim_dir, ref_df, seeds=None):
         sim_subset_full.rename(columns={'id': 'SID', 'true_asexual_parasites': 'DENSITY'}, inplace=True)
         sim_subset_full.to_csv(file_path, index=False)
 
-        return sim_subset_full
+    return sim_subset_full
