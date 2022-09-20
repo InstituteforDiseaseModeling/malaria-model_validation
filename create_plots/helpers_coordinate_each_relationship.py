@@ -92,7 +92,8 @@ def generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_r
         compare_benchmarks_output.save(filename=os.path.join(plot_output_filepath,
                                                              'scatter_benchmark_incidence_age.png'),
                                        height=4.5, width=8, units='in')
-        mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
+        # comment out the following line since it's not being used.
+        # mean_diff_df_bench = calc_mean_rel_diff(combined_df, sim_colname='benchmark')
 
         add_to_summary_table(combined_df=combined_df, plot_output_filepath=plot_output_filepath,
                              validation_relationship_name='age_incidence')
@@ -240,7 +241,7 @@ def generate_parasite_density_outputs(coord_csv, simulation_output_filepath, bas
         loglik_df_asex_bench = get_dens_loglikelihood(combined_df=combined_df_asex, sim_column='benchmark')
         loglik_df_asex_bench.rename(columns={"loglikelihood": "benchmark_loglike_asex"}, inplace=True)
         # todo: need review, this dataframe is created but not used. Should we use it in line 234(loglik_df = pd.merge(...))
-        loglikelihood_comparison = pd.merge(loglik_df_asex, loglik_df_asex_bench, how="outer")
+        loglik_df_asex = pd.merge(loglik_df_asex, loglik_df_asex_bench, how="outer")
 
         loglik_df_gamet = get_dens_loglikelihood(combined_df=combined_df_gamet, sim_column='simulation')
         loglik_df_gamet.rename(columns={"loglikelihood": "loglike_gamet"}, inplace=True)
