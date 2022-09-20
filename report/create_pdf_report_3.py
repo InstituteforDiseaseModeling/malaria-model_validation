@@ -3,6 +3,7 @@ import re
 import pandas as pd
 from fpdf import FPDF, TitleStyle, XPos, YPos
 from datetime import datetime
+import simulations.manifest as manifest
 
 now = datetime.now()
 now_str = now.strftime("%c")
@@ -146,7 +147,31 @@ pdf.set_font(size=25)
 pdf.set_text_color(44, 147, 194)
 new_section(pdf, 'Validation Report', align="C")
 pdf.set_font(size=16)
-new_section(pdf, f'\n{date}\nEradication version: ___ \n emodpy-malaria version: ___', align="C")
+
+suite_id_filepath = manifest.CURRENT_DIR / manifest.suite_id_file
+if suite_id_filepath.is_file():
+    with open(suite_id_filepath, 'r') as suite_id_file:
+        suite_id = suite_id_file.readline()
+else:
+    suite_id = 'NA'
+
+version_file_filepath = manifest.CURRENT_DIR / manifest.version_file
+if version_file_filepath.is_file():
+    with open(version_file_filepath, 'r') as version_file:
+        era_version = version_file.readline().rstrip()
+        era_branch = version_file.readline().rstrip()
+        emodpy_malaria_version = version_file.readline().rstrip()
+
+else:
+    era_version = 'Eradication version: ___'
+    era_branch = 'branch: ___'
+    emodpy_malaria_version = 'emodpy-malaria version: ___'
+
+new_section(pdf, f'\n {date} \n '
+                 f'{era_version} \n '
+                 f'{era_branch} \n '
+                 f'{emodpy_malaria_version} \n '
+                 f'Suite ID: {suite_id}', align="C")
 pdf.set_font(size=12)
 pdf.set_text_color(0, 0, 0)
 pdf.insert_toc_placeholder(render_toc)

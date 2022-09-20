@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import argparse
+import os
+
 from idmtools.core.platform_factory import Platform
 from idmtools.core import ItemType
 
 import simulations.params as params
 import simulations.manifest as manifest
 from simulations.helpers import get_comps_id_filename
+from simulations.get_version import write_to_file
 
 
 def check_experiment(site, platform=None):
@@ -19,6 +22,10 @@ def check_experiment(site, platform=None):
 
     # Wait for the experiment to be done in Comps.
     experiment.wait(wait_on_done_progress=True, refresh_interval=30)
+
+    # Get Eradication version and branch info
+    if not os.path.exists(manifest.version_file):
+        write_to_file(experiment=experiment)
 
     # Check result
     if not experiment.succeeded:

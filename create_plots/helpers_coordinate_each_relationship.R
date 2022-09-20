@@ -283,7 +283,6 @@ generate_age_infection_duration_outputs = function(coord_csv, simulation_output_
     sim_dir = paste0(simulation_output_filepath, '/', cur_site)
     sim_data = get_sim_survey(sim_dir=sim_dir, ref_df=ref_df)
     
-    
     # create and save comparison plots
     gg1 = plot_infection_duration_dist(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, duration_bins=duration_bins)
     gg2 = plot_infection_duration_dist_by_age(ref_df=ref_df, sim_data=sim_data, pos_thresh_dens=pos_thresh_dens, duration_bins=duration_bins)
