@@ -12,7 +12,9 @@
   - [Login to Comps](#login-to-comps)
   - [Option 1_Run One Site with Python Scripts](#option-1_run-one-site-with-python-scripts)
   - [Option 2_Run all Sites with Snakemake (Recommended)](#option-2_run-all-sites-with-snakemake-recommended)
-
+    - [How to Change Default Setting](#how-to-change-default-setting)
+    - [Snakemake Tips](#snakemake-tips)
+- [Generate Plots and Final Reports](#generate-plots-and-final-reports)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -79,11 +81,6 @@ python3 run_analyzers.py -s {site_name}
 python3 download_wi.py -s {site_name}
 ```
 
-Run Plotting and reportting scripts with site(s) that you ran:
-```bash
-Rscript create_plots\run_generate_validation_comparisons_site.R
-python3 report\create_pdf_report_3.py
-```
 
 ## Option 2_Run all Sites with Snakemake (Recommended)
 Run the whole pipeline with all sites in simulation_coordinator.csv:
@@ -91,6 +88,7 @@ Run the whole pipeline with all sites in simulation_coordinator.csv:
 snakemake -j
 ```
 
+### How to Change Default Setting
 - Some details about our default setting:
   - By default, the workflow will copy the Eradication and schema files from corresponding emod_malaria package to 
     "simulations\download" folder and run experiments with them. If you would like to run against a certain copy of 
@@ -99,6 +97,8 @@ snakemake -j
   - By default, the workflow will run simulations in singularity container in Comps. The singularity image used in the 
     workflow is defined as "singularity_id" in "\simulations\manifest.py". Set this id to None will disable running with
     singularity container and run directly in Comps environment(CentOS + Python 3.6 in Calculon).
+ 
+### Snakemake Tips
 - Some snakemake tips about running the workflow:
   - If you want to re-run the whole workflow, clean up your environment with "snakemake clean -j" and run "snakemake -j" again:
   ```bash
@@ -136,3 +136,11 @@ snakemake -j
     running Snakemake instance will cause a stale lock), you can run "snakemake --unlock -j" to remove the stale lock.
   - If you have incompleted file from previous snakemake instance, you can run "snakemake --cleanup-metadata 
     <filenames>" to clean up the metadata. Or you can delete the '.snakemake' folder to clean up the metadata manually.
+
+
+# Generate Plots and Final Reports
+Run Plotting and reportting scripts with site(s) that you ran:
+```bash
+Rscript create_plots\run_generate_validation_comparisons_site.R
+python3 report\create_pdf_report_3.py
+```
