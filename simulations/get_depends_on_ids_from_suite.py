@@ -23,12 +23,15 @@ def get_depends_on_ids(suite_ids: str) -> str:
     site_to_ids = {"site": [],
                    "exp_id": [],
                    "analyzer_wi_id": [],
-                   "filter_wi_id": []}
+                   "filter_wi_id": [],
+                   "date_created": []}
     for exp in suite.experiments:
         exp_id = exp.id
         site_name = exp.name[len("validation_"):]
+        date_created = exp._platform_object.date_created
         site_to_ids["site"].append(site_name)
         site_to_ids["exp_id"].append(exp_id)
+        site_to_ids["date_created"].append(date_created)
 
         e = Experiment.get(exp_id)
         analyzer_wi = e.get_parent_related_workitems(relation_type=RelationType.DependsOn)
