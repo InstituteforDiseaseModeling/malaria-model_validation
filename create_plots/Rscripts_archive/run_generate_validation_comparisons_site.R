@@ -16,17 +16,16 @@ library(ggpubr)
 ##################### setup: filepaths, info on simulations run, source scripts ####################
 ####################################################################################################
 # Note: these first three filepaths should be grabbed from the manifest once we move the scripts to python
-sim_output_base_filepath = "C:/Users/moniqueam/Dropbox (IDM)/Malaria Team Folder/projects/model_validation/simulation_output"
-simulation_output_filepath = paste0(sim_output_base_filepath, "/output_latest_220613")
-benchmark_simulation_filepath = paste0(sim_output_base_filepath, "/output_benchmark_220506")
-validation_repo_filepath = "/Users/moniqueam/Documents/malaria-model_validation/"
-
+sim_output_base_filepath = "C:/Github/Malaria/malaria-model_validation/simulations"
+simulation_output_filepath = paste0(sim_output_base_filepath, "/output")
+benchmark_simulation_filepath = paste0(sim_output_base_filepath, "/output")
+validation_repo_filepath = "C:/Github/Malaria/malaria-model_validation/"
 
 simulation_coordinator_path = paste0(validation_repo_filepath, "/simulation_inputs/simulation_coordinator.csv")
 base_script_plot_filepath = paste0(validation_repo_filepath, "/create_plots")
 base_reference_filepath = paste0(validation_repo_filepath, "/reference_datasets")
 # plot_output_filepath = paste0(simulation_output_filepath, "/_plots")
-plot_output_filepath = paste0(validation_repo_filepath, "/report/_plots")
+plot_output_filepath = paste0(validation_repo_filepath, "/report/_plots_R")
 
 
 source(file.path(base_script_plot_filepath, 'helpers_coordinate_each_relationship.R'))
