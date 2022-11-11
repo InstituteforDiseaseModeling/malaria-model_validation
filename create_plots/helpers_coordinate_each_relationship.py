@@ -123,7 +123,7 @@ def generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_
 
     # create plots comparing reference and simulation outputs
     gg_plot = plot_prev_ref_sim_comparison(combined_df)
-    gg_plot.save(filename=os.path.join(plot_output_filepath, 'site_compare_prevalence_age.png'), height=9, width=8,
+    gg_plot.save(filename=os.path.join(plot_output_filepath, 'site_compare_prevalence_age.png'), height=9, width=10,
                  units='in')
 
     # additional quantitative comparisons and metrics
@@ -139,7 +139,14 @@ def generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_
     # correlation_plots = ggarrange(correlation_output[0], slope_correlation_output[0], nrow=1, ncol=2,
     #                               common.legend = TRUE)  # , legend.grob=get_legend(correlation_output[[1]], position = 'bottom'))
     # correlation_plots.save(filename=os.path.join(plot_output_filepath, 'scatter_regression_prevalence_age.png'),
-    #                        height=4.5, width=8, units='in')
+    #                        height=4.5, width=8, units='in'
+    #                        )
+    correlation_output[0].save(
+        filename=os.path.join(plot_output_filepath, 'scatter_regression_prevalence_age_correlation.png'),
+        height=4.5, width=8, units='in')
+    slope_correlation_output[0].save(
+        filename=os.path.join(plot_output_filepath, 'scatter_regression_prevalence_age_slope_correlation.png'),
+        height=4.5, width=8, units='in')
 
     # metrics comparing simulation to reference VALUE
     mean_diff_df = calc_mean_rel_diff(combined_df)
