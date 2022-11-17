@@ -5,7 +5,7 @@
 
 from plotnine import ggplot, aes, geom_bar, scale_fill_brewer, facet_grid, geom_line, geom_point, geom_errorbar, \
     theme_bw, xlab, ylab, scale_color_manual, scale_fill_manual, coord_fixed, geom_abline, theme_classic, themes, \
-    facet_wrap, scale_shape_manual, scale_size_manual, scale_x_log10, ggtitle, labs, position_dodge, scale_x_continuous
+    facet_wrap, scale_shape_manual, scale_size_manual, scale_x_log10, ggtitle, labs, position_dodge
 import numpy as np
 import pandas as pd
 from scipy.stats import beta
@@ -216,9 +216,9 @@ def plot_par_dens_ref_sim_comparison(combined_df):
         alpha = 1 - ci_width
         combined_df['min_ref'] = np.nan
         combined_df['max_ref'] = np.nan
-        eligible_rows =((combined_df['ref_bin_count'] > 0) &
-                                     (combined_df['ref_bin_count'] < combined_df['ref_total']) &
-                                     (combined_df['source'] == 'reference'))
+        eligible_rows =((combined_df['ref_bin_count'] > 0)
+                        & (combined_df['ref_bin_count'] < combined_df['ref_total'])
+                        & (combined_df['source'] == 'reference'))
         combined_df['min_ref'][eligible_rows] = beta.ppf(q=alpha / 2,
                                                          a=combined_df['ref_bin_count'][eligible_rows] + 0.5,
                                                          b=combined_df['ref_total'][eligible_rows] - combined_df['ref_bin_count'][eligible_rows] + 0.5)
