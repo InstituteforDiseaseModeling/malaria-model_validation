@@ -7,10 +7,11 @@ import simulations.manifest as manifest
 
 now = datetime.now()
 now_str = now.strftime("%c")
-date, time = now.strftime("%d-%m-%Y %H-%M-%S").split(' ')
+date, time = now.strftime("%m-%d-%Y %H-%M-%S").split(' ')
 
 title = 'Malaria Model Validation Results'
 pdf_name = f'Malaria_model_validation_output_{date}_{time}.pdf'
+plot_folder = '_plots_R'
 
 
 def new_section(pdf: FPDF, text: str, image_list: list = None, table_name: str = None, new_x: int = XPos.LMARGIN,
@@ -206,18 +207,18 @@ section_and_content = {'Introduction':
                 ''
                 '\n\n',
                 None,
-                '_plots/summary_table_sim_benchmark.csv'],
+                f'{plot_folder}/summary_table_sim_benchmark.csv'],
          },
     'Visual comparison of reference data and matched simulations':
         {'Incidence by age':
             [
                 'The plots below compare the age-incidence relationships from reference datasets and matched simulations.',
-                ['_plots/site_compare_incidence_age.png'],
+                [f'{plot_folder}/site_compare_incidence_age.png'],
                 None],
             'Prevalence by age':
                 [
                     'The plots below compare the age-prevalence relationships from reference datasets and matched simulations.',
-                    ['_plots/site_compare_prevalence_age.png'],
+                    [f'{plot_folder}/site_compare_prevalence_age.png'],
                     None],
             'Infectiousness to vectors':
                 [
@@ -226,7 +227,7 @@ section_and_content = {'Introduction':
                     'The dot size shows how often a person of a given age and gametocyte density falls into each of the infectiousness bins '
                     "(each column's dot sizes sum to one).\n"
                     "In the reference datasets, the sample size is sometimes quite small.",
-                    ['_plots/%s' % ff for ff in os.listdir('./_plots') if
+                    [f'{plot_folder}/%s' % ff for ff in os.listdir(f'./{plot_folder}') if
                      re.match(r'site_compare_infectiousness.*\.', ff)],
                     None],
             'Duration of infection - all ages':
@@ -235,7 +236,7 @@ section_and_content = {'Introduction':
                     'Observed infections are divided into two groups. "Censored" infections refer to infections where the individual was positive at the first or final survey of the study (so the infection may have extended beyond the period observed). '
                     '"Start & finish observed" infections refer to infections were the individual was observed to have a negative test at the start and end of the infection. The two types of infection duration records are illustrated in the figure below.',
                     ['infection_duration_censoring_illustration.png',
-                     '_plots/site_compare_infect_duration_navrongo_2000.png'],
+                     f'{plot_folder}/site_compare_infect_duration_navrongo_2000.png'],
                     None],
             'Duration of infection - by age':
                 [
@@ -243,14 +244,14 @@ section_and_content = {'Introduction':
                     'Observed infections are divided into two groups. "Censored" infections refer to infections where the individual was positive at the first or final survey of the study (so the infection may have extended beyond the period observed). '
                     '"Start & finish observed" infections refer to infections were the individual was observed to have a negative test at the start and end of the infection. The two types of infection duration records are illustrated in the figure below.\n'
                     'In the plot panel below, columns correspond to the age group (in years) and rows correspond to whether or not the start and end of the infection was observed.',
-                    ['_plots/site_compare_infect_duration_age_navrongo_2000.png'],
+                    [f'{plot_folder}/site_compare_infect_duration_age_navrongo_2000.png'],
                     None],
             'Asexual parasite density by age':
                 ['The plots below compare the distribution of parasite densities across ages and '
                  'seasons from reference datasets and matched simulations. Each plot panel corresponds '
                  'to a site. Note that some of the reference datasets have small sample sizes, '
                  'especially in the youngest age groups.',
-                 ['_plots/%s' % ff for ff in os.listdir('./_plots') if
+                 [f'{plot_folder}/%s' % ff for ff in os.listdir(f'./{plot_folder}') if
                   re.match(r'site_compare_asex_dens_age.*\.', ff)],
                  None],
             'Gametocyte density by age':
@@ -258,7 +259,7 @@ section_and_content = {'Introduction':
                  'seasons from reference datasets and matched simulations. Each plot panel corresponds '
                  'to a site. Note that some of the reference datasets have small sample sizes, '
                  'especially in the youngest age groups.',
-                 ['_plots/%s' % ff for ff in os.listdir('./_plots') if
+                 [f'{plot_folder}/%s' % ff for ff in os.listdir(f'./{plot_folder}') if
                   re.match(r'site_compare_gamet_dens_age_.*\.', ff)],
                  None]},
     'Additional comparisons of reference data and matched simulations':
@@ -267,16 +268,16 @@ section_and_content = {'Introduction':
               'in each age group (left plot) and the correlation between the simulation and '
               'reference slopes when moving between the incidence in one age group and the incidence '
               'in the next oldest age group (right plot).',
-              ['_plots/scatter_regression_incidence_age.png'],
-              '_plots/comparison_metric_table_incidence_age.csv'],
+              [f'{plot_folder}/scatter_regression_incidence_age.png'],
+              f'{plot_folder}/comparison_metric_table_incidence_age.csv'],
          'Prevalence by age':
              [
                  'Below, the plots show the correlation between the simulation and reference prevalence '
                  'in each age group (left plot) and the correlation between the simulation and '
                  'reference slopes when moving between the prevalence in one age group and the prevalence '
                  'in the next oldest age group (right plot).',
-                 ['_plots/scatter_regression_prevalence_age.png'],
-                 '_plots/comparison_metric_table_prevalence_age.csv'],
+                 [f'{plot_folder}/scatter_regression_prevalence_age.png'],
+                 f'{plot_folder}/comparison_metric_table_prevalence_age.csv'],
          # 'Infectiousness to vectors':
          #     ['...',
          #      None,

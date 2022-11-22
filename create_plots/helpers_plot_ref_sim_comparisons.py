@@ -30,7 +30,7 @@ size_manual = {"reference": 1.5,
                "benchmark": 3}
 fill_manual = {"reference": 'red',
                "simulation": 'blue',
-               "benchmark": (0, 0, 0, 0)}  # todo: this should set a transparent fill color for benchmark, but it doesn't work for me
+               "benchmark": '#ffffff00'}  # this should set a transparent fill color for benchmark
 
 
 # compare new and benchmark simulation values
@@ -216,14 +216,15 @@ def plot_par_dens_ref_sim_comparison(combined_df):
         alpha = 1 - ci_width
         combined_df['min_ref'] = np.nan
         combined_df['max_ref'] = np.nan
-        eligible_rows = ((combined_df['ref_bin_count'] > 0) & (combined_df['ref_bin_count'] < combined_df['ref_total'])
-                         & (combined_df['source'] == 'reference'))
-        combined_df[eligible_rows]['min_ref'] = beta.ppf(q=alpha / 2,
-                                                         a=combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5,
-                                                         b=combined_df[eligible_rows]['ref_total'].iloc[0] - combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
-        combined_df[eligible_rows]['max_ref'] = beta.ppf(q=1 - alpha / 2,
-                                                         a=combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5,
-                                                         b=combined_df[eligible_rows]['ref_total'].iloc[0] - combined_df[eligible_rows]['ref_bin_count'].iloc[0] + 0.5)
+        eligible_rows =((combined_df['ref_bin_count'] > 0)
+                        & (combined_df['ref_bin_count'] < combined_df['ref_total'])
+                        & (combined_df['source'] == 'reference'))
+        combined_df['min_ref'][eligible_rows] = beta.ppf(q=alpha / 2,
+                                                         a=combined_df['ref_bin_count'][eligible_rows] + 0.5,
+                                                         b=combined_df['ref_total'][eligible_rows] - combined_df['ref_bin_count'][eligible_rows] + 0.5)
+        combined_df['max_ref'][eligible_rows] = beta.ppf(q=1 - alpha / 2,
+                                                         a=combined_df['ref_bin_count'][eligible_rows] + 0.5,
+                                                         b=combined_df['ref_total'][eligible_rows] - combined_df['ref_bin_count'][eligible_rows] + 0.5)
 
         # change facet values to intuitive labels
         combined_df['month'] = combined_df['month'].apply(lambda x: months_of_year[x-1])
@@ -248,6 +249,7 @@ def plot_par_dens_ref_sim_comparison(combined_df):
                + theme_bw()
                + ylab('fraction of population')
                + xlab('parasite density bin')
+               + themes.theme(axis_text_x=themes.element_text(angle=45))
                + ggtitle(cur_site)
                + scale_color_manual(values=color_manual)
                + scale_shape_manual(values=shape_manual)
@@ -304,7 +306,7 @@ def plot_infectiousness_ref_sim_comparison(combined_df):
         # plot lineplot of simulation and reference densities
         gg2 = (ggplot(combined_df, aes(x='densitybin', y='fraction_infected_bin', color='source',
                                        size='infectiousness_bin_freq', fill='source'))
-               + geom_point() #pch=21
+               + geom_point(alpha=0.5) #pch=21
                + scale_x_log10()
                + ylab('percent of mosquitoes infected upon feeding')
                + xlab('gametocyte density')
@@ -312,7 +314,7 @@ def plot_infectiousness_ref_sim_comparison(combined_df):
                # + labs(size='fraction of individuals')
                + ggtitle(cur_site)
                + scale_color_manual(values=color_manual)
-               + scale_fill_manual(values=color_manual)
+               + scale_fill_manual(values=fill_manual)
                + facet_grid('month~agebin'))
 
         line_plot_list.append(gg2)
@@ -717,14 +719,14 @@ def plot_infection_duration_dist_by_age(ref_df, sim_data, pos_thresh_dens, age_b
 
     # get densities for each duration bin
     ref_bin_df = get_duration_bins(ind_data=ref_df, duration_bins=duration_bins, facet_censored=True, facet_age=True,
-                                   pos_thresh_dens=pos_thresh_dens)
+                                   pos_thresh_dens=pos_thresh_dens, age_bin_lower=age_bin_lower)
     ref_bin_df['dataset'] = 'reference'
     ref_bin_df['censor_type'] = 'start & finish observed'
     ref_bin_df['censor_type'][ref_bin_df['censored']] = 'censored'
 
     # combine multiple simulation seeds to show mean, 10%, 90% quantile values across seed distributions
-    sim_bin_df = get_duration_bins(ind_data=sim_data, duration_bins=duration_bins, facet_censored=True, facet_age=False,
-                                   pos_thresh_dens=pos_thresh_dens)
+    sim_bin_df = get_duration_bins(ind_data=sim_data, duration_bins=duration_bins, facet_censored=True, facet_age=True,
+                                   pos_thresh_dens=pos_thresh_dens, age_bin_lower=age_bin_lower)
     sim_bin_df['dataset'] = 'simulation'
     sim_bin_df['censor_type'] = 'start & finish observed'
     sim_bin_df['censor_type'][sim_bin_df['censored']] = 'censored'
