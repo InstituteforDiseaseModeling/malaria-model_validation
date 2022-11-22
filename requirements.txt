@@ -7,5 +7,4 @@ scikit-learn
 scipy
 snakemake
 plotnine
-bokeh
 datar
