@@ -9,9 +9,9 @@ now = datetime.now()
 now_str = now.strftime("%c")
 date, time = now.strftime("%m-%d-%Y %H-%M-%S").split(' ')
 
+plot_folder = manifest.plot_output_filepath
 title = 'Malaria Model Validation Results'
-pdf_name = f'Malaria_model_validation_output_{date}_{time}.pdf'
-plot_folder = '_plots'
+pdf_name = plot_folder.parent / f'Malaria_model_validation_output_{date}({time}).pdf'
 
 
 def new_section(pdf: FPDF, text: str, image_list: list = None, table_name: str = None, new_x: int = XPos.LMARGIN,
@@ -80,7 +80,7 @@ def render_toc(pdf, outline):
 class PDF(FPDF):
     def header(self):
         # Logo
-        self.image('IDMlogo_small.png', 10, 8, 33)
+        self.image(manifest.plot_output_filepath.parent / 'IDMlogo_small.png', 10, 8, 33)
         # Arial bold 15
         self.set_font('Arial', 'B', 15)
         # Move to the right
@@ -227,7 +227,7 @@ section_and_content = {'Introduction':
                     'The dot size shows how often a person of a given age and gametocyte density falls into each of the infectiousness bins '
                     "(each column's dot sizes sum to one).\n"
                     "In the reference datasets, the sample size is sometimes quite small.",
-                    [f'{plot_folder}/%s' % ff for ff in os.listdir(f'./{plot_folder}') if
+                    [f'{plot_folder}/%s' % ff for ff in os.listdir(f'{plot_folder}') if
                      re.match(r'site_compare_infectiousness.*\.', ff)],
                     None],
             'Duration of infection - all ages':
@@ -235,7 +235,7 @@ section_and_content = {'Introduction':
                     'The plots below compare the duration over which individuals had positive tests in the reference dataset and matched simulations. The sampling design from the reference data was matched in the simulations.'
                     'Observed infections are divided into two groups. "Censored" infections refer to infections where the individual was positive at the first or final survey of the study (so the infection may have extended beyond the period observed). '
                     '"Start & finish observed" infections refer to infections were the individual was observed to have a negative test at the start and end of the infection. The two types of infection duration records are illustrated in the figure below.',
-                    ['infection_duration_censoring_illustration.png',
+                    [F'{plot_folder.parent}/infection_duration_censoring_illustration.png',
                      f'{plot_folder}/site_compare_infect_duration_navrongo_2000.png'],
                     None],
             'Duration of infection - by age':
@@ -251,7 +251,7 @@ section_and_content = {'Introduction':
                  'seasons from reference datasets and matched simulations. Each plot panel corresponds '
                  'to a site. Note that some of the reference datasets have small sample sizes, '
                  'especially in the youngest age groups.',
-                 [f'{plot_folder}/%s' % ff for ff in os.listdir(f'./{plot_folder}') if
+                 [f'{plot_folder}/%s' % ff for ff in os.listdir(f'{plot_folder}') if
                   re.match(r'site_compare_asex_dens_age.*\.', ff)],
                  None],
             'Gametocyte density by age':
@@ -259,7 +259,7 @@ section_and_content = {'Introduction':
                  'seasons from reference datasets and matched simulations. Each plot panel corresponds '
                  'to a site. Note that some of the reference datasets have small sample sizes, '
                  'especially in the youngest age groups.',
-                 [f'{plot_folder}/%s' % ff for ff in os.listdir(f'./{plot_folder}') if
+                 [f'{plot_folder}/%s' % ff for ff in os.listdir(f'{plot_folder}') if
                   re.match(r'site_compare_gamet_dens_age_.*\.', ff)],
                  None]},
     'Additional comparisons of reference data and matched simulations':
@@ -310,18 +310,18 @@ section_and_content = {'Introduction':
     'Comparisons from prior EMOD publications':
         {'Incidence and prevalence by age':
              ['The top plots come from McCarthy et al. 2015 and the bottom plots come from Selvaraj et al. 2018.',
-              ['_prior_recalibration_published_figures/McCarthy_2015_age_pfpr_incidence.png',
-               '_prior_recalibration_published_figures/Selvaraj_2018_age_incidence.png'],
+              [f'{plot_folder.parent}/_prior_recalibration_published_figures/McCarthy_2015_age_pfpr_incidence.png',
+               f'{plot_folder.parent}/_prior_recalibration_published_figures/Selvaraj_2018_age_incidence.png'],
               None],
          'Infectiousness to vectors':
              ['The following plot comes from Selvaraj et al. 2018',
-             ['_prior_recalibration_published_figures/Selvaraj_2018_infectiousness.png'],
+             [f'{plot_folder.parent}/_prior_recalibration_published_figures/Selvaraj_2018_infectiousness.png'],
              None],
          'Parasite densities':
              ['The following plots come from Selvaraj et al. 2018',
-             ['_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities.png',
-             '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities2.png',
-             '_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities3.png'],
+             [f'{plot_folder.parent}/_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities.png',
+             f'{plot_folder.parent}/_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities2.png',
+             f'{plot_folder.parent}/_prior_recalibration_published_figures/Selvaraj_2018_parasite_densities3.png'],
              None]},
 }
 
@@ -347,3 +347,7 @@ new_section(pdf, 'This page left unintentionally blank', align="C")
 #                     image_name=image_name)
 
 pdf.output(pdf_name)
+
+# generate dummy file for snakemake plot rule.
+with open(manifest.comps_id_folder + 'report_completed', 'w') as file:
+    file.write(f'Report file {pdf_name} is generated.')

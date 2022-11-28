@@ -6,7 +6,7 @@
 # reference dataset.
 
 from simulations.manifest import simulation_output_filepath, benchmark_simulation_filepath, \
-     base_reference_filepath, plot_output_filepath
+     base_reference_filepath, plot_output_filepath, comps_id_folder
 from simulations.helpers import load_coordinator_df
 from create_plots.helpers_coordinate_each_relationship import generate_age_incidence_outputs, \
     generate_age_prevalence_outputs, generate_parasite_density_outputs, generate_infectiousness_outputs, \
@@ -67,6 +67,9 @@ def run():
     generate_age_infection_duration_outputs(coord_csv, simulation_output_filepath, base_reference_filepath,
                                             plot_output_filepath, pos_thresh_dens, duration_bins,
                                             benchmark_simulation_filepath=benchmark_simulation_filepath)
+    # generate dummy file for snakemake plot rule.
+    with open(comps_id_folder + 'plot_completed', 'w') as file:
+        file.write('Plotting is completed.')
 
 
 if __name__ == '__main__':
