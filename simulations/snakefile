@@ -11,7 +11,7 @@ from simulations.helpers import get_comps_id_filename
 sites, nSims, script_names = load_sites()
 
 id_folder = manifest.comps_id_folder
-input_files = [manifest.suite_id_file, manifest.eradication_found, manifest.sif_id]
+download_files = [manifest.suite_id_file, manifest.eradication_found, manifest.sif_id]
 experiment_files = list()
 analyzers_files = list()
 
@@ -40,12 +40,13 @@ def get_command(script="run_sims.py", python_version: str=None, site: str=None, 
 for site in sites:
     experiment_files.append(get_comps_id_filename(site, level=0))
     analyzers_files.append(get_comps_id_filename(site, level=2))
-    input_files.append(get_comps_id_filename(site, level=3)) # todo: change to a output file from plotting rules
+    download_files.append(get_comps_id_filename(site, level=3))
 
-print( input_files )
+plot_file = manifest.comps_id_folder + 'plot_completed'
+report_file = manifest.comps_id_folder + 'report_completed'
 
 rule run:
-    input: input_files
+    input: report_file
     output: manifest.comps_id_folder + 'workflow_completed'
     run:
         with open(manifest.comps_id_folder + 'workflow_completed', 'w') as file:
@@ -111,6 +112,18 @@ rule sif_id:
                 sif_file.write(manifest.singularity_id)
         else:
             print("Not using singularity image.")
+
+rule plot:
+    input: download_files
+    output: plot_file
+    run:
+        shell(get_command(script=str(manifest.base_script_plot_filepath / "run_generate_validation_comparisons_site.py")))
+
+rule report:
+    input: plot_file
+    output: report_file
+    run:
+        shell(get_command(script=str(manifest.plot_output_filepath.parent / "create_pdf_report.py")))
 
 rule chonyi_1999_run_sim:
     input: 

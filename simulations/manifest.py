@@ -39,6 +39,8 @@ input_files_path = PROJECT_DIR / "simulation_inputs"
 base_script_plot_filepath = PROJECT_DIR / "create_plots"
 base_reference_filepath = PROJECT_DIR / "reference_datasets"
 plot_output_filepath = PROJECT_DIR / "report" / "_plots"
+python_plot_output_filepath = PROJECT_DIR / "report" / "_plots_Python"
+
 
 # TODO: remove following lines
 asset_path = input_files_path / "demographics_files" / "demographics_vital_1000.json"
