@@ -1,8 +1,8 @@
 {
     "Version": {
-        "DTK_Branch": "Malaria-Ongoing(57329cf3a6)",
-        "DTK_Build_Date": "Jun 13 2022",
-        "DTK_Version": "2.20.5194.0"
+        "DTK_Branch": "Malaria-Ongoing(250bb79467)",
+        "DTK_Build_Date": "Nov  9 2022",
+        "DTK_Version": "2.20.5299.0"
     },
     "config": {
         "Climate.ByData": {
@@ -3747,6 +3747,14 @@
                 },
                 "description": "A channel is added to InsetChart for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
                 "type": "Vector String"
+            },
+            "Inset_Chart_Include_Pregnancies": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Default_Reporting": 1
+                },
+                "description": "If true, channels are added about pregnancies and possible mothers.",
+                "type": "bool"
             }
         },
         "ReportEventRecorder": {
@@ -3993,6 +4001,14 @@
                 },
                 "description": "A channel is added to InsetChart for each InterventionName provided.  The channel name will be Has_<InterventionName> and will be the fraction of the population that has that intervention.  The 'Intervention_Name' in the campaign should be the values in this parameter.",
                 "type": "Vector String"
+            },
+            "Inset_Chart_Include_Pregnancies": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Default_Reporting": 1
+                },
+                "description": "If true, channels are added about pregnancies and possible mothers.",
+                "type": "bool"
             },
             "Inset_Chart_Reporting_Include_30Day_Avg_Infection_Duration": {
                 "default": 1,
@@ -5153,7 +5169,8 @@
                         "ExplicitAgeRangesAndGender",
                         "ExplicitGender",
                         "PossibleMothers",
-                        "ExplicitDiseaseState"
+                        "ExplicitDiseaseState",
+                        "Pregnant"
                     ],
                     "type": "enum"
                 },
@@ -5445,7 +5462,8 @@
                         "ExplicitAgeRangesAndGender",
                         "ExplicitGender",
                         "PossibleMothers",
-                        "ExplicitDiseaseState"
+                        "ExplicitDiseaseState",
+                        "Pregnant"
                     ],
                     "type": "enum"
                 },
@@ -5613,7 +5631,8 @@
                         "ExplicitAgeRangesAndGender",
                         "ExplicitGender",
                         "PossibleMothers",
-                        "ExplicitDiseaseState"
+                        "ExplicitDiseaseState",
+                        "Pregnant"
                     ],
                     "type": "enum"
                 },
@@ -5929,7 +5948,8 @@
                         "ExplicitAgeRangesAndGender",
                         "ExplicitGender",
                         "PossibleMothers",
-                        "ExplicitDiseaseState"
+                        "ExplicitDiseaseState",
+                        "Pregnant"
                     ],
                     "type": "enum"
                 },
@@ -6101,7 +6121,8 @@
                         "ExplicitAgeRangesAndGender",
                         "ExplicitGender",
                         "PossibleMothers",
-                        "ExplicitDiseaseState"
+                        "ExplicitDiseaseState",
+                        "Pregnant"
                     ],
                     "type": "enum"
                 },
@@ -6285,7 +6306,8 @@
                         "ExplicitAgeRangesAndGender",
                         "ExplicitGender",
                         "PossibleMothers",
-                        "ExplicitDiseaseState"
+                        "ExplicitDiseaseState",
+                        "Pregnant"
                     ],
                     "type": "enum"
                 },
@@ -7399,6 +7421,298 @@
                     "class": "DelayedIntervention",
                     "iv_type": "IndividualTargeted"
                 },
+                "FemaleContraceptive": {
+                    "Cost_To_Consumer": {
+                        "default": 0,
+                        "description": "The cost of getting the contraceptive each time it is distributed.",
+                        "max": 999999,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Disqualifying_Properties": {
+                        "default": [],
+                        "description": "A list of IndividualProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
+                        "type": "Dynamic String Set",
+                        "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
+                    "Intervention_Name": {
+                        "default": "FemaleContraceptive",
+                        "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
+                        "type": "string"
+                    },
+                    "New_Property_Value": {
+                        "default": "",
+                        "description": "An optional IndividualProperty key:value pair that will be assigned when the intervention is distributed. Generally used to indicate the broad category of health care cascade to which an intervention belongs to prevent individuals from accessing care through multiple pathways.",
+                        "type": "Constrained String",
+                        "value_source": "'<demographics>::*.Individual_Properties.*.Property':'<demographics>::*.Individual_Properties.*.Values'"
+                    },
+                    "Sim_Types": [
+                        "*"
+                    ],
+                    "Usage_Duration_Constant": {
+                        "default": 6,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "CONSTANT_DISTRIBUTION"
+                        },
+                        "description": "Each instance will receive this constant/fixed value.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Distribution": {
+                        "default": "NOT_INITIALIZED",
+                        "description": "For the distribution of each contraceptive, a randomly selected duration from this distribution will determine when the woman stops using the contracpetive.  This is independent of how long the contraceptive is effective.",
+                        "enum": [
+                            "NOT_INITIALIZED",
+                            "CONSTANT_DISTRIBUTION",
+                            "UNIFORM_DISTRIBUTION",
+                            "GAUSSIAN_DISTRIBUTION",
+                            "EXPONENTIAL_DISTRIBUTION",
+                            "POISSON_DISTRIBUTION",
+                            "LOG_NORMAL_DISTRIBUTION",
+                            "DUAL_CONSTANT_DISTRIBUTION",
+                            "WEIBULL_DISTRIBUTION",
+                            "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        ],
+                        "type": "enum"
+                    },
+                    "Usage_Duration_Exponential": {
+                        "default": 6,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The mean for an exponential distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Gaussian_Mean": {
+                        "default": 6,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "GAUSSIAN_DISTRIBUTION"
+                        },
+                        "description": "The mean for a Gaussian distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Gaussian_Std_Dev": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "GAUSSIAN_DISTRIBUTION"
+                        },
+                        "description": "The standard deviation for a Gaussian distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Kappa": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "WEIBULL_DISTRIBUTION"
+                        },
+                        "description": "The shape value in a Weibull distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Lambda": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "WEIBULL_DISTRIBUTION"
+                        },
+                        "description": "The scale value in a Weibull distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Log_Normal_Mu": {
+                        "default": 6,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                        },
+                        "description": "The mean for a log-normal distribution.",
+                        "max": 3.40282e+38,
+                        "min": -3.40282e+38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Log_Normal_Sigma": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                        },
+                        "description": "The width for a log-normal distribution.",
+                        "max": 3.40282e+38,
+                        "min": -3.40282e+38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Max": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "UNIFORM_DISTRIBUTION"
+                        },
+                        "description": "The maximum of the uniform distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Mean_1": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The mean of the first exponential distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Mean_2": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The mean of the second exponential distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Min": {
+                        "default": 0,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "UNIFORM_DISTRIBUTION"
+                        },
+                        "description": "The minimum of the uniform distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Peak_2_Value": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                        },
+                        "description": "The value to assign to the remaining individuals.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Poisson_Mean": {
+                        "default": 6,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "POISSON_DISTRIBUTION"
+                        },
+                        "description": "The mean for a Poisson distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Proportion_0": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                        },
+                        "description": "The proportion of individuals to assign a value of zero.",
+                        "max": 1,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Duration_Proportion_1": {
+                        "default": 1,
+                        "depends-on": {
+                            "Usage_Duration_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The proportion of individuals in the first exponential distribution.",
+                        "max": 1,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Usage_Expiration_Event": {
+                        "Built-in": [
+                            "Births",
+                            "EveryUpdate",
+                            "NewInfectionEvent",
+                            "TBActivation",
+                            "NewClinicalCase",
+                            "NewSevereCase",
+                            "DiseaseDeaths",
+                            "OpportunisticInfectionDeath",
+                            "NonDiseaseDeaths",
+                            "TBActivationSmearPos",
+                            "TBActivationSmearNeg",
+                            "TBActivationExtrapulm",
+                            "TBActivationPostRelapse",
+                            "TBPendingRelapse",
+                            "TBActivationPresymptomatic",
+                            "TestPositiveOnSmear",
+                            "ProviderOrdersTBTest",
+                            "TBTestPositive",
+                            "TBTestNegative",
+                            "TBTestDefault",
+                            "TBRestartHSB",
+                            "TBMDRTestPositive",
+                            "TBMDRTestNegative",
+                            "TBMDRTestDefault",
+                            "TBFailedDrugRegimen",
+                            "TBRelapseAfterDrugRegimen",
+                            "TBStartDrugRegimen",
+                            "TBStopDrugRegimen",
+                            "PropertyChange",
+                            "STIDebut",
+                            "StartedART",
+                            "StoppedART",
+                            "InterventionDisqualified",
+                            "HIVNewlyDiagnosed",
+                            "GaveBirth",
+                            "Pregnant",
+                            "Emigrating",
+                            "Immigrating",
+                            "HIVTestedNegative",
+                            "HIVTestedPositive",
+                            "NewlySymptomatic",
+                            "SymptomaticCleared",
+                            "TwelveWeeksPregnant",
+                            "FourteenWeeksPregnant",
+                            "SixWeeksOld",
+                            "EighteenMonthsOld",
+                            "STIPreEmigrating",
+                            "STIPostImmigrating",
+                            "STINewInfection",
+                            "STIExposed",
+                            "NewExternalHIVInfection",
+                            "NodePropertyChange",
+                            "HappyBirthday",
+                            "EnteredRelationship",
+                            "ExitedRelationship",
+                            "FirstCoitalAct",
+                            "ExposureComplete",
+                            "VectorToHumanTransmission",
+                            "HumanToVectorTransmission",
+                            "ReceivedInfectiousBites",
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
+                        ],
+                        "default": "",
+                        "description": "When the person stops using the contraceptive, this event will be broadcasted.",
+                        "type": "Constrained String",
+                        "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
+                    },
+                    "Waning_Config": {
+                        "description": "A WaningEffect object used to control the efficacy of the contraceptive, typically over time.",
+                        "type": "idmType:WaningEffect"
+                    },
+                    "class": "FemaleContraceptive",
+                    "iv_type": "IndividualTargeted"
+                },
                 "HumanHostSeekingTrap": {
                     "Attract_Config": {
                         "description": "The configuration of attraction efficacy and waning for human host-seeking trap. Decays over time.",
@@ -7840,6 +8154,298 @@
                         "*"
                     ],
                     "class": "IndividualImmunityChanger",
+                    "iv_type": "IndividualTargeted"
+                },
+                "IndividualNonDiseaseDeathRateModifier": {
+                    "Cost_To_Consumer": {
+                        "default": 0,
+                        "description": "The cost of getting the non-disease death modifier each time it is distributed.",
+                        "max": 999999,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Disqualifying_Properties": {
+                        "default": [],
+                        "description": "A list of IndividualProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
+                        "type": "Dynamic String Set",
+                        "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
+                    "Duration_To_Modifier": {
+                        "description": "Using linear interpolation, a modifier is determined based on the duration since the person received the intervention.  If the duration exceeds the max time, then last modifier value will be used.",
+                        "type": "idmType:InterpolatedValueMap"
+                    },
+                    "Expiration_Duration_Constant": {
+                        "default": 6,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "CONSTANT_DISTRIBUTION"
+                        },
+                        "description": "Each instance will receive this constant/fixed value.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Distribution": {
+                        "default": "NOT_INITIALIZED",
+                        "description": "For the distribution of each intervention, a randomly selected duration from this distribution will determine when the person stops using the intervention.  This is independent of how long the intervention is effective.",
+                        "enum": [
+                            "NOT_INITIALIZED",
+                            "CONSTANT_DISTRIBUTION",
+                            "UNIFORM_DISTRIBUTION",
+                            "GAUSSIAN_DISTRIBUTION",
+                            "EXPONENTIAL_DISTRIBUTION",
+                            "POISSON_DISTRIBUTION",
+                            "LOG_NORMAL_DISTRIBUTION",
+                            "DUAL_CONSTANT_DISTRIBUTION",
+                            "WEIBULL_DISTRIBUTION",
+                            "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        ],
+                        "type": "enum"
+                    },
+                    "Expiration_Duration_Exponential": {
+                        "default": 6,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The mean for an exponential distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Gaussian_Mean": {
+                        "default": 6,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "GAUSSIAN_DISTRIBUTION"
+                        },
+                        "description": "The mean for a Gaussian distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Gaussian_Std_Dev": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "GAUSSIAN_DISTRIBUTION"
+                        },
+                        "description": "The standard deviation for a Gaussian distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Kappa": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "WEIBULL_DISTRIBUTION"
+                        },
+                        "description": "The shape value in a Weibull distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Lambda": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "WEIBULL_DISTRIBUTION"
+                        },
+                        "description": "The scale value in a Weibull distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Log_Normal_Mu": {
+                        "default": 6,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                        },
+                        "description": "The mean for a log-normal distribution.",
+                        "max": 3.40282e+38,
+                        "min": -3.40282e+38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Log_Normal_Sigma": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                        },
+                        "description": "The width for a log-normal distribution.",
+                        "max": 3.40282e+38,
+                        "min": -3.40282e+38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Max": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "UNIFORM_DISTRIBUTION"
+                        },
+                        "description": "The maximum of the uniform distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Mean_1": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The mean of the first exponential distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Mean_2": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The mean of the second exponential distribution.",
+                        "max": 3.40282e+38,
+                        "min": 1.17549e-38,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Min": {
+                        "default": 0,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "UNIFORM_DISTRIBUTION"
+                        },
+                        "description": "The minimum of the uniform distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Peak_2_Value": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                        },
+                        "description": "The value to assign to the remaining individuals.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Poisson_Mean": {
+                        "default": 6,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "POISSON_DISTRIBUTION"
+                        },
+                        "description": "The mean for a Poisson distribution.",
+                        "max": 3.40282e+38,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Proportion_0": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                        },
+                        "description": "The proportion of individuals to assign a value of zero.",
+                        "max": 1,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Duration_Proportion_1": {
+                        "default": 1,
+                        "depends-on": {
+                            "Expiration_Duration_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                        },
+                        "description": "The proportion of individuals in the first exponential distribution.",
+                        "max": 1,
+                        "min": 0,
+                        "type": "float"
+                    },
+                    "Expiration_Event": {
+                        "Built-in": [
+                            "Births",
+                            "EveryUpdate",
+                            "NewInfectionEvent",
+                            "TBActivation",
+                            "NewClinicalCase",
+                            "NewSevereCase",
+                            "DiseaseDeaths",
+                            "OpportunisticInfectionDeath",
+                            "NonDiseaseDeaths",
+                            "TBActivationSmearPos",
+                            "TBActivationSmearNeg",
+                            "TBActivationExtrapulm",
+                            "TBActivationPostRelapse",
+                            "TBPendingRelapse",
+                            "TBActivationPresymptomatic",
+                            "TestPositiveOnSmear",
+                            "ProviderOrdersTBTest",
+                            "TBTestPositive",
+                            "TBTestNegative",
+                            "TBTestDefault",
+                            "TBRestartHSB",
+                            "TBMDRTestPositive",
+                            "TBMDRTestNegative",
+                            "TBMDRTestDefault",
+                            "TBFailedDrugRegimen",
+                            "TBRelapseAfterDrugRegimen",
+                            "TBStartDrugRegimen",
+                            "TBStopDrugRegimen",
+                            "PropertyChange",
+                            "STIDebut",
+                            "StartedART",
+                            "StoppedART",
+                            "InterventionDisqualified",
+                            "HIVNewlyDiagnosed",
+                            "GaveBirth",
+                            "Pregnant",
+                            "Emigrating",
+                            "Immigrating",
+                            "HIVTestedNegative",
+                            "HIVTestedPositive",
+                            "NewlySymptomatic",
+                            "SymptomaticCleared",
+                            "TwelveWeeksPregnant",
+                            "FourteenWeeksPregnant",
+                            "SixWeeksOld",
+                            "EighteenMonthsOld",
+                            "STIPreEmigrating",
+                            "STIPostImmigrating",
+                            "STINewInfection",
+                            "STIExposed",
+                            "NewExternalHIVInfection",
+                            "NodePropertyChange",
+                            "HappyBirthday",
+                            "EnteredRelationship",
+                            "ExitedRelationship",
+                            "FirstCoitalAct",
+                            "ExposureComplete",
+                            "VectorToHumanTransmission",
+                            "HumanToVectorTransmission",
+                            "ReceivedInfectiousBites",
+                            "InfectionCleared",
+                            "WouldHaveDied",
+                            "WouldHaveHadAIDS",
+                            "WouldHaveEnteredLatentStage",
+                            "HIVInfectionStageEnteredLatent",
+                            "HIVInfectionStageEnteredAIDS",
+                            "HIVInfectionStageEnteredOnART"
+                        ],
+                        "default": "",
+                        "description": "When the person stops using the intervention, this event will be broadcasted.",
+                        "type": "Constrained String",
+                        "value_source": "'<configuration>:Custom_Individual_Events.*' or Built-in"
+                    },
+                    "Intervention_Name": {
+                        "default": "IndividualNonDiseaseDeathRateModifier",
+                        "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
+                        "type": "string"
+                    },
+                    "New_Property_Value": {
+                        "default": "",
+                        "description": "An optional IndividualProperty key:value pair that will be assigned when the intervention is distributed. Generally used to indicate the broad category of health care cascade to which an intervention belongs to prevent individuals from accessing care through multiple pathways.",
+                        "type": "Constrained String",
+                        "value_source": "'<demographics>::*.Individual_Properties.*.Property':'<demographics>::*.Individual_Properties.*.Values'"
+                    },
+                    "Sim_Types": [
+                        "*"
+                    ],
+                    "class": "IndividualNonDiseaseDeathRateModifier",
                     "iv_type": "IndividualTargeted"
                 },
                 "Ivermectin": {
@@ -9341,6 +9947,24 @@
                             "Create_Nucleotide_Sequence_From": "NUCLEOTIDE_SEQUENCE,BARCODE_STRING"
                         },
                         "description": "A series of nucleotide base letters (A, C, G, T) that represent the drug resistant values at locations in the genome.  There must be one character for each location defined in <config>.Parasite_Genetics.Drug_Resistant_Genome_Locations.",
+                        "type": "string"
+                    },
+                    "HRP_Allele_Frequencies_Per_Genome_Location": {
+                        "default": [],
+                        "depends-on": {
+                            "Create_Nucleotide_Sequence_From": "ALLELE_FREQUENCIES"
+                        },
+                        "description": "The fractions of allele occurrences for each location in the HRP markers.  This 2D array should have one array for each HRP location.  For each location, there should be four values between 0 and 1 indicating the probability that specific character will appear.  The possible letters are'A'=0, 'C'=1, 'G'=2, 'T'=3.",
+                        "max": 1,
+                        "min": 0,
+                        "type": "Vector2d Float"
+                    },
+                    "HRP_String": {
+                        "default": "",
+                        "depends-on": {
+                            "Create_Nucleotide_Sequence_From": "NUCLEOTIDE_SEQUENCE,BARCODE_STRING"
+                        },
+                        "description": "A series of nucleotide base letters (A, C, G, T) that represent the HRP values at locations in the genome.  There must be one character for each location defined in <config>.Parasite_Genetics.HRP_Genome_Locations. 'A' means HRP marker is not present and a non-'A' means it is.",
                         "type": "string"
                     },
                     "Ignore_Immunity": {
@@ -11098,7 +11722,8 @@
                             "ExplicitAgeRangesAndGender",
                             "ExplicitGender",
                             "PossibleMothers",
-                            "ExplicitDiseaseState"
+                            "ExplicitDiseaseState",
+                            "Pregnant"
                         ],
                         "type": "enum"
                     },
@@ -11939,6 +12564,11 @@
                         "min": 0,
                         "type": "float"
                     },
+                    "Released_Microsporidia": {
+                        "default": 0,
+                        "description": "A boolean indicating if the released vectors are infected with microsporidia or not.",
+                        "type": "bool"
+                    },
                     "Released_Number": {
                         "default": 10000,
                         "description": "The number of mosquitoes released in the intervention.",
@@ -12327,7 +12957,8 @@
                             "ExplicitAgeRangesAndGender",
                             "ExplicitGender",
                             "PossibleMothers",
-                            "ExplicitDiseaseState"
+                            "ExplicitDiseaseState",
+                            "Pregnant"
                         ],
                         "type": "enum"
                     },
@@ -13969,6 +14600,11 @@
                     "description": "If true the '30-Day Avg Infection Duration' channel is included in the report.",
                     "type": "bool"
                 },
+                "Include_Pregnancies": {
+                    "default": 0,
+                    "description": "If true, channels are added about pregnancies and possible mothers.",
+                    "type": "bool"
+                },
                 "Max_Age_Years": {
                     "default": 9.3228e+35,
                     "description": "Maximum age in years of people to collect data on",
@@ -14039,6 +14675,11 @@
                 "Include_30Day_Avg_Infection_Duration": {
                     "default": 1,
                     "description": "If true the '30-Day Avg Infection Duration' channel is included in the report.",
+                    "type": "bool"
+                },
+                "Include_Pregnancies": {
+                    "default": 0,
+                    "description": "If true, channels are added about pregnancies and possible mothers.",
                     "type": "bool"
                 },
                 "Max_Age_Years": {
@@ -14149,12 +14790,12 @@
                 },
                 "Barcodes": {
                     "default": [],
-                    "description": "A list of barcode strings where a column will be created with the number of human infections with that barcode.  One can use '*' for a wild card.  A 'BarcodeOther' column will be created for barcodes not defined.",
+                    "description": "A list of barcode strings where a column will be created with the number of human infections with that barcode.  One can use '*' for a wild card.  A 'OtherBarcodes' column will be created for barcodes not defined.",
                     "type": "Vector String"
                 },
-                "Drug_Resistant_Statistic_Type": {
+                "Drug_Resistant_And_HRP_Statistic_Type": {
                     "default": "NUM_PEOPLE_WITH_RESISTANT_INFECTION",
-                    "description": "Indicates the statistic in the Drug Resistant columns: NUM_PEOPLE_WITH_RESISTANT_INFECTION = A person is counted if they have one infection with that drug resistant marker; NUM_INFECTIONS = The total number of infections with that marker.",
+                    "description": "Indicates the statistic in the Drug Resistant & HRP columns: NUM_PEOPLE_WITH_RESISTANT_INFECTION = A person is counted if they have one infection with that drug resistant marker; NUM_INFECTIONS = The total number of infections with that marker.",
                     "enum": [
                         "NUM_PEOPLE_WITH_RESISTANT_INFECTION",
                         "NUM_INFECTIONS"
@@ -14163,7 +14804,12 @@
                 },
                 "Drug_Resistant_Strings": {
                     "default": [],
-                    "description": "A list of strings representing the set of drug resistant markers.  A column will be created with the number of humans infetions with that barcode.  One can use '*' for a wild card.  A 'BarcodeOther' column will be created for barcodes not defined.",
+                    "description": "A list of strings representing the set of drug resistant markers.  A column will be created with the number of humans infections with that Drug Resistant String.  One can use '*' for a wild card.  A 'NoDrugResistance' column will be created for drug resistant strings not defined.",
+                    "type": "Vector String"
+                },
+                "HRP_Strings": {
+                    "default": [],
+                    "description": "A list of strings representing the set of HRP markers.  A column will be created with the number of humans infections with that HRP string.  One can use '*' for a wild card.  A 'OtherHRP' column will be created for HRP strings not defined.",
                     "type": "Vector String"
                 },
                 "IP_Key_To_Collect": {
@@ -14330,7 +14976,7 @@
                 },
                 "Include_Death_By_State_Columns": {
                     "default": 0,
-                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECIOUS, and MALE.",
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFETCIOUS, and MALE.",
                     "type": "bool"
                 },
                 "Include_Vector_State_Columns": {
@@ -14410,12 +15056,17 @@
             "ReportVectorStats": {
                 "Include_Death_By_State_Columns": {
                     "default": 0,
-                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECIOUS, and MALE.",
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECTIOUS, and MALE.",
                     "type": "bool"
                 },
                 "Include_Gestation_Columns": {
                     "default": 0,
                     "description": "Adds columns for feeding and gestation",
+                    "type": "bool"
+                },
+                "Include_Microsporidia_Columns": {
+                    "default": 0,
+                    "description": "Adds columns for the number of vectors that have microsporidia in each state during this time step.",
                     "type": "bool"
                 },
                 "Include_Wolbachia_Columns": {
@@ -14448,12 +15099,17 @@
                 },
                 "Include_Death_By_State_Columns": {
                     "default": 0,
-                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECIOUS, and MALE.",
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFECTIOUS, and MALE.",
                     "type": "bool"
                 },
                 "Include_Gestation_Columns": {
                     "default": 0,
                     "description": "Adds columns for feeding and gestation",
+                    "type": "bool"
+                },
+                "Include_Microsporidia_Columns": {
+                    "default": 0,
+                    "description": "Adds columns for the number of vectors that have microsporidia in each state during this time step.",
                     "type": "bool"
                 },
                 "Include_Wolbachia_Columns": {
@@ -14641,7 +15297,8 @@
                     "ExplicitAgeRangesAndGender",
                     "ExplicitGender",
                     "PossibleMothers",
-                    "ExplicitDiseaseState"
+                    "ExplicitDiseaseState",
+                    "Pregnant"
                 ],
                 "type": "enum"
             },
@@ -14826,7 +15483,8 @@
                     "ExplicitAgeRangesAndGender",
                     "ExplicitGender",
                     "PossibleMothers",
-                    "ExplicitDiseaseState"
+                    "ExplicitDiseaseState",
+                    "Pregnant"
                 ],
                 "type": "enum"
             },
@@ -15143,6 +15801,14 @@
                 "default": 0,
                 "description": "If true the Full Parasite Genetics model will simulate the base model.  That is, a person can only get one infection per timestep, only adult vectors can get infected, and a vectors is always infected once it becomes infected.",
                 "type": "bool"
+            },
+            "HRP_Genome_Locations": {
+                "ascending": 1,
+                "default": [],
+                "description": "This is an array of genome locations where each HRP allele is found.  Its length determines the total number of possible HRP related markers.  A value of 'A' implies that the HRP marker is not present.  A non-'A' value implies that HRP is present.",
+                "max": 22790000.0,
+                "min": 1,
+                "type": "Vector Int"
             },
             "MSP_Genome_Location": {
                 "default": 1,
@@ -15902,6 +16568,56 @@
                 "min": 1,
                 "type": "float"
             },
+            "Microsporidia_Duration_To_Disease_Acquisition_Modification": {
+                "description": "A modifier is selected based on the duration of the age of the microsporidia infection.  The modifier is used to modify the probability the vector aquires the disease (i.e. malaria).",
+                "type": "idmType:InterpolatedValueMap"
+            },
+            "Microsporidia_Duration_To_Disease_Transmission_Modification": {
+                "description": "A modifier is selected based on the duration of the age of the microsporidia infection.  The modifier is used to modify the probability the vector transmit the disease (i.e. malaria).",
+                "type": "idmType:InterpolatedValueMap"
+            },
+            "Microsporidia_Female_Mortality_Modifier": {
+                "default": 1,
+                "description": "A modifier on the death rate for female vectors due to general life expectancy, age, and dry heat",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Microsporidia_Female_To_Egg_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability an infected female will infect her eggs when laying them.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Microsporidia_Female_To_Male_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability an infected female will infect an uninfected male during mating.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Microsporidia_Larval_Growth_Modifier": {
+                "default": 1,
+                "description": "A modifier to the daily, temperature dependent, larval growth progression to immature.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Microsporidia_Male_Mortality_Modifier": {
+                "default": 1,
+                "description": "A modifier on the death rate for male vectors due to general life expectancy, age, and dry heat",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Microsporidia_Male_To_Female_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability an infected male will infect an uninfected female during mating.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
             "Name": {
                 "default": "UNINITIALIZED STRING",
                 "description": "Name of this species of vectors",
@@ -16052,7 +16768,7 @@
                 },
                 "Expire_At_Durability_Map_End": {
                     "default": 0,
-                    "description": "Set to 1 to let the intervention expire when the end of the map is reached.",
+                    "description": "Set to 1 to have efficacy go to zero and let the intervention expire when the end of the map is reached.  Only vaccines and bednet usage currently support this expiration feature.",
                     "type": "bool"
                 },
                 "Initial_Effect": {
@@ -16064,7 +16780,7 @@
                 },
                 "Reference_Timer": {
                     "default": 0,
-                    "description": "Timestamp at which linear-map should be anchored.",
+                    "description": "Used by TyphoidVaccine and TyphoidWASH only.  Timestamp at which linear/piecewise-map should be anchored.  We want to 'fast-forward' the time-since-start for birth-triggered individuals so the map catches up to what it would have been if they'd been alive.",
                     "max": 2147480000.0,
                     "min": 0,
                     "type": "integer"
@@ -16106,7 +16822,7 @@
                 },
                 "Expire_At_Durability_Map_End": {
                     "default": 0,
-                    "description": "Set to 1 to let the intervention expire when the end of the map is reached.",
+                    "description": "Set to 1 to have efficacy go to zero and let the intervention expire when the end of the map is reached.  Only vaccines and bednet usage currently support this expiration feature.",
                     "type": "bool"
                 },
                 "Initial_Effect": {
@@ -16118,7 +16834,7 @@
                 },
                 "Reference_Timer": {
                     "default": 0,
-                    "description": "Timestamp at which linear-map should be anchored.",
+                    "description": "Used by TyphoidVaccine and TyphoidWASH only.  Timestamp at which linear/piecewise-map should be anchored.  We want to 'fast-forward' the time-since-start for birth-triggered individuals so the map catches up to what it would have been if they'd been alive.",
                     "max": 2147480000.0,
                     "min": 0,
                     "type": "integer"
