@@ -5,6 +5,6 @@ fpdf2
 seaborn
 scikit-learn
 scipy
-snakemake~=7.18
+snakemake
 plotnine
 datar
