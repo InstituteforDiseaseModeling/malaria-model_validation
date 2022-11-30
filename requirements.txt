@@ -1,10 +1,9 @@
 -i https://packages.idmod.org/api/pypi/pypi-production/simple
-idmtools-cli~=1.6.4
 emodpy-malaria~=2.0
-fpdf2
-seaborn
-scikit-learn
-scipy
-snakemake
-plotnine
-datar
+fpdf2~=2.6
+seaborn~=0.12
+scikit-learn~=1.1
+scipy~=1.9
+snakemake~=7.18
+plotnine~=0.10
+datar~=0.9
