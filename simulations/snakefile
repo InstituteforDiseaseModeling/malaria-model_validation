@@ -11,7 +11,7 @@ from simulations.helpers import get_comps_id_filename
 sites, nSims, script_names = load_sites()
 
 id_folder = manifest.comps_id_folder
-input_files = [manifest.suite_id_file, manifest.eradication_found, manifest.sif_id]
+download_files = [manifest.suite_id_file, manifest.eradication_found, manifest.sif_id]
 experiment_files = list()
 analyzers_files = list()
 
@@ -40,17 +40,18 @@ def get_command(script="run_sims.py", python_version: str=None, site: str=None, 
 for site in sites:
     experiment_files.append(get_comps_id_filename(site, level=0))
     analyzers_files.append(get_comps_id_filename(site, level=2))
-    input_files.append(get_comps_id_filename(site, level=3)) # todo: change to a output file from plotting rules
+    download_files.append(get_comps_id_filename(site, level=3))
 
-print( input_files )
+plot_file = manifest.comps_id_folder + 'plot_completed'
+report_file = manifest.comps_id_folder + 'report_completed'
+final_file = manifest.comps_id_folder + 'workflow_completed'
 
 rule run:
-    input: input_files
-    output: manifest.comps_id_folder + 'workflow_completed'
+    input: report_file
+    output: final_file
     run:
-        with open(manifest.comps_id_folder + 'workflow_completed', 'w') as file:
+        with open(final_file, 'w') as file:
             file.write('Workflow is completed.')
-
 
 rule clean:
     input: 
@@ -63,29 +64,67 @@ rule clean:
             if os.path.exists(filePath):
                 os.remove(filePath)
 
+def clean_final_file():
+    if os.path.exists(final_file):
+        os.remove(final_file)
+
+def clean_report():
+    if os.path.exists(report_file):
+        os.remove(report_file)
+    clean_final_file()
+
+def clean_plot():
+    if os.path.exists(plot_file):
+        os.remove(plot_file)
+    clean_report()
+
+def clean_download():
+    for download_file in download_files[3:]: # keep the suite_id, Eradication found and sif_id files
+        if os.path.exists(download_file):
+            os.remove(download_file)
+    clean_plot()
+
+def clean_ana():
+    for analyzers_file in analyzers_files:
+            if os.path.exists(analyzers_file):
+                os.remove(analyzers_file)
+    clean_download()
+
+def clean_exp():
+    for experiment_file in experiment_files:
+            if os.path.exists(experiment_file):
+                os.remove(experiment_file)
+    clean_ana()
+
 rule clean_exp:
     input:
     output:
     run:
-        for experiment_file in experiment_files:
-            if os.path.exists(experiment_file):
-                os.remove(experiment_file)
+        clean_exp()
 
 rule clean_ana:
     input:
     output:
     run:
-        for analyzers_file in analyzers_files:
-            if os.path.exists(analyzers_file):
-                os.remove(analyzers_file)
+        clean_ana()
 
 rule clean_download:
     input:
     output:
     run:
-        for download_file in input_files[1:]: # keep the suite_id file
-            if os.path.exists(download_file):
-                os.remove(download_file)
+        clean_download()
+
+rule clean_plot:
+    input:
+    output:
+    run:
+        clean_plot()
+
+rule clean_report:
+    input:
+    output:
+    run:
+        clean_report()
 
 rule save_exp_to_suite:
     input: experiment_files
@@ -111,6 +150,18 @@ rule sif_id:
                 sif_file.write(manifest.singularity_id)
         else:
             print("Not using singularity image.")
+
+rule plot:
+    input: download_files
+    output: plot_file
+    run:
+        shell(get_command(script=str(manifest.base_script_plot_filepath / "run_generate_validation_comparisons_site.py")))
+
+rule report:
+    input: plot_file
+    output: report_file
+    run:
+        shell(get_command(script=str(manifest.plot_output_filepath.parent / "create_pdf_report.py")))
 
 rule chonyi_1999_run_sim:
     input: 

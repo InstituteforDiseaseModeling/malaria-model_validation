@@ -14,7 +14,7 @@
   - [Option 2_Run all Sites with Snakemake (Recommended)](#option-2_run-all-sites-with-snakemake-recommended)
     - [How to Change Default Setting](#how-to-change-default-setting)
     - [Snakemake Tips](#snakemake-tips)
-- [Generate Plots and Final Reports](#generate-plots-and-final-reports)
+- [Check Plots and Final Report](#check-plots-and-final-report)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -112,23 +112,35 @@ snakemake -j
   snakemake -j
   ```
 
-  - If you want to re-run the analyzers steps with previous experiments you ran, you can delete the analyzer id files and run:
+  - If you want to re-run the analyzers steps with previous experiments you ran, you can delete the analyzer id files and all following the analyzers steps and run:
   ```bash
-  snakemake clean_ana clean_download -j
+  snakemake clean_ana -j
   snakemake -j
   ```
 
-  - Simular to previous scenario, if you want to run only the download and plotting steps:
+  - Simular to previous scenario, if you want to only re-run starting from the download steps:
   ```bash
   snakemake clean_download -j
   snakemake -j
   ```
+  
+  - Simular to previous scenario, if you want to only re-run starting from the plotting steps:
+  ```bash
+  snakemake clean_plot -j
+  snakemake -j
+  ```
+  - Simular to previous scenario, if you want to only re-run starting from the reporting steps:
+  ```bash
+  snakemake clean_report -j
+  snakemake -j
+  ```
 
-  - If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run 
-    (/simulations/COMPS_ID/{site_name}_COMPS_ID_exp_submit, _analyzers and _download files) and run "snakemake -j" again.
+    - If you want to re-run simulations for certain sites, delete COMPS ID files for those sites that you want to -re-run 
+      (/simulations/COMPS_ID/{site_name}_COMPS_ID_exp_submit, _analyzers and _download files) and run
+      "snakemake clean_plot -j" and then "snakemake -j" again.
 
-  - If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_analyzers 
-    and _download files only and re-run "snakemake -j".
+    - If you want to re-run the analyzers and plotting steps for certain sites, delete the {site_name}_COMPS_ID_analyzers 
+      and _download files only and run "snakemake clean_plot -j" and then "snakemake -j".
 
 - Other snakemake tips:
   - Snakemake log can be found in '\malaria-model_validation\simulations\.snakemake\log'.
@@ -137,10 +149,6 @@ snakemake -j
   - If you have incompleted file from previous snakemake instance, you can run "snakemake --cleanup-metadata 
     <filenames>" to clean up the metadata. Or you can delete the '.snakemake' folder to clean up the metadata manually.
 
-
-# Generate Plots and Final Reports
-Run Plotting and reportting scripts with site(s) that you ran:
-```bash
-Rscript create_plots\run_generate_validation_comparisons_site.R
-python3 report\create_pdf_report_3.py
-```
+# Check Plots and Final Report
+You can check the plots in \malaria-model_validation\report\_plots folder and final report:
+\malaria-model_validation\report\Malaria_model_validation_output_{date}}({time}).pdf.
