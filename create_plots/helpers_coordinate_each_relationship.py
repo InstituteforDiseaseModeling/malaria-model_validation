@@ -207,6 +207,9 @@ def generate_parasite_density_outputs(coord_csv, simulation_output_filepath, bas
     combined_df_asex = combined_dfs[0]
     combined_df_gamet = combined_dfs[1]
 
+    if combined_df_gamet.empty or combined_df_asex.empty:
+        return
+
     # todo: combine these 2 plotting block in to one function
     # asexual parasite density
     plot_output = plot_par_dens_ref_sim_comparison(combined_df=combined_df_asex)
@@ -287,6 +290,8 @@ def generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_
 
     combined_df = prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_filepath,
                                     benchmark_simulation_filepath)
+    if combined_df.empty:
+        return
 
     plot_output = plot_infectiousness_ref_sim_comparison(combined_df)
     plot_list = plot_output[0]
