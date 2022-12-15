@@ -13,11 +13,14 @@ from create_plots.helpers_coordinate_each_relationship import generate_age_incid
     generate_age_infection_duration_outputs
 from datetime import datetime
 import shutil
+import argparse
+import os
 
 
-def run():
+def run(subset="All"):
     # read in data and create plots
     coord_csv = load_coordinator_df(set_index=False)
+    print(f"plotting with subset = {subset}.")
     if plot_output_filepath.is_dir():
         date, time = datetime.now().strftime("%d-%m-%Y %H-%M-%S").split(' ')
         plot_output_bak_filepath = plot_output_filepath.parent / (str(plot_output_filepath.name) + f'_{date}_{time}_backup')
@@ -32,46 +35,56 @@ def run():
     else:
         print(f"Folder {plot_output_filepath} was created")
 
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    #                         age - incidence                         #
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
-                                   benchmark_simulation_filepath=benchmark_simulation_filepath)
+    if subset.lower() == "all" or "core_relationship" in subset.lower():
 
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    #                         age - prevalence                        #
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
-                                    benchmark_simulation_filepath=benchmark_simulation_filepath)
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        #                         age - incidence                         #
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        generate_age_incidence_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
+                                       benchmark_simulation_filepath=benchmark_simulation_filepath)
 
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    #                      age - parasite density                     #
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    generate_parasite_density_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
-                                      benchmark_simulation_filepath=benchmark_simulation_filepath)
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        #                         age - prevalence                        #
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        generate_age_prevalence_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
+                                        benchmark_simulation_filepath=benchmark_simulation_filepath)
 
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    #                   infectiousness to vectors                        #
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
-                                    benchmark_simulation_filepath=benchmark_simulation_filepath)
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        #                      age - parasite density                     #
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        generate_parasite_density_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
+                                           benchmark_simulation_filepath=benchmark_simulation_filepath)
 
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    #                    age - infection duration                     #
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
-    # set positive threshold density for sampled parasites in simulation output (to match PCR threshold in reference)
-    pos_thresh_dens = 0.5  # Note: from the reference dataset, the smallest positive density was 39. (39=min(ref_df$DENSITY[ref_df$DENSITY>0], na.rm=TRUE) - 1)
-    # specify binning for duration of infection
-    duration_bins = list(range(0, 400, 50))
-    duration_bins.append(500)
-    generate_age_infection_duration_outputs(coord_csv, simulation_output_filepath, base_reference_filepath,
-                                            plot_output_filepath, pos_thresh_dens, duration_bins,
-                                            benchmark_simulation_filepath=benchmark_simulation_filepath)
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        #                   infectiousness to vectors                        #
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        generate_infectiousness_outputs(coord_csv, simulation_output_filepath, base_reference_filepath, plot_output_filepath,
+                                        benchmark_simulation_filepath=benchmark_simulation_filepath)
+
+    if subset.lower() == "all" or "infection_duration" in subset.lower():
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        #                    age - infection duration                     #
+        # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = #
+        # set positive threshold density for sampled parasites in simulation output (to match PCR threshold in reference)
+        pos_thresh_dens = 0.5  # Note: from the reference dataset, the smallest positive density was 39. (39=min(ref_df$DENSITY[ref_df$DENSITY>0], na.rm=TRUE) - 1)
+        # specify binning for duration of infection
+        duration_bins = list(range(0, 400, 50))
+        duration_bins.append(500)
+        generate_age_infection_duration_outputs(coord_csv, simulation_output_filepath, base_reference_filepath,
+                                                plot_output_filepath, pos_thresh_dens, duration_bins,
+                                                benchmark_simulation_filepath=benchmark_simulation_filepath)
     # generate dummy file for snakemake plot rule.
+    if not os.path.isdir(comps_id_folder):
+        os.mkdir(comps_id_folder)
     with open(comps_id_folder + 'plot_completed', 'w') as file:
         file.write('Plotting is completed.')
 
 
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser(description='Process site name')
+    parser.add_argument('--subset', '-s', type=str, help='subset name(s)',
+                        default="All")
+
+    args = parser.parse_args()
+    run(subset=args.subset)
 
