@@ -5,13 +5,12 @@
 **Table of Contents**
 
 - [User Installation](#user-installation)
-  - [Developer Installation](#developer-installation)
-  - [Regular Installation](#regular-installation)
+  - [Installation](#installation)
   - [Pre-requisites](#pre-requisites)
-- [Run Simulations](#run-simulations)
+- [Run workflow](#run-workflow)
   - [Login to Comps](#login-to-comps)
-  - [Option 1_Run One Site with Python Scripts](#option-1_run-one-site-with-python-scripts)
-  - [Option 2_Run all Sites with Snakemake (Recommended)](#option-2_run-all-sites-with-snakemake-recommended)
+  - [Option 1: Run all Sites with Snakemake](#option-1-run-all-sites-with-snakemake)
+  - [Option 2: Run Sites in Certain Subset(s) with Snakemake](#option-2-run-sites-in-certain-subsets-with-snakemake)
     - [How to Change Default Setting](#how-to-change-default-setting)
     - [Snakemake Tips](#snakemake-tips)
 - [Check Plots and Final Report](#check-plots-and-final-report)
@@ -25,21 +24,14 @@ Note: we recemend to upgrade pip to the latest version before installation:
 pip install --upgrade pip
 ```
 
-## Developer Installation
-If you want to install this project in a editable mode('develop' mode), run the following command: 
+## Installation
+Run the following command: ( it will install this project in editable/'develop' mode): 
 ```bash
 pip install -e . -r requirements.txt
 ```
 or you can run 
 ```bash
 pip install -e . -i https://packages.idmod.org/api/pypi/pypi-production/simple
-```
-
-## Regular Installation
-```bash
-pip install wheel
-python3 setup.py bdist_wheel
-pip install dist/{update-this-with-the-wheel-file-name}.whl --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
 ```
 
 ## Pre-requisites
@@ -60,7 +52,7 @@ The conflict is caused by:
 Idmtools has dependencies with an old pandas version, we have opened a ticket to update this dependency on idmtools and are waiting for a patch release: https://github.com/InstituteforDiseaseModeling/idmtools/issues/1774.
 For now, you can workarround this error by removing 'datar' from our requirements.txt and install it after installating our package with "pip install datar".
 
-# Run Simulations
+# Run Workflow
 
 ## Login to Comps
 If you haven't login to Comps for a while, you can run the following script to login and cache your credential:
@@ -72,21 +64,22 @@ When you see "Password:" in the terminal, enter your comps password and hit ente
 ![alt text](./comps_login.PNG?raw=true)
 
 
-## Option 1_Run One Site with Python Scripts (Not recommended)
-```bash
-cd simulations
-python3 run_sims.py -s {site_name} -n {nSims}
-python3 add_suite.py(optional step) 
-python3 run_analyzers.py -s {site_name}
-python3 download_wi.py -s {site_name}
-```
-
-
-## Option 2_Run all Sites with Snakemake (Recommended)
-Run the whole pipeline with all sites in simulation_coordinator.csv:
+## Option 1: Run all Sites with Snakemake
+Run the snakemake pipeline with all sites in simulation_coordinator.csv:
 ```bash
 snakemake -j
 ```
+
+## Option 2: Run Sites in Certain Subset(s) with Snakemake
+Run the snakemake pipeline with sites in one or multiple subsets in simulation_coordinator.csv:
+```bash
+snakemake --config -s="core_relationship" -j
+```
+or 
+```bash
+snakemake --config -s="core_relationship, infection_duration" -j
+```
+
 
 ### How to Change Default Setting
 - Some details about our default setting:
