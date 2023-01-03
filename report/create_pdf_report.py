@@ -291,7 +291,7 @@ def write_core_relationship_page(pdf, section_number):
                 '\n\n',
                 None,
                 f'{plot_folder}/summary_table_sim_benchmark.csv'],
-        }
+         }
     results_summary_subsection = Section(pdf, section_title="Results summary", content=results_summary_content)
     visual_comparison_content = \
         {'Incidence by age':
@@ -389,7 +389,7 @@ def write_infection_duration_page(pdf, section_number):
                 'whether or not the start and end of the infection was observed.',
                 [f'{plot_folder}/site_compare_infect_duration_age_navrongo_2000.png'],
                 None],
-        }
+         }
     visual_comparison_subsection_2 = Section(pdf,
                                              section_title="Visual comparison of reference data and matched simulations",
                                              content=visual_comparison_content_2)
