@@ -510,6 +510,8 @@ def prepare_dens_df(coord_csv, simulation_output_filepath, base_reference_filepa
                                                            relationship_name='age_parasite_density',
                                                            relationship_sim_filename='parasite_densities_by_age_month.csv')
 
+    if not available_sites:
+        return pd.DataFrame(), pd.DataFrame()
     # iterate through sites, grabbing relevant reference and simulation data to plot; combine data into a dataframe containing all sites
     sim_df = pd.DataFrame()
     bench_df = pd.DataFrame()
@@ -671,6 +673,8 @@ def prepare_infect_df(coord_csv, simulation_output_filepath, base_reference_file
                                                            relationship_name='infectiousness_to_mosquitos',
                                                            relationship_sim_filename='infectiousness_by_age_density_month.csv')
 
+    if not available_sites:
+        return pd.DataFrame()
     # iterate through sites, grabbing relevant reference and simulation data to plot; combine data into a dataframe containing all sites
     sim_df = pd.DataFrame()
     bench_df = pd.DataFrame()
@@ -785,33 +789,29 @@ def get_sim_survey(sim_dir, ref_df, seeds=None):
         sim_subset_full = pd.read_csv(file_path)
     else:
         # get first year of sampling in reference dataset. the simulation will be referenced from the first day of that year
-        # todo: need code review
-        # R code:
-        # first_ref_date = as.Date(paste0(year(min(ref_df$date, na.rm=TRUE)), '-01-01'))
-        first_ref_date = datetime.date(datetime.datetime.strptime(ref_df['date'].dropna().min(), "%Y-%m-%d").year, 1, 1)
+        first_ref_date = datetime.date(datetime.datetime.strptime(str(ref_df['date'].dropna().min()), "%Y-%m-%d %H:%M:%S").year, 1, 1)
         indIDs = ref_df['SID'].unique()
+        ref_df['date'] = ref_df['date'].apply(lambda x: x.date())
 
-        # todo:
-        # R code: sim_full = fread(paste0(sim_dir, '/patient_reports.csv'))
         patient_report_path = os.path.join(sim_dir, 'patient_reports.csv')
         sim_full = pd.read_csv(patient_report_path)
-        sim_full['date'] = first_ref_date + sim_full['simday']
-        sim_full['age'] = sim_full['age'] / 365
 
         if seeds is None:
             seeds = sim_full['Run_Number'].unique()
 
+        sim_subset_full = pd.DataFrame()
         for seed in sorted(seeds):
-            print('Currently on seed ' + seed)
+            print('Currently on seed ' + str(seed))
             sim = sim_full[sim_full['Run_Number'] == seed]  # subset to desired run
+            sim['date'] = [first_ref_date + datetime.timedelta(days=int(simday)) for simday in sim['simday']]
+            sim['age'] = sim['age'] / 365
             # track which individuals have already been included from the simulation (
             # to avoid double-sampling simulation individuals)
-            included_ids = list()
-            # todo: you are using sim_subset = data.table() while I am using Pandas dataframe
+            included_ids = set()
             sim_subset = pd.DataFrame()
             for ii in range(len(indIDs)):
                 if ii % 50 == 0:
-                    print('Currently on individual ' + ii + ' out of ', len(indIDs))
+                    print('Currently on individual ' + str(ii) + ' out of ', len(indIDs))
                 ref_df_cur = ref_df[ref_df['SID'] == indIDs[ii]]
                 ref_df_cur = ref_df_cur.sort_values(by='date')
                 # find a matching individual
@@ -819,8 +819,8 @@ def get_sim_survey(sim_dir, ref_df, seeds=None):
                 day_cur = ref_df_cur['date'].iloc[0]
 
                 # use age-specific matches
-                id_candidates = sim[(sim['date'] == day_cur) & (round(sim['age'] == round(age_cur)))]['id']
-                id_candidates = [idx not in included_ids for idx in id_candidates]
+                id_candidates = sim[(sim['date'] == day_cur) & (round(sim['age']) == round(age_cur))]['id'].tolist()
+                id_candidates = [idx for idx in id_candidates if idx not in included_ids]
                 # if no perfect age-match remain, expand year-range until finding a match
                 if len(id_candidates) == 0:
                     year_range = 0
@@ -831,8 +831,8 @@ def get_sim_survey(sim_dir, ref_df, seeds=None):
                         # id_candidates = sim$id[intersect(which(sim$date == day_cur), which(round(sim$age) % in % seq((round(age_cur)-year_range), (round(age_cur)+year_range))))]
                         id_candidates = sim[(sim['date'] == day_cur)
                                             & (sim['age'].round().isin(range((round(age_cur)-year_range),
-                                                                             round(age_cur)+year_range)))]['id']
-                        id_candidates = [idx not in included_ids for idx in id_candidates]
+                                                                              round(age_cur)+year_range)))]['id'].tolist()
+                        id_candidates = [idx for idx in id_candidates if idx not in included_ids]
 
                     if len(id_candidates) == 0:
                         print('Problem: no age-matched simulation individual found for reference id: ' + indIDs[ii])
@@ -840,18 +840,17 @@ def get_sim_survey(sim_dir, ref_df, seeds=None):
                         print('No exact age match remaining for reference id: ' + indIDs[ii]
                               + '. Used simulation individual within ', year_range, ' years.')
 
-                id_sim_cur = random.sample(id_candidates, 1)  # todo: should we remove this id after drawing?
-                included_ids.extend(id_sim_cur)
+                id_sim_cur = random.sample(id_candidates, 1)[0]  # todo: should we remove this id after drawing?
+                included_ids.add(id_sim_cur)
 
                 # keep the same simulation dates as the reference samples for this individual
                 sim_subset_cur = sim[(sim['id'] == id_sim_cur) & (sim['date'].isin(ref_df_cur['date']))]
                 sim_subset = pd.concat([sim_subset, sim_subset_cur])
 
             sim_subset['seed'] = seed
-            if seed == sorted(seeds)[0]:
+            if sim_subset_full.empty:
                 sim_subset_full = sim_subset
             else:
-                # todo: sim_subset_full maybe referenced before assignment
                 sim_subset_full = pd.concat([sim_subset_full, sim_subset])
 
         # rename simulation columns to match reference data

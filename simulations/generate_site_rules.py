@@ -1,7 +1,7 @@
 from simulations.load_inputs import load_sites
 from simulations.helpers import get_comps_id_filename
 
-sites, nSims, script_names = load_sites()
+sites, subset, nSims, script_names = load_sites()
 
 
 def generate_rule(site, n, script_name="run_sims.py"):

@@ -15,9 +15,10 @@ def load_sites():
     coord_df = coord_df[~coord_df.index.isin(skipped_sites)]
 
     sites = coord_df.index.tolist()
+    subsets = coord_df['validation_subset'].tolist()
     nSims = coord_df['nSims'].tolist()
     script_names = coord_df['run_script_name']
-    return sites, nSims, script_names
+    return sites, subsets, nSims, script_names
 
 
 if __name__ == '__main__':
