@@ -169,7 +169,7 @@ def main(subset):
     # generate dummy file for snakemake plot rule.
     if not os.path.isdir(manifest.comps_id_folder):
         os.mkdir(manifest.comps_id_folder)
-    with open(manifest.comps_id_folder + 'report_completed', 'w') as file:
+    with open(manifest.comps_id_folder / 'report_completed', 'w') as file:
         file.write(f'Report file {pdf_name} is generated.')
 
 

@@ -46,7 +46,7 @@ def create_exp(characteristic, nSims, site, my_manifest, not_use_singularity):
     task = _create_task(my_manifest)
 
     if not not_use_singularity:
-        task.set_sif(my_manifest.sif_id)
+        task.set_sif(my_manifest.sif_id.as_posix())
     builder, exp_name = _create_builder(characteristic, nSims, site)
     # create experiment from builder
 

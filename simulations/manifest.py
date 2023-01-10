@@ -27,11 +27,11 @@ plugins_folder = DOWNLOAD_DIR / "reporter_plugins"
 # Create 'Assets' directory or change to a path you prefer. idmtools will upload files found here.
 assets_input_dir = CURRENT_DIR / "Assets"
 # analyzed_ouptut_path = PROJECT_DIR / "EMOD_validation_recalibration" / "simulation_output"
-comps_id_folder = "COMPS_ID/"
-suite_id_file = comps_id_folder + 'Suite'
-version_file = comps_id_folder + "version.txt"
-eradication_found = comps_id_folder + 'eradication_found'
-sif_id = comps_id_folder + 'sif.id'
+comps_id_folder = CURRENT_DIR / "COMPS_ID"
+suite_id_file = comps_id_folder / 'Suite'
+version_file = comps_id_folder / "version.txt"
+eradication_found = comps_id_folder / 'eradication_found'
+sif_id = comps_id_folder / 'sif.id'
 
 simulation_output_filepath = CURRENT_DIR / "output"
 benchmark_simulation_filepath = CURRENT_DIR / "output"
