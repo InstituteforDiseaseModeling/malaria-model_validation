@@ -1,5 +1,6 @@
 import argparse
 import re
+import os
 from importlib.metadata import version
 
 import simulations.manifest as manifest
@@ -59,6 +60,16 @@ def write_to_file(exp_id=None, experiment=None):
         file.write(f"Eradication version: {era_version}\n")
         file.write(f"branch: {era_branch}\n")
         file.write(f"emodpy_malaria version: {emodpy_malaria_version}\n")
+
+
+def get_era_version_from_file():
+    version_file = manifest.version_file
+    if os.path.exists(version_file):
+        with open(version_file, 'r') as ver_file:
+            era_version = ver_file.readline().rstrip().split(":")[-1].strip()
+    else:
+        era_version = 'unknown'
+    return era_version
 
 
 if __name__ == '__main__':
