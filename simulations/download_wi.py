@@ -1,4 +1,3 @@
-import os
 import argparse
 import simulations.params as params
 import simulations.manifest as manifest
