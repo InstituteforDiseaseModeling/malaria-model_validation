@@ -25,28 +25,31 @@ jobs:
         run: |
             echo "upgrade pip"
             python3 --version
-            python --version
             python3 -m pip install --upgrade pip
         shell: bash
-      - id: build
-        name: Build package
+#      - id: build
+#        name: Build package
+#        run: |
+#            python3 setup.py bdist_wheel
+#      - id: wheel
+#        run: python3 ./.github/scripts/get_wheel_filename.py --package-file setup.py --set-gh-actions-var wheel-file
+#        shell: bash
+#      - id: install
+#        name: install package
+#        run: |
+#            pip install ${{ steps.wheel.outputs.wheel-file }} --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
+#            # todo: remove this after emodpy-malaria has a new release
+#            pip install emod-malaria --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple --force-reinstall --no-cache-dir
+#            pip freeze
+      - name: installation
         run: |
-            python3 setup.py bdist_wheel
-      - id: wheel
-        run: python3 ./.github/scripts/get_wheel_filename.py --package-file setup.py --set-gh-actions-var wheel-file
-        shell: bash
-      - id: install
-        name: install package
-        run: |
-            pip install ${{ steps.wheel.outputs.wheel-file }} --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple
-            # todo: remove this after emodpy-malaria has a new release
-            pip install emod-malaria --index-url=https://packages.idmod.org/api/pypi/pypi-production/simple --force-reinstall --no-cache-dir
+            pip install -e . -r requirements.txt
             pip freeze
       - name: run tests
         run: python3 -m unittest discover .
         working-directory: ./tests
-      - name: Add wheel to artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: idm_test.wheel
-          path: ${{ steps.wheel.outputs.wheel-file }}
+#      - name: Add wheel to artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: idm_test.wheel
+#          path: ${{ steps.wheel.outputs.wheel-file }}
