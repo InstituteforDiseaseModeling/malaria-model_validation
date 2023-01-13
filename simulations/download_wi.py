@@ -2,6 +2,7 @@ import argparse
 import simulations.params as params
 import simulations.manifest as manifest
 from simulations.helpers import get_comps_id_filename, get_suite_id
+from simulations.get_version import get_era_version_from_file
 
 from idmtools.core.platform_factory import Platform
 from idmtools_platform_comps.utils.download.download import DownloadWorkItem
@@ -24,8 +25,13 @@ def download_output(site: str, platform: Platform = None) -> bool:
     with open(analyzer_id_file, 'r') as id_file:
         wi_id = id_file.readline()
     wi_id = platform.get_item(wi_id, item_type=ItemType.WORKFLOW_ITEM)
+
+    # get eradication version
+    era_version = get_era_version_from_file()
+    simulation_output_filepath = manifest.simulation_output_filepath
+    simulation_output_filepath = simulation_output_filepath.parent / (simulation_output_filepath.name + "_" + era_version)
     dl_wi = DownloadWorkItem(
-        output_path="output",
+        output_path=simulation_output_filepath,
         delete_after_download=False,
         extract_after_download=True,
         zip_name=f"{site}.zip",

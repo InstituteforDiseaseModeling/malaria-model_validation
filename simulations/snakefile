@@ -50,9 +50,9 @@ for site, subset in zip(sites, subsets):
         analyzers_files.append(get_comps_id_filename(site, level=2))
         download_files.append(get_comps_id_filename(site, level=3))
 
-plot_file = manifest.comps_id_folder + 'plot_completed'
-report_file = manifest.comps_id_folder + 'report_completed'
-final_file = manifest.comps_id_folder + 'workflow_completed'
+plot_file = id_folder / 'plot_completed'
+report_file = id_folder / 'report_completed'
+final_file = id_folder / 'workflow_completed'
 
 rule run:
     input: report_file
@@ -65,9 +65,10 @@ rule clean:
     input: 
     output: 
     run:
-        path_all = glob.glob (id_folder + "/*")
-        extension=('trickgit')
-        path_remove=[filename for filename in path_all if not filename.endswith (extension)]
+        path_all = id_folder.glob("*")
+        extension= 'trickgit'
+        path_remove=[filename for filename in path_all if extension not in filename.name]
+        print (path_remove)
         for filePath in path_remove:
             if os.path.exists(filePath):
                 os.remove(filePath)

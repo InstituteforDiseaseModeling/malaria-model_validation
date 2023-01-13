@@ -336,13 +336,14 @@ def build_demog():
 def get_comps_id_filename(site: str, level: int = 0):
     folder_name = manifest.comps_id_folder
     if level == 0:
-        return folder_name + site + '_exp_submit'
+        file_name = folder_name / (site + '_exp_submit')
     elif level == 1:
-        return folder_name + site + '_exp_done'
+        file_name = folder_name / (site + '_exp_done')
     elif level == 2:
-        return folder_name + site + '_analyzers'
+        file_name = folder_name / (site + '_analyzers')
     else:
-        return folder_name + site + '_download'
+        file_name = folder_name / (site + '_download')
+    return file_name.relative_to(manifest.CURRENT_DIR).as_posix()
 
 
 def load_coordinator_df(characteristic=False, set_index=True):

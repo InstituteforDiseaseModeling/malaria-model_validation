@@ -13,6 +13,8 @@ date, time = now.strftime("%m-%d-%Y %H-%M-%S").split(' ')
 plot_folder = manifest.plot_output_filepath
 title = 'Malaria Model Validation Results'
 pdf_name = plot_folder.parent / f'Malaria_model_validation_output_{date}({time}).pdf'
+table_not_found_icon = plot_folder.parent / 'FileNotFoundIcon_table_v2.png'
+file_not_found_icon = plot_folder.parent / 'FileNotFoundIcon.png'
 
 
 class PDF(FPDF):
@@ -94,13 +96,18 @@ class Section:
 
             # remove table or image that are not generated
             if table_name and not os.path.isfile(table_name):
-                table_name = None
                 print(f"Warning: {table_name} is not found. Skip this table in the report.")
+                table_name = None
+                if not image_list:
+                    image_list = list()
+                image_list.append(table_not_found_icon)
+
             if image_list:
                 for image_path in image_list[:]:
                     if not os.path.isfile(image_path):
                         image_list.remove(image_path)
                         print(f"Warning: {image_path} is not found. Skip this image in the report.")
+                        image_list.append(file_not_found_icon)
 
             self.pdf.start_section(f'{self.section_number}.{j + 1} ' + subsection_name, level=self.level + 1)
             new_section(
@@ -162,7 +169,7 @@ def main(subset):
     # generate dummy file for snakemake plot rule.
     if not os.path.isdir(manifest.comps_id_folder):
         os.mkdir(manifest.comps_id_folder)
-    with open(manifest.comps_id_folder + 'report_completed', 'w') as file:
+    with open(manifest.comps_id_folder / 'report_completed', 'w') as file:
         file.write(f'Report file {pdf_name} is generated.')
 
 
@@ -411,7 +418,11 @@ def new_section(pdf: FPDF, text: str, image_list: list = None, table_name: str =
     if image_list:
         pdf.ln(10)
         for image_name in image_list:
-            pdf.image(image_name, w=185)
+            if image_name in [file_not_found_icon, table_not_found_icon]:
+                pdf.image(image_name, w=125)
+            else:
+                pdf.image(image_name, w=185)
+
     if table_name:
         pdf.ln(10)
         df = pd.read_csv(table_name)

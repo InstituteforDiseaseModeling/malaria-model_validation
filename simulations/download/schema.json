@@ -1,8 +1,8 @@
 {
     "Version": {
-        "DTK_Branch": "Malaria-Ongoing(250bb79467)",
-        "DTK_Build_Date": "Nov  9 2022",
-        "DTK_Version": "2.20.5299.0"
+        "DTK_Branch": "Malaria-Ongoing(2cda8c4dbe)",
+        "DTK_Build_Date": "Jan  5 2023",
+        "DTK_Version": "2.20.5347.0"
     },
     "config": {
         "Climate.ByData": {
@@ -4156,7 +4156,7 @@
                 "type": "string"
             },
             "Custom_Reports_Filename": {
-                "default": "UNINITIALIZED STRING",
+                "default": "",
                 "description": "The name of the file containing custom report configuration parameters. Omitting this parameter or setting it to RunAllCustomReports will load all reporters found that are valid for the given simulation type.",
                 "type": "string"
             },
@@ -4250,7 +4250,7 @@
                 "type": "string"
             },
             "Custom_Reports_Filename": {
-                "default": "UNINITIALIZED STRING",
+                "default": "",
                 "description": "The name of the file containing custom report configuration parameters. Omitting this parameter or setting it to RunAllCustomReports will load all reporters found that are valid for the given simulation type.",
                 "type": "string"
             },
@@ -5876,6 +5876,41 @@
                     "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
                 },
                 "class": "DelayEventCoordinator"
+            },
+            "FirstNodeWithNodePropertyEventCoordinator": {
+                "Coordinator_Name": {
+                    "default": "FirstNodeWithNodePropertyEventCoordinator",
+                    "description": "The unique identifying coordinator name used to identify the different coordinators in reports.",
+                    "type": "string"
+                },
+                "Node_ID_To_Coordinator_Event_List": {
+                    "default": [],
+                    "description": "The list of Node ID & Coordinator Event pairs to find the first node id that has the given Node Property.",
+                    "item_type": "idmType:NodeIdToEvent",
+                    "type": "Vector idmType:NodeIdToEvent"
+                },
+                "Node_Property_Key_Value_To_Have": {
+                    "default": "",
+                    "description": "The Node Property key:value that the node must have to get its event broadcasted. ",
+                    "type": "Constrained String",
+                    "value_source": "'<demographics>::NodeProperties.*.Property':'<demographics>::NodeProperties.*.Values'"
+                },
+                "Not_Found_Coordinator_Event": {
+                    "default": "",
+                    "description": "Coordinator event to broadcast when a node with the given Node Property key:value is not found.",
+                    "type": "Constrained String",
+                    "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "Start_Trigger_Condition_List": {
+                    "default": [],
+                    "description": "If one of the coordinator events in this list is heard, the coordinator will start and attempt to send an event based on the selection of a node.",
+                    "type": "Vector Constrained String",
+                    "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+                },
+                "class": "FirstNodeWithNodePropertyEventCoordinator"
             },
             "GroupInterventionDistributionEventCoordinator": {
                 "Demographic_Coverage": {
@@ -11749,6 +11784,41 @@
                     "class": "BirthTriggeredIV",
                     "iv_type": "NodeTargeted"
                 },
+                "BroadcastCoordinatorEventFromNode": {
+                    "Broadcast_Event": {
+                        "default": "",
+                        "description": "The Coordinator Event to be broacasted by this individual.  An EventCoordinator like TriggeredEventCoordinator could be activated from this event.",
+                        "type": "Constrained String",
+                        "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+                    },
+                    "Disqualifying_Properties": {
+                        "default": [],
+                        "description": "A list of NodeProperty key:value pairs that cause an intervention to be aborted. Generally used to control the flow of health care access. For example, to prevent the same individual from accessing health care via two different routes at the same time.",
+                        "type": "Dynamic String Set",
+                        "value_source": ""
+                    },
+                    "Dont_Allow_Duplicates": {
+                        "default": 0,
+                        "description": "If an individual's container has an intervention, set to true (1) to prevent them from receiving another copy of the intervention. Supported by all intervention classes.",
+                        "type": "bool"
+                    },
+                    "Intervention_Name": {
+                        "default": "BroadcastCoordinatorEventFromNode",
+                        "description": "The optional name used to refer to this intervention as a means to differentiate it from others that use the same class.",
+                        "type": "string"
+                    },
+                    "New_Property_Value": {
+                        "default": "",
+                        "description": "An optional NodeProperty key:value pair that will be assigned when the intervention is distributed. Generally used to indicate the broad category of health care cascade to which an intervention belongs to prevent individuals from accessing care through multiple pathways.",
+                        "type": "Constrained String",
+                        "value_source": "'<demographics>::NodeProperties.*.Property':'<demographics>::NodeProperties.*.Values'"
+                    },
+                    "Sim_Types": [
+                        "*"
+                    ],
+                    "class": "BroadcastCoordinatorEventFromNode",
+                    "iv_type": "NodeTargeted"
+                },
                 "BroadcastNodeEvent": {
                     "Broadcast_Event": {
                         "Built-in": [
@@ -11829,20 +11899,6 @@
                         "default": 365,
                         "description": "The age (in days) of infected import cases.",
                         "max": 43800,
-                        "min": 0,
-                        "type": "float"
-                    },
-                    "Number_Cases_Per_Node": {
-                        "default": 1,
-                        "description": "The number of new cases of Outbreak to import (per node).",
-                        "max": 2147480000.0,
-                        "min": 0,
-                        "type": "integer"
-                    },
-                    "Probability_Of_Infection": {
-                        "default": 1,
-                        "description": "Probability that each individual is infected. 1.0 is legacy functionality. 0.0 adds susceptibles to the population.",
-                        "max": 1,
                         "min": 0,
                         "type": "float"
                     },
@@ -13732,6 +13788,17 @@
                 ],
                 "class": "HasIntervention"
             },
+            "IsPregnant": {
+                "Is_Equal_To": {
+                    "default": 1,
+                    "description": "TBD",
+                    "type": "bool"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "class": "IsPregnant"
+            },
             "TargetingLogic": {
                 "Logic": {
                     "description": "TBD",
@@ -14469,6 +14536,82 @@
                 },
                 "class": "ReportEventCounter"
             },
+            "ReportFpgOutputForObservationalModel": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Include_Barcode_IDs": {
+                    "default": 0,
+                    "description": "Add a column that has a list of Barcode IDs (hashcode) for the person.",
+                    "type": "bool"
+                },
+                "Max_Age_Years": {
+                    "default": 9.3228e+35,
+                    "description": "Maximum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Min_Age_Years": {
+                    "default": 0,
+                    "description": "Minimum age in years of people to collect data on",
+                    "max": 9.3228e+35,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Minimum_Parasite_Density": {
+                    "default": 1,
+                    "description": " The minimum density that the infection must have to be included in the list of infections. A value of zero implies include all infections. Number of asexual parasites per micro liter of blood.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Must_Have_IP_Key_Value": {
+                    "default": "",
+                    "description": "A Key:Value pair that the individual must have in order to be included. Empty string means don't look at IPs.",
+                    "type": "string"
+                },
+                "Must_Have_Intervention": {
+                    "default": "",
+                    "description": "The name of the an intervention that the person must have in order to be included. Empty string means don't look at the interventions.",
+                    "type": "string"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
+                },
+                "Sampling_Period": {
+                    "default": 1,
+                    "description": "The number of days between sampling the population. This implies one should get data on days Start_Day, Start_Day+Sampling_Perod, Start_Day+2*Sampling_Period, and so on.",
+                    "max": 3.40282e+38,
+                    "min": 1,
+                    "type": "float"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "ReportFpgOutputForObservationalModel"
+            },
             "ReportHumanMigrationTracking": {
                 "Sim_Types": [
                     "*"
@@ -14501,6 +14644,13 @@
                     "description": "The day of the simulation to stop collecting data.",
                     "max": 3.40282e+38,
                     "min": 0,
+                    "type": "float"
+                },
+                "Reporting_Interval": {
+                    "default": 1,
+                    "description": "Defines the cadence of the report by specifying how many time steps to collect data before writing to the file.",
+                    "max": 1000000.0,
+                    "min": 1,
                     "type": "float"
                 },
                 "Sim_Types": [
@@ -14854,7 +15004,7 @@
                 ],
                 "class": "ReportPluginAgeAtInfectionHistogram"
             },
-            "ReportSimpleMalariaTransmissionJSON": {
+            "ReportSimpleMalariaTransmission": {
                 "End_Day": {
                     "default": 3.40282e+38,
                     "description": "The day of the simulation to stop collecting data.",
@@ -14904,11 +15054,6 @@
                     "min": 0,
                     "type": "Vector Uint32"
                 },
-                "Pretty_Format": {
-                    "default": 0,
-                    "description": "True (1) sets pretty JSON formatting. The default, false (0), saves space.",
-                    "type": "bool"
-                },
                 "Sim_Types": [
                     "MALARIA_SIM"
                 ],
@@ -14919,7 +15064,7 @@
                     "min": 0,
                     "type": "float"
                 },
-                "class": "ReportSimpleMalariaTransmissionJSON"
+                "class": "ReportSimpleMalariaTransmission"
             },
             "ReportSimulationStats": {
                 "Sim_Types": [
@@ -15744,6 +15889,22 @@
                 "type": "integer"
             },
             "class": "NodeIdAndCoverage"
+        },
+        "idmType:NodeIdToEvent": {
+            "Coordinator_Event_To_Broadcast": {
+                "default": "",
+                "description": "The coordinator event to broadcast when the node is selected (i.e. is the first one found with the NP key:value).",
+                "type": "Constrained String",
+                "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+            },
+            "Node_ID": {
+                "default": 0,
+                "description": "The ID of the node found in the demographics to check if it has the give node property.",
+                "max": 4294970000.0,
+                "min": 0,
+                "type": "integer"
+            },
+            "class": "NodeIdToEvent"
         },
         "idmType:NodeListConfig": [
             {

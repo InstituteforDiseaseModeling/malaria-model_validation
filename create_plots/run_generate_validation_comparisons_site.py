@@ -8,6 +8,7 @@
 from simulations.manifest import simulation_output_filepath, benchmark_simulation_filepath, \
      base_reference_filepath, plot_output_filepath, comps_id_folder
 from simulations.helpers import load_coordinator_df
+from simulations.get_version import get_era_version_from_file
 from create_plots.helpers_coordinate_each_relationship import generate_age_incidence_outputs, \
     generate_age_prevalence_outputs, generate_parasite_density_outputs, generate_infectiousness_outputs, \
     generate_age_infection_duration_outputs
@@ -15,6 +16,11 @@ from datetime import datetime
 import shutil
 import argparse
 import os
+
+era_version = get_era_version_from_file()
+simulation_output_filepath = simulation_output_filepath.parent / (simulation_output_filepath.name + "_" + era_version)
+if not os.path.exists(benchmark_simulation_filepath):
+    benchmark_simulation_filepath = simulation_output_filepath
 
 
 def run(subset="All"):
@@ -76,7 +82,7 @@ def run(subset="All"):
     # generate dummy file for snakemake plot rule.
     if not os.path.isdir(comps_id_folder):
         os.mkdir(comps_id_folder)
-    with open(comps_id_folder + 'plot_completed', 'w') as file:
+    with open(comps_id_folder / 'plot_completed', 'w') as file:
         file.write('Plotting is completed.')
 
 
