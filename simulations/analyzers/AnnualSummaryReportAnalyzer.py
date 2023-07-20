@@ -78,8 +78,8 @@ class AnnualSummaryReportAnalyzer(BaseAnalyzer):
 
         groupby_tags = self.sweep_variables
         groupby_tags.remove('Run_Number')
-        df_summarized = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.mean).reset_index()
-        df_summarized_std = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.std)
+        df_summarized = df_final.groupby(['Age']+groupby_tags)[['Prevalence', 'Incidence']].apply(np.mean).reset_index()
+        df_summarized_std = df_final.groupby(['Age']+groupby_tags)[['Prevalence', 'Incidence']].apply(np.std)
         for c in ['Prevalence', 'Incidence']:
             df_summarized[c + '_std'] = list(df_summarized_std[c])
 
