@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
-    with with Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment) as platform:
+    with Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment) as platform:
 
         # Set the experiment you want to analyze
         experiments = {'test_infectDuration_Navrongo2': 'aaa3fc9f-787a-ec11-a9f3-9440c9be2c51'}
