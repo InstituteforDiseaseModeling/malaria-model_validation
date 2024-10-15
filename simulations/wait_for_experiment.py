@@ -17,7 +17,7 @@ def check_experiment(site, platform=None):
         exp_id = id_file.readline()
 
     if not platform:
-        platform = Platform(manifest.platform_name)
+        platform = Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment)
     experiment = platform.get_item(item_id=exp_id, item_type=ItemType.EXPERIMENT)
 
     # Wait for the experiment to be done in Comps.

@@ -18,7 +18,7 @@ def get_depends_on_ids(suite_ids: str) -> str:
     Returns: name of the csv file.
 
     """
-    platform = Platform(manifest.platform_name)
+    platform = Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment)
     suite = platform.get_item(item_id=suite_ids, item_type=ItemType.SUITE)
     site_to_ids = {"site": [],
                    "exp_id": [],

@@ -11,6 +11,10 @@ singularity_id: the AC id for singularity image that the simulation will be run 
                 Set it to None if you don't want to run with any singularity image.
 """
 use_local_eradication = 0
+# staging
+# singularity_id = "e5d5ab18-cfcf-ec11-92e9-f0921c167864"  
+
+# production
 singularity_id = "8df53802-53f3-ec11-a9f9-b88303911bc1"
 # ========================================================
 
@@ -53,6 +57,9 @@ requirements = PROJECT_DIR / "requirements.txt"
 
 # Define Comps platform
 platform_name = "Calculon"
+# platform_name = "Nibbler"
+endpoint = "https://comps.idmod.org"
+environment="Calculon"
 priority = 'BelowNormal'
 node_group_private = 'idm_48cores'
 node_group = 'idm_abcd'

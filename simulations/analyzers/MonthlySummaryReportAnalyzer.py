@@ -69,6 +69,7 @@ class MonthlySummaryReportAnalyzer(BaseAnalyzer):
 
 
 if __name__ == '__main__':
+    import simulations.manifest as manifest
     # Set the experiment id you want to analyze
     experiment_id = 'b7126585-30b6-ec11-a9f6-9440c9be2c51'
     end_year = 65
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
     logger = getLogger()
-    with Platform('CALCULON') as platform:
+    with Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment) as platform:
 
         # Initialize the analyser class with the path of the output csv file
         analyzers = [MonthlySummaryReportAnalyzer(expt_name='Sugungum_1970',

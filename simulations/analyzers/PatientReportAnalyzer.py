@@ -89,12 +89,13 @@ if __name__ == '__main__':
     from idmtools.analysis.analyze_manager import AnalyzeManager
     from idmtools.core import ItemType
     from idmtools.core.platform_factory import Platform
+    import simulations.manifest as manifest
 
     use_ssmt = True
 
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
-    with Platform('Calculon') as platform:
+    with Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment) as platform:
 
         # Set the experiment you want to analyze
         experiments = {

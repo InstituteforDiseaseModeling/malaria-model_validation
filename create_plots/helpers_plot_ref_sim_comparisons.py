@@ -5,7 +5,7 @@
 
 from plotnine import ggplot, aes, geom_bar, scale_fill_brewer, facet_grid, geom_line, geom_point, geom_errorbar, \
     theme_bw, xlab, ylab, scale_color_manual, scale_fill_manual, coord_fixed, geom_abline, theme_classic, themes, \
-    facet_wrap, scale_shape_manual, scale_size_manual, scale_x_log10, ggtitle, labs, position_dodge
+    facet_wrap, scale_shape_manual, scale_size_manual, scale_x_log10, ggtitle, labs, position_dodge, element_text
 import numpy as np
 import pandas as pd
 from scipy.stats import beta
@@ -58,7 +58,7 @@ def compare_benchmark(combined_df):
           + coord_fixed(ratio=1, xlim=(min_value, max_value), ylim=(min_value, max_value))
           + geom_abline(slope=1, intercept=0, color='grey', alpha=0.5)
           + theme_classic()
-          + themes.theme(plot_title=themes.element_text(size=12)))
+          + themes.theme(plot_title=element_text(size=12)))
     return gg
 
 
@@ -249,7 +249,7 @@ def plot_par_dens_ref_sim_comparison(combined_df):
                + theme_bw()
                + ylab('fraction of population')
                + xlab('parasite density bin')
-               + themes.theme(axis_text_x=themes.element_text(angle=45))
+               + themes.theme(axis_text_x=element_text(angle=45))
                + ggtitle(cur_site)
                + scale_color_manual(values=color_manual)
                + scale_shape_manual(values=shape_manual)
@@ -742,6 +742,6 @@ def plot_infection_duration_dist_by_age(ref_df, sim_data, pos_thresh_dens, age_b
           + scale_fill_manual(values=color_manual_2)
           + labs(title='infection duration', x='infection duration (days)')
           # ylim(NA,max_y) +
-          + facet_grid(scales='fixed', facets=['censor_type', 'age_group']))
+          + facet_grid('censor_type', 'age_group', scales='fixed'))
 
     return gg
