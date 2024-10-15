@@ -20,7 +20,7 @@ def download_output(site: str, platform: Platform = None) -> bool:
 
     """
     if not platform:
-        platform = Platform(manifest.platform_name)
+        platform = Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment)
     analyzer_id_file = get_comps_id_filename(site, level=2)
     with open(analyzer_id_file, 'r') as id_file:
         wi_id = id_file.readline()

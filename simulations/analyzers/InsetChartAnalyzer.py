@@ -14,7 +14,6 @@ from idmtools.analysis.analyze_manager import AnalyzeManager
 from idmtools.core import ItemType
 from idmtools.core.platform_factory import Platform
 
-
 mpl.use('Agg')
 
 
@@ -103,10 +102,11 @@ class InsetChartAnalyzer(BaseAnalyzer):
 
 
 if __name__ == '__main__':
+    import simulations.manifest as manifest
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
     logger = getLogger()
-    with Platform('CALCULON') as platform:
+    with Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment) as platform:
 
         # Initialize the analyser class with the path of the output csv file
         analyzers = [InsetChartAnalyzer()]

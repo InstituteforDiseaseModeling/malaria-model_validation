@@ -15,7 +15,7 @@ from scipy import stats
 import warnings
 import numpy as np
 from plotnine import ggplot, aes, geom_point, xlab, ylab, coord_fixed, geom_abline, theme_classic, themes, \
-    ggtitle, geom_smooth
+    ggtitle, geom_smooth, element_text
 import collections
 
 
@@ -230,7 +230,7 @@ def corr_ref_sim_points(combined_df):
           + geom_abline(slope=1, intercept=0, color='grey', alpha=0.5)
           + geom_smooth(method="lm", fill=None, se=False, alpha=0.5, size=0.5)
           + theme_classic()
-          + themes.theme(plot_title=themes.element_text(size=12)))
+          + themes.theme(plot_title=element_text(size=12)))
 
     # create data frame with information about linear regression and correlation for each Site
     lm_summary = collections.defaultdict(list)
@@ -296,7 +296,7 @@ def corr_ref_deriv_sim_points(combined_df):
           + geom_abline(slope=1, intercept=0, color='grey', alpha=0.5)
           # + geom_smooth(method="lm", fill=None, se=False, alpha=0.5, size=0.5)
           + theme_classic()
-          + themes.theme(plot_title=themes.element_text(size=12)))
+          + themes.theme(plot_title=element_text(size=12)))
 
     # create data frame with information about linear regression and correlation for each Site
     lm_summary = collections.defaultdict(list)

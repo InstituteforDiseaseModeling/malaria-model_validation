@@ -2,7 +2,7 @@ import argparse
 import getpass
 from COMPS import Client
 from COMPS.CredentialPrompt import CredentialPrompt
-
+import simulations.manifest as manifest
 __comps_client_version = 10
 
 
@@ -29,7 +29,7 @@ class StaticCredentialPrompt(CredentialPrompt):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--comps_url', '-c', default='https://comps.idmod.org', help='comps url')
+    parser.add_argument('--comps_url', '-c', default=manifest.endpoint, help='comps url')
     parser.add_argument('--username', '-u', help='enter username')
     parser.add_argument('--password', '-p', help='enter password')
 

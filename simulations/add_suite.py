@@ -19,7 +19,7 @@ def add_suite(sites: list, suite_name: str = 'Malaria Model Validation Suite') -
     Returns:
         suite_id
     """
-    platform = Platform(manifest.platform_name)
+    platform = Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment)
     first_exp_found = True
     for site in sites:
         exp_id_file = get_comps_id_filename(site, level=0)

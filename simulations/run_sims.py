@@ -25,7 +25,7 @@ def submit_sim(site=None, nSims=1, characteristic=False, priority=manifest.prior
     """
     # Create a platform
     # Show how to dynamically set priority and node_group
-    platform = Platform(my_manifest.platform_name, priority=priority, node_group=my_manifest.node_group)
+    platform = Platform(my_manifest.platform_name, endpoint=my_manifest.endpoint, environment=my_manifest.environment, priority=priority, node_group=my_manifest.node_group)
     print("Prompting for COMPS creds if necessary...")
 
     experiment = create_exp(characteristic, nSims, site, my_manifest, not_use_singularity)

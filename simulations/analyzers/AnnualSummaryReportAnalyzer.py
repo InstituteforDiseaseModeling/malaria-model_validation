@@ -14,7 +14,6 @@ from idmtools.analysis.analyze_manager import AnalyzeManager
 from idmtools.core import ItemType
 from idmtools.core.platform_factory import Platform
 
-
 mpl.use('Agg')
 
 
@@ -78,8 +77,8 @@ class AnnualSummaryReportAnalyzer(BaseAnalyzer):
 
         groupby_tags = self.sweep_variables
         groupby_tags.remove('Run_Number')
-        df_summarized = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.mean).reset_index()
-        df_summarized_std = df_final.groupby(['Age']+groupby_tags)['Prevalence', 'Incidence'].apply(np.std)
+        df_summarized = df_final.groupby(['Age']+groupby_tags, as_index=False).agg({'Prevalence': np.mean, 'Incidence': np.mean})
+        df_summarized_std = df_final.groupby(['Age']+groupby_tags).agg({'Prevalence': np.mean, 'Incidence': np.mean})
         for c in ['Prevalence', 'Incidence']:
             df_summarized[c + '_std'] = list(df_summarized_std[c])
 
@@ -87,10 +86,11 @@ class AnnualSummaryReportAnalyzer(BaseAnalyzer):
 
 
 if __name__ == '__main__':
+    import simulations.manifest as manifest
     # Set the platform where you want to run your analysis
     # In this case we are running in BELEGOST since the Work Item we are analyzing was run on COMPS
     logger = getLogger()
-    with Platform('CALCULON') as platform:
+    with Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment) as platform:
 
         # Initialize the analyser class with the path of the output csv file
         analyzers = [AnnualSummaryReportAnalyzer()]

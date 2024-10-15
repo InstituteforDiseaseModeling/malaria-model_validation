@@ -24,7 +24,7 @@ def run_analyzers(site: str, characteristic: bool = False) -> (bool, str):
              if not, return experiment status and id.
 
     """
-    platform = Platform(manifest.platform_name)
+    platform = Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment)
     comps_id_file = get_comps_id_filename(site=site)
     with open(comps_id_file, 'r') as id_file:
         exp_id = id_file.readline()

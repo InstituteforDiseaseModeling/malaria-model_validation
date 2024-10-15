@@ -31,7 +31,7 @@ def get_eradication_info(exp_id=None, experiment=None):
     if not experiment and not exp_id:
         raise ValueError("Please provide an experiment object or an experiment id.")
     if not experiment:
-        platform = Platform(manifest.platform_name)
+        platform = Platform(manifest.platform_name, endpoint=manifest.endpoint, environment=manifest.environment)
         experiment = platform.get_item(item_id=exp_id, item_type=ItemType.EXPERIMENT)
     sim = experiment.simulations[0]
 

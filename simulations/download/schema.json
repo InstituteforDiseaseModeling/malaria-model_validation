@@ -1,8 +1,8 @@
 {
     "Version": {
-        "DTK_Branch": "Malaria-Ongoing(2cda8c4dbe)",
-        "DTK_Build_Date": "Jan  5 2023",
-        "DTK_Version": "2.20.5347.0"
+        "DTK_Branch": "Malaria-Ongoing(1c311c0)",
+        "DTK_Build_Date": "Jun 12 2024",
+        "DTK_Version": "2.20.5522.0"
     },
     "config": {
         "Climate.ByData": {
@@ -352,12 +352,6 @@
                 "default": 0,
                 "description": "Controls whether or not campaign interventions will be used in the simulation.",
                 "type": "bool"
-            },
-            "Insecticides": {
-                "default": [],
-                "description": "An Array of insecticides and their resistance modifiers",
-                "item_type": "idmType:Insecticide",
-                "type": "Vector idmType:Insecticide"
             },
             "Migration_Model": {
                 "default": "NO_MIGRATION",
@@ -1150,12 +1144,6 @@
                 "min": 0,
                 "type": "float"
             },
-            "Insecticides": {
-                "default": [],
-                "description": "An Array of insecticides and their resistance modifiers",
-                "item_type": "idmType:Insecticide",
-                "type": "Vector idmType:Insecticide"
-            },
             "Larval_Density_Dependence": {
                 "default": "UNIFORM_WHEN_OVERPOPULATION",
                 "description": "The funtional form of mortality and growth delay for mosquito larvae based on population density.",
@@ -1302,12 +1290,6 @@
                     "VECTOR_COMPARTMENTS_PERCENT"
                 ],
                 "type": "enum"
-            },
-            "Vector_Species_Params": {
-                "default": [],
-                "description": "A list of JSON object where each object contains the parameters for a specific species of vectors.",
-                "item_type": "idmType:VectorSpeciesParameters",
-                "type": "Vector idmType:VectorSpeciesParameters"
             },
             "Wolbachia_Infection_Modification": {
                 "default": 1,
@@ -1884,7 +1866,7 @@
                 "type": "bool"
             },
             "Enable_Migration_Heterogeneity": {
-                "default": 1,
+                "default": 0,
                 "depends-on": {
                     "Migration_Model": "FIXED_RATE_MIGRATION"
                 },
@@ -2024,7 +2006,7 @@
                 "type": "bool"
             },
             "Enable_Migration_Heterogeneity": {
-                "default": 1,
+                "default": 0,
                 "depends-on": {
                     "Migration_Model": "FIXED_RATE_MIGRATION"
                 },
@@ -3836,7 +3818,13 @@
                     "WouldHaveEnteredLatentStage",
                     "HIVInfectionStageEnteredLatent",
                     "HIVInfectionStageEnteredAIDS",
-                    "HIVInfectionStageEnteredOnART"
+                    "HIVInfectionStageEnteredOnART",
+                    "NewMalariaInfectionObject",
+                    "PFA_Entered",
+                    "PFA_Exited",
+                    "PFA_SeekingPartner",
+                    "PFA_FoundPartner",
+                    "PFA_NoPartnerFound"
                 ],
                 "default": [],
                 "depends-on": {
@@ -4300,6 +4288,12 @@
                 "min": 0,
                 "type": "integer"
             },
+            "Insecticides": {
+                "default": [],
+                "description": "An Array of insecticides and their resistance modifiers",
+                "item_type": "idmType:Insecticide",
+                "type": "Vector idmType:Insecticide"
+            },
             "Load_Balance_Filename": {
                 "default": "UNINITIALIZED STRING",
                 "description": "Path to input file used when a static load balancing scheme is selected.",
@@ -4425,6 +4419,118 @@
                     "DENGUE_SIM"
                 ],
                 "type": "enum"
+            },
+            "Vector_Species_Params": {
+                "default": [],
+                "description": "A list of JSON object where each object contains the parameters for a specific species of vectors.",
+                "item_type": "idmType:VectorSpeciesParameters",
+                "type": "Vector idmType:VectorSpeciesParameters"
+            }
+        },
+        "Simulation.Vector": {
+            "Campaign_Filename": {
+                "default": "",
+                "depends-on": {
+                    "Enable_Interventions": 1
+                },
+                "description": "The path to the campaign file.",
+                "type": "string"
+            },
+            "Custom_Reports_Filename": {
+                "default": "",
+                "description": "The name of the file containing custom report configuration parameters. Omitting this parameter or setting it to RunAllCustomReports will load all reporters found that are valid for the given simulation type.",
+                "type": "string"
+            },
+            "Enable_Default_Reporting": {
+                "default": 1,
+                "description": "Controls whether or not the default InsetChart.json report is created.",
+                "type": "bool"
+            },
+            "Enable_Demographics_Reporting": {
+                "default": 1,
+                "description": "Controls whether or not demographic summary data and age-binned reports are outputted to file.",
+                "type": "bool"
+            },
+            "Enable_Property_Output": {
+                "default": 0,
+                "description": "Controls whether or not property output reports are created.",
+                "type": "bool"
+            },
+            "Enable_Spatial_Output": {
+                "default": 0,
+                "description": "Controls whether or not spatial output reports are created.",
+                "type": "bool"
+            },
+            "Enable_Termination_On_Zero_Total_Infectivity": {
+                "default": 0,
+                "description": "Controls whether or not the simulation should be ended when total infectivity falls to zero. Supported only in single-node simulations.",
+                "type": "bool"
+            },
+            "Insecticides": {
+                "default": [],
+                "description": "An Array of insecticides and their resistance modifiers",
+                "item_type": "idmType:Insecticide",
+                "type": "Vector idmType:Insecticide"
+            },
+            "Load_Balance_Filename": {
+                "default": "UNINITIALIZED STRING",
+                "description": "Path to input file used when a static load balancing scheme is selected.",
+                "type": "string"
+            },
+            "Minimum_End_Time": {
+                "default": 0,
+                "depends-on": {
+                    "Enable_Termination_On_Zero_Total_Infectivity": 1
+                },
+                "description": "The minimum time step the simulation must reach before checking for early termination conditions.",
+                "max": 1000000.0,
+                "min": 0,
+                "type": "float"
+            },
+            "Report_Coordinator_Event_Recorder": {
+                "default": 0,
+                "description": "Enables or disables the ReportCoordinatorEventRecorder.csv output report for coordinator events.",
+                "type": "bool"
+            },
+            "Report_Event_Recorder": {
+                "default": 0,
+                "description": "Set to true (1) to enable or to false (0) to disable the ReportEventRecorder.csv output report that lists individual events in the simulation.",
+                "type": "bool"
+            },
+            "Report_Node_Event_Recorder": {
+                "default": 0,
+                "description": "Enables or disables the ReportNodeEventRecorder.csv output report.",
+                "type": "bool"
+            },
+            "Report_Surveillance_Event_Recorder": {
+                "default": 0,
+                "description": "Enables or disables the ReportCoordinatorEventRecorder.csv output report for coordinator events.",
+                "type": "bool"
+            },
+            "Simulation_Type": {
+                "default": "GENERIC_SIM",
+                "description": "Type of disease being simulated. IDM-supported values include GENERIC_SIM, VECTOR_SIM, MALARIA_SIM, TBHIV_SIM, STI_SIM, HIV_SIM, ENVIRONMENTAL_SIM, and TYPHOID_SIM. To query the values supported for your specific build, use the --version option.",
+                "enum": [
+                    "GENERIC_SIM",
+                    "VECTOR_SIM",
+                    "MALARIA_SIM",
+                    "ENVIRONMENTAL_SIM",
+                    "POLIO_SIM",
+                    "AIRBORNE_SIM",
+                    "TBHIV_SIM",
+                    "STI_SIM",
+                    "HIV_SIM",
+                    "PY_SIM",
+                    "TYPHOID_SIM",
+                    "DENGUE_SIM"
+                ],
+                "type": "enum"
+            },
+            "Vector_Species_Params": {
+                "default": [],
+                "description": "A list of JSON object where each object contains the parameters for a specific species of vectors.",
+                "item_type": "idmType:VectorSpeciesParameters",
+                "type": "Vector idmType:VectorSpeciesParameters"
             }
         },
         "SpatialReport": {
@@ -4858,12 +4964,6 @@
                 "min": 0,
                 "type": "float"
             },
-            "Insecticides": {
-                "default": [],
-                "description": "An Array of insecticides and their resistance modifiers",
-                "item_type": "idmType:Insecticide",
-                "type": "Vector idmType:Insecticide"
-            },
             "Larval_Density_Dependence": {
                 "default": "UNIFORM_WHEN_OVERPOPULATION",
                 "description": "The funtional form of mortality and growth delay for mosquito larvae based on population density.",
@@ -5010,12 +5110,6 @@
                     "VECTOR_COMPARTMENTS_PERCENT"
                 ],
                 "type": "enum"
-            },
-            "Vector_Species_Params": {
-                "default": [],
-                "description": "A list of JSON object where each object contains the parameters for a specific species of vectors.",
-                "item_type": "idmType:VectorSpeciesParameters",
-                "type": "Vector idmType:VectorSpeciesParameters"
             },
             "Wolbachia_Infection_Modification": {
                 "default": 1,
@@ -5554,7 +5648,13 @@
                         "WouldHaveEnteredLatentStage",
                         "HIVInfectionStageEnteredLatent",
                         "HIVInfectionStageEnteredAIDS",
-                        "HIVInfectionStageEnteredOnART"
+                        "HIVInfectionStageEnteredOnART",
+                        "NewMalariaInfectionObject",
+                        "PFA_Entered",
+                        "PFA_Exited",
+                        "PFA_SeekingPartner",
+                        "PFA_FoundPartner",
+                        "PFA_NoPartnerFound"
                     ],
                     "default": [],
                     "description": "The list of events that are of interest to the community health worker (CHW). If one of these events occurs, the individual or node is put into a queue to receive the CHW's intervention. The CHW processes the queue when the event coordinator is updated.",
@@ -6383,6 +6483,41 @@
                     "type": "integer"
                 },
                 "class": "TriggeredEventCoordinator"
+            },
+            "VectorSurveillanceEventCoordinator": {
+                "Coordinator_Name": {
+                    "default": "VectorSurveillanceEventCoordinator",
+                    "description": "The name of the VectorSurveillanceEventCoordinator to help differentiate it from other coordinators.",
+                    "type": "string"
+                },
+                "Counter": {
+                    "description": "Configuration dictionary of the sampling parameters.",
+                    "type": "idmType:VectorCounter"
+                },
+                "Duration": {
+                    "default": -1,
+                    "description": "Number of timesteps for which, after being distributed, VectorSurveillanceEventCoordinator will exist and wait for Start/Stop triggers.",
+                    "max": 3.40282e+38,
+                    "min": -1,
+                    "type": "float"
+                },
+                "Responder": {
+                    "description": "Contains optional Responded_Event, which is sent out every time VectorSurveillanceEventCoordinator runs.",
+                    "type": "idmType:VectorResponder"
+                },
+                "Start_Trigger_Condition_List": {
+                    "default": [],
+                    "description": "List of Coordinator-level events that will trigger VectorSurveillanceEventCoordinator to run sampling every Update_Period, starting at the time trigger is received.",
+                    "type": "Vector Constrained String",
+                    "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+                },
+                "Stop_Trigger_Condition_List": {
+                    "default": [],
+                    "description": "Optional list of Coordinator-level events that will trigger VectorSurveillanceEventCoordinator to stop sampling.",
+                    "type": "Vector Constrained String",
+                    "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+                },
+                "class": "VectorSurveillanceEventCoordinator"
             }
         },
         "idmAbstractType:Intervention": {
@@ -6530,7 +6665,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The event that triggers the drug intervention campaign.",
@@ -6858,7 +6999,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The event that should occur at the end of the delay period.",
@@ -6973,7 +7120,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The name of the event to broadcast to selected nodes.",
@@ -7101,7 +7254,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The name of the event to be broadcast when the intervention is distributed to an individual. See the list of available events for possible values.",
@@ -7193,7 +7352,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The name of the event to be broadcast when the intervention is distributed to an individual. See the list of available events for possible values.",
@@ -7734,7 +7899,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "When the person stops using the contraceptive, this event will be broadcasted.",
@@ -8006,7 +8177,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If 'Event_Or_Config' is set to 'Event', this parameter defines the event to be broadcasted on a negative test result.",
@@ -8087,7 +8264,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -8459,7 +8642,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "When the person stops using the intervention, this event will be broadcasted.",
@@ -8670,7 +8859,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If 'Event_Or_Config' is set to 'Event', this parameter defines the event to be broadcasted on a negative test result.",
@@ -8755,7 +8950,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -9462,7 +9663,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The event that is broadcast when an individual discards their bed net, either by replacing an existing net or due to the expiration timer.",
@@ -9720,7 +9927,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts when a new net is received, either the first net or a replacement net.",
@@ -9803,7 +10016,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts each time step in which a bed net is used.",
@@ -10519,7 +10738,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -10612,7 +10837,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The event of an actual intervention sought. Selects a class for the intervention and configures the parameters specific for that intervention class. See the list of available events for possible values.",
@@ -11007,7 +11238,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If 'Event_Or_Config' is set to 'Event', this parameter defines the event to be broadcasted on a negative test result.",
@@ -11092,7 +11329,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "If the test is positive, this specifies an event that can trigger another intervention when the event occurs. Only used if Event_Or_Config is set to Event.",
@@ -11192,7 +11435,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The event that is broadcast when an individual discards their bed net, either by replacing an existing net or due to the expiration timer.",
@@ -11476,7 +11725,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts when a new net is received, either the first net or a replacement net.",
@@ -11563,7 +11818,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "This parameter broadcasts each time step in which a bed net is used.",
@@ -12620,10 +12881,16 @@
                         "min": 0,
                         "type": "float"
                     },
-                    "Released_Microsporidia": {
-                        "default": 0,
-                        "description": "A boolean indicating if the released vectors are infected with microsporidia or not.",
-                        "type": "bool"
+                    "Released_Mate_Genome": {
+                        "default": [],
+                        "description": "This defines the alleles of the genome of the vectors to be released. The Released_Mate_Genome must be male, and Released_Genome must be female. It must define all of the alleles including the gender 'gene'.  '*' is not allowed. When this parameter is defined, the released female vectors will be fully gestated and ready to lay eggs, which will be the product of Released_Genome and Released_Mate_Genome.",
+                        "type": "Vector2d String",
+                        "value_source": "<configuration>:Vector_Species_Params.*Genes.*"
+                    },
+                    "Released_Microsporidia_Strain": {
+                        "default": "",
+                        "description": "A string indicating the name of the microsporidia strain for the indicated specie.  An empty string indicates no microsporidia infection.",
+                        "type": "string"
                     },
                     "Released_Number": {
                         "default": 10000,
@@ -12907,7 +13174,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": "",
                         "description": "The event to broadcast if an intervention cannot be distributed due to the Blackout_Period.",
@@ -13105,7 +13378,13 @@
                             "WouldHaveEnteredLatentStage",
                             "HIVInfectionStageEnteredLatent",
                             "HIVInfectionStageEnteredAIDS",
-                            "HIVInfectionStageEnteredOnART"
+                            "HIVInfectionStageEnteredOnART",
+                            "NewMalariaInfectionObject",
+                            "PFA_Entered",
+                            "PFA_Exited",
+                            "PFA_SeekingPartner",
+                            "PFA_FoundPartner",
+                            "PFA_NoPartnerFound"
                         ],
                         "default": [],
                         "description": "A list of events that trigger a health seeking intervention.",
@@ -14107,41 +14386,6 @@
                 },
                 "class": "MalariaPatientJSONReport"
             },
-            "MalariaSqlReport": {
-                "End_Day": {
-                    "default": 3.40282e+38,
-                    "description": "The day of the simulation to stop collecting data.",
-                    "max": 3.40282e+38,
-                    "min": 0,
-                    "type": "float"
-                },
-                "Include_Drug_Status_Table": {
-                    "default": 0,
-                    "description": "Include the table that provides data at each time step for each drug the person has.",
-                    "type": "bool"
-                },
-                "Include_Health_Table": {
-                    "default": 1,
-                    "description": "Include the table that provides data at each time step for a persons health.",
-                    "type": "bool"
-                },
-                "Include_Infection_Data_Table": {
-                    "default": 1,
-                    "description": "Include the table that provides data at each time step for each active infection.",
-                    "type": "bool"
-                },
-                "Sim_Types": [
-                    "MALARIA_SIM"
-                ],
-                "Start_Day": {
-                    "default": 0,
-                    "description": "The day of the simulation to start collecting data.",
-                    "max": 3.40282e+38,
-                    "min": 0,
-                    "type": "float"
-                },
-                "class": "MalariaSqlReport"
-            },
             "MalariaSummaryReport": {
                 "Age_Bins": {
                     "ascending": 1,
@@ -14304,7 +14548,13 @@
                         "WouldHaveEnteredLatentStage",
                         "HIVInfectionStageEnteredLatent",
                         "HIVInfectionStageEnteredAIDS",
-                        "HIVInfectionStageEnteredOnART"
+                        "HIVInfectionStageEnteredOnART",
+                        "NewMalariaInfectionObject",
+                        "PFA_Entered",
+                        "PFA_Exited",
+                        "PFA_SeekingPartner",
+                        "PFA_FoundPartner",
+                        "PFA_NoPartnerFound"
                     ],
                     "default": [],
                     "description": "The list of triggers for the events included in the report.",
@@ -14480,7 +14730,13 @@
                         "WouldHaveEnteredLatentStage",
                         "HIVInfectionStageEnteredLatent",
                         "HIVInfectionStageEnteredAIDS",
-                        "HIVInfectionStageEnteredOnART"
+                        "HIVInfectionStageEnteredOnART",
+                        "NewMalariaInfectionObject",
+                        "PFA_Entered",
+                        "PFA_Exited",
+                        "PFA_SeekingPartner",
+                        "PFA_FoundPartner",
+                        "PFA_NoPartnerFound"
                     ],
                     "default": [],
                     "description": "The list of triggers for the events included in the report.",
@@ -14544,12 +14800,7 @@
                     "min": 0,
                     "type": "float"
                 },
-                "Filename_Suffix": {
-                    "default": "",
-                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
-                    "type": "string"
-                },
-                "Include_Barcode_IDs": {
+                "Include_Genome_IDs": {
                     "default": 0,
                     "description": "Add a column that has a list of Barcode IDs (hashcode) for the person.",
                     "type": "bool"
@@ -14642,6 +14893,42 @@
                 "End_Day": {
                     "default": 3.40282e+38,
                     "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Include_Column_Gametocyte": {
+                    "default": 1,
+                    "description": "If set to true (1), then a column will be added to the report that contains the number of gametocytes (male & female) from this infection.",
+                    "type": "bool"
+                },
+                "Include_Column_Hepatocyte": {
+                    "default": 1,
+                    "description": "If set to true (1), then a column will be added to the report providing the count of the infected hepatocytes.",
+                    "type": "bool"
+                },
+                "Include_Column_IRBC": {
+                    "default": 1,
+                    "description": "If set to true (1), then a column will be added to the report with the number of Infected Red Blood Cells from this infection.",
+                    "type": "bool"
+                },
+                "Include_Data_Threshold_Gametocytes": {
+                    "default": 0,
+                    "description": "If the column is included and the number of gametocytes related to this infection are greater than or equal to this value, then the row of data will be included.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Include_Data_Threshold_Hepatocytes": {
+                    "default": 0,
+                    "description": "If the column is included and the number of hepatocytes related to this infection are greater than or equal to this value, then the row of data will be included.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Include_Data_Threshold_IRBC": {
+                    "default": 0,
+                    "description": "If the column is included and the number of IRBCs related to this infection are greater than or equal to this value, then the row of data will be included.",
                     "max": 3.40282e+38,
                     "min": 0,
                     "type": "float"
@@ -14876,6 +15163,14 @@
                 },
                 "class": "ReportMalariaFilteredIntraHost"
             },
+            "ReportMicrosporidia": {
+                "Sim_Types": [
+                    "VECTOR_SIM",
+                    "MALARIA_SIM",
+                    "DENGUE_SIM"
+                ],
+                "class": "ReportMicrosporidia"
+            },
             "ReportNodeDemographics": {
                 "Age_Bins": {
                     "ascending": 0,
@@ -14966,6 +15261,11 @@
                     "default": "",
                     "description": "Name of the key to add a column for.",
                     "type": "string"
+                },
+                "Include_Identity_By_XXX": {
+                    "default": 0,
+                    "description": "Include columns about the average Identity By State (IBS) and Identity By Descent (IBD) for all new infections with unique barcodes in the last year.",
+                    "type": "bool"
                 },
                 "Sim_Types": [
                     "MALARIA_SIM"
@@ -15176,6 +15476,113 @@
                 },
                 "class": "ReportVectorGenetics"
             },
+            "ReportVectorGeneticsMalariaGenetics": {
+                "Allele_Combinations_For_Stratification": {
+                    "default": [],
+                    "depends-on": {
+                        "Stratify_By": "ALLELE"
+                    },
+                    "description": "If stratifying by allele, then also add these allele name combos to the stratification",
+                    "type": "Vector2d String"
+                },
+                "Alleles_For_Stratification": {
+                    "default": [],
+                    "depends-on": {
+                        "Stratify_By": "ALLELE_FREQ"
+                    },
+                    "description": "The list of alleles to collect frequency counts on.  If the list is empty, it will use a list of all possible alleles.",
+                    "type": "Vector String"
+                },
+                "Combine_Similar_Genomes": {
+                    "default": 0,
+                    "depends-on": {
+                        "Stratify_By": "GENOME,SPECIFIC_GENOME"
+                    },
+                    "description": "1 implies genomes are combined if for each locus (ignoring gender) the set of allele of the two genomes are the same (i.e. 1-0 is similar to 0-1).",
+                    "type": "bool"
+                },
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Filename_Suffix": {
+                    "default": "",
+                    "description": "Augments the filename of the report. If multiple reports are being generated, this allows you to distinguish among the multiple reports.",
+                    "type": "string"
+                },
+                "Gender": {
+                    "default": "VECTOR_FEMALE",
+                    "description": "gender to include in file",
+                    "enum": [
+                        "VECTOR_FEMALE",
+                        "VECTOR_MALE",
+                        "VECTOR_BOTH_GENDERS"
+                    ],
+                    "type": "enum"
+                },
+                "Include_Death_By_State_Columns": {
+                    "default": 0,
+                    "description": "Adds columns for the number of vectors that died in this state during this time step as well as the average age.  It adds two columns for each of the following states: ADULT, INFECTED, INFETCIOUS, and MALE.",
+                    "type": "bool"
+                },
+                "Include_Vector_State_Columns": {
+                    "default": 1,
+                    "description": "1 implies to add the columns for vectors in the different states (i.e Eggs, Larva, etc).",
+                    "type": "bool"
+                },
+                "Node_IDs_Of_Interest": {
+                    "ascending": 0,
+                    "default": [],
+                    "description": "Data will be collected for the nodes in this list.",
+                    "max": 2147480000.0,
+                    "min": 0,
+                    "type": "Vector Uint32"
+                },
+                "Parasite_Barcodes": {
+                    "default": [],
+                    "description": "TBD",
+                    "type": "Vector String"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Species": {
+                    "default": "UNINITIALIZED STRING",
+                    "description": "The species to include information on.",
+                    "type": "string"
+                },
+                "Specific_Genome_Combinations_For_Stratification": {
+                    "default": [],
+                    "depends-on": {
+                        "Stratify_By": "SPECIFIC_GENOME"
+                    },
+                    "description": "If stratifying by SPECIFIC_GENOME, then use these genomes to stratify by. '*' = list all entries at that location, '?' = combine all entries at that location",
+                    "item_type": "idmType:RVG_AlleleCombo",
+                    "type": "Vector idmType:RVG_AlleleCombo"
+                },
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Stratify_By": {
+                    "default": "GENOME",
+                    "description": "An enum that determines how the data is stratified",
+                    "enum": [
+                        "GENOME",
+                        "SPECIFIC_GENOME",
+                        "ALLELE",
+                        "ALLELE_FREQ"
+                    ],
+                    "type": "enum"
+                },
+                "class": "ReportVectorGeneticsMalariaGenetics"
+            },
             "ReportVectorMigration": {
                 "End_Day": {
                     "default": 3.40282e+38,
@@ -15375,6 +15782,121 @@
                 },
                 "class": "SpatialReportMalariaFiltered"
             },
+            "SqlReport": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Include_Health_Table": {
+                    "default": 1,
+                    "description": "Include the table that provides data at each time step for a persons health.",
+                    "type": "bool"
+                },
+                "Include_Individual_Properties": {
+                    "default": 0,
+                    "description": "Include a table with all the possible IPs and include the IP data for each person in the Health table.",
+                    "type": "bool"
+                },
+                "Include_Infection_Data_Table": {
+                    "default": 1,
+                    "description": "Include the table that provides data at each time step for each active infection.",
+                    "type": "bool"
+                },
+                "Sim_Types": [
+                    "*"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "SqlReport"
+            },
+            "SqlReportMalaria": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Include_Drug_Status_Table": {
+                    "default": 0,
+                    "description": "Include the table that provides data at each time step for each drug the person has.",
+                    "type": "bool"
+                },
+                "Include_Health_Table": {
+                    "default": 1,
+                    "description": "Include the table that provides data at each time step for a persons health.",
+                    "type": "bool"
+                },
+                "Include_Individual_Properties": {
+                    "default": 0,
+                    "description": "Include a table with all the possible IPs and include the IP data for each person in the Health table.",
+                    "type": "bool"
+                },
+                "Include_Infection_Data_Table": {
+                    "default": 1,
+                    "description": "Include the table that provides data at each time step for each active infection.",
+                    "type": "bool"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "SqlReportMalaria"
+            },
+            "SqlReportMalariaGenetics": {
+                "End_Day": {
+                    "default": 3.40282e+38,
+                    "description": "The day of the simulation to stop collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "Include_Drug_Status_Table": {
+                    "default": 0,
+                    "description": "Include the table that provides data at each time step for each drug the person has.",
+                    "type": "bool"
+                },
+                "Include_Health_Table": {
+                    "default": 1,
+                    "description": "Include the table that provides data at each time step for a persons health.",
+                    "type": "bool"
+                },
+                "Include_Individual_Properties": {
+                    "default": 0,
+                    "description": "Include a table with all the possible IPs and include the IP data for each person in the Health table.",
+                    "type": "bool"
+                },
+                "Include_Infection_Data_Table": {
+                    "default": 1,
+                    "description": "Include the table that provides data at each time step for each active infection.",
+                    "type": "bool"
+                },
+                "Sim_Types": [
+                    "MALARIA_SIM"
+                ],
+                "Start_Day": {
+                    "default": 0,
+                    "description": "The day of the simulation to start collecting data.",
+                    "max": 3.40282e+38,
+                    "min": 0,
+                    "type": "float"
+                },
+                "class": "SqlReportMalariaGenetics"
+            },
             "VectorHabitatReport": {
                 "Sim_Types": [
                     "VECTOR_SIM",
@@ -15534,7 +16056,13 @@
                     "WouldHaveEnteredLatentStage",
                     "HIVInfectionStageEnteredLatent",
                     "HIVInfectionStageEnteredAIDS",
-                    "HIVInfectionStageEnteredOnART"
+                    "HIVInfectionStageEnteredOnART",
+                    "NewMalariaInfectionObject",
+                    "PFA_Entered",
+                    "PFA_Exited",
+                    "PFA_SeekingPartner",
+                    "PFA_FoundPartner",
+                    "PFA_NoPartnerFound"
                 ],
                 "default": [],
                 "description": "A list of events that will trigger an intervention.",
@@ -15872,6 +16400,71 @@
                 "type": "Vector idmType:DrugModifier"
             },
             "class": "MalariaDrugTypeParameters"
+        },
+        "idmType:MicrosporidiaParameters": {
+            "Duration_To_Disease_Acquisition_Modification": {
+                "description": "A modifier is selected based on the duration of the age of the microsporidia infection.  The modifier is used to modify the probability the vector aquires the disease (i.e. malaria).",
+                "type": "idmType:InterpolatedValueMap"
+            },
+            "Duration_To_Disease_Transmission_Modification": {
+                "description": "A modifier is selected based on the duration of the age of the microsporidia infection.  The modifier is used to modify the probability the vector transmit the disease (i.e. malaria).",
+                "type": "idmType:InterpolatedValueMap"
+            },
+            "Female_Mortality_Modifier": {
+                "default": 1,
+                "description": "A modifier on the death rate for female vectors due to general life expectancy, age, and dry heat",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Female_To_Egg_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability an infected female will infect her eggs when laying them.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Female_To_Male_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability an infected female will infect an uninfected male during mating.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Larval_Growth_Modifier": {
+                "default": 1,
+                "description": "A modifier to the daily, temperature dependent, larval growth progression to immature.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Male_Mortality_Modifier": {
+                "default": 1,
+                "description": "A modifier on the death rate for male vectors due to general life expectancy, age, and dry heat",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Male_To_Egg_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability a female that mated with an infected male will infect her eggs when laying them, independent of her being infected and transmitting to her offspring.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Male_To_Female_Transmission_Probability": {
+                "default": 0,
+                "description": "The probability an infected male will infect an uninfected female during mating.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Strain_Name": {
+                "default": "UNINITIALIZED STRING",
+                "description": "The name/identifier of the collection of transmission parameters. Cannot be empty string.",
+                "type": "string"
+            },
+            "class": "MicrosporidiaParameters"
         },
         "idmType:NodeIdAndCoverage": {
             "Coverage": {
@@ -16393,12 +16986,36 @@
             "class": "TargetedDistribution"
         },
         "idmType:TraitModifier": {
+            "Gametocyte_A_Barcode_String": {
+                "default": "",
+                "depends-on": {
+                    "Trait": "OOCYST_PROGRESSION"
+                },
+                "description": "TBD",
+                "type": "string"
+            },
+            "Gametocyte_B_Barcode_String": {
+                "default": "",
+                "depends-on": {
+                    "Trait": "OOCYST_PROGRESSION"
+                },
+                "description": "TBD",
+                "type": "string"
+            },
             "Modifier": {
                 "default": 1,
                 "description": "The multiplier to use to modify the given trait for vectors with the given allele combination.",
                 "max": 1000,
                 "min": 0,
                 "type": "float"
+            },
+            "Sporozoite_Barcode_String": {
+                "default": "",
+                "depends-on": {
+                    "Trait": "SPOROZOITE_MORTALITY"
+                },
+                "description": "TBD",
+                "type": "string"
             },
             "Trait": {
                 "default": "INFECTED_BY_HUMAN",
@@ -16411,7 +17028,9 @@
                     "TRANSMISSION_TO_HUMAN",
                     "ADJUST_FERTILE_EGGS",
                     "MORTALITY",
-                    "INFECTED_PROGRESS"
+                    "INFECTED_PROGRESS",
+                    "OOCYST_PROGRESSION",
+                    "SPOROZOITE_MORTALITY"
                 ],
                 "type": "enum"
             },
@@ -16459,6 +17078,217 @@
                 "type": "float"
             },
             "class": "VectorAlleleMutation"
+        },
+        "idmType:VectorCounter": {
+            "Count_Type": {
+                "default": "ALLELE_FREQ",
+                "description": "The attribute to count in the mosquitoes being sampled. The statistic returned by the Vector_Counter will be with respect to how this attribute relates to the mosquitos sampled. Possible values are 'ALLELE_FREQ' - Calculates the frequency of every allele in the sampled population. NOTE: This will be account the occurrences of the allele where there can be two per vector(i.e.you can get 0, 1, or 2 from each vector); GENOME_FRACTION - Calculates the fraction of each (grouped by similar) genome in the sampled population.",
+                "enum": [
+                    "ALLELE_FREQ",
+                    "GENOME_FRACTION"
+                ],
+                "type": "enum"
+            },
+            "Gender": {
+                "default": "VECTOR_FEMALE",
+                "description": "The sex of the vectors we are sampling. Options are VECTOR_MALE, VECTOR_FEMALE, VECTOR_BOTH_GENDERS.",
+                "enum": [
+                    "VECTOR_FEMALE",
+                    "VECTOR_MALE",
+                    "VECTOR_BOTH_GENDERS"
+                ],
+                "type": "enum"
+            },
+            "Sample_Size_Constant": {
+                "default": 6,
+                "depends-on": {
+                    "Sample_Size_Distribution": "CONSTANT_DISTRIBUTION"
+                },
+                "description": "Each instance will receive this constant/fixed value.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Distribution": {
+                "default": "NOT_INITIALIZED",
+                "description": "The distribution dictionary to use for determining the number of vectors in the sample for each sampling. If the population is less than this number, then the entire population will be selected.",
+                "enum": [
+                    "NOT_INITIALIZED",
+                    "CONSTANT_DISTRIBUTION",
+                    "UNIFORM_DISTRIBUTION",
+                    "GAUSSIAN_DISTRIBUTION",
+                    "EXPONENTIAL_DISTRIBUTION",
+                    "POISSON_DISTRIBUTION",
+                    "LOG_NORMAL_DISTRIBUTION",
+                    "DUAL_CONSTANT_DISTRIBUTION",
+                    "WEIBULL_DISTRIBUTION",
+                    "DUAL_EXPONENTIAL_DISTRIBUTION"
+                ],
+                "type": "enum"
+            },
+            "Sample_Size_Exponential": {
+                "default": 6,
+                "depends-on": {
+                    "Sample_Size_Distribution": "EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean for an exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Gaussian_Mean": {
+                "default": 6,
+                "depends-on": {
+                    "Sample_Size_Distribution": "GAUSSIAN_DISTRIBUTION"
+                },
+                "description": "The mean for a Gaussian distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Gaussian_Std_Dev": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "GAUSSIAN_DISTRIBUTION"
+                },
+                "description": "The standard deviation for a Gaussian distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Sample_Size_Kappa": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "WEIBULL_DISTRIBUTION"
+                },
+                "description": "The shape value in a Weibull distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Sample_Size_Lambda": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "WEIBULL_DISTRIBUTION"
+                },
+                "description": "The scale value in a Weibull distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Sample_Size_Log_Normal_Mu": {
+                "default": 6,
+                "depends-on": {
+                    "Sample_Size_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                },
+                "description": "The mean for a log-normal distribution.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Sample_Size_Log_Normal_Sigma": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "LOG_NORMAL_DISTRIBUTION"
+                },
+                "description": "The width for a log-normal distribution.",
+                "max": 3.40282e+38,
+                "min": -3.40282e+38,
+                "type": "float"
+            },
+            "Sample_Size_Max": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "UNIFORM_DISTRIBUTION"
+                },
+                "description": "The maximum of the uniform distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Mean_1": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean of the first exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Sample_Size_Mean_2": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The mean of the second exponential distribution.",
+                "max": 3.40282e+38,
+                "min": 1.17549e-38,
+                "type": "float"
+            },
+            "Sample_Size_Min": {
+                "default": 0,
+                "depends-on": {
+                    "Sample_Size_Distribution": "UNIFORM_DISTRIBUTION"
+                },
+                "description": "The minimum of the uniform distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Peak_2_Value": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                },
+                "description": "The value to assign to the remaining individuals.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Poisson_Mean": {
+                "default": 6,
+                "depends-on": {
+                    "Sample_Size_Distribution": "POISSON_DISTRIBUTION"
+                },
+                "description": "The mean for a Poisson distribution.",
+                "max": 3.40282e+38,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Proportion_0": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "DUAL_CONSTANT_DISTRIBUTION"
+                },
+                "description": "The proportion of individuals to assign a value of zero.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Sample_Size_Proportion_1": {
+                "default": 1,
+                "depends-on": {
+                    "Sample_Size_Distribution": "DUAL_EXPONENTIAL_DISTRIBUTION"
+                },
+                "description": "The proportion of individuals in the first exponential distribution.",
+                "max": 1,
+                "min": 0,
+                "type": "float"
+            },
+            "Species": {
+                "default": "UNINITIALIZED STRING",
+                "description": "The name of the species to sample the mosquitoes from. This string must be defined by the Name parameter in the config.Vector_Species_Param parameters.",
+                "type": "Constrained String",
+                "value_source": "<configuration>:Vector_Species_Params.*"
+            },
+            "Update_Period": {
+                "default": 30,
+                "description": "The number of days between the sampling of the mosquito population. If the mosquitoes are sampled on day 1 and the period is 30, then the next sample will be taken on day 31.",
+                "max": 999999,
+                "min": 0,
+                "type": "float"
+            }
         },
         "idmType:VectorGene": {
             "Alleles": {
@@ -16565,6 +17395,14 @@
                 "type": "float"
             },
             "class": "VectorHabitat"
+        },
+        "idmType:VectorResponder": {
+            "Survey_Completed_Event": {
+                "default": "",
+                "description": "Optional Coordinator-level event that will be sent out every time VectorSurveillanceEventCoordinator surveys the vector population.",
+                "type": "Constrained String",
+                "value_source": "'<configuration>:Custom_Coordinator_Events.*' or Built-in"
+            }
         },
         "idmType:VectorSpeciesParameters": {
             "Acquire_Modifier": {
@@ -16729,55 +17567,11 @@
                 "min": 1,
                 "type": "float"
             },
-            "Microsporidia_Duration_To_Disease_Acquisition_Modification": {
-                "description": "A modifier is selected based on the duration of the age of the microsporidia infection.  The modifier is used to modify the probability the vector aquires the disease (i.e. malaria).",
-                "type": "idmType:InterpolatedValueMap"
-            },
-            "Microsporidia_Duration_To_Disease_Transmission_Modification": {
-                "description": "A modifier is selected based on the duration of the age of the microsporidia infection.  The modifier is used to modify the probability the vector transmit the disease (i.e. malaria).",
-                "type": "idmType:InterpolatedValueMap"
-            },
-            "Microsporidia_Female_Mortality_Modifier": {
-                "default": 1,
-                "description": "A modifier on the death rate for female vectors due to general life expectancy, age, and dry heat",
-                "max": 3.40282e+38,
-                "min": 0,
-                "type": "float"
-            },
-            "Microsporidia_Female_To_Egg_Transmission_Probability": {
-                "default": 0,
-                "description": "The probability an infected female will infect her eggs when laying them.",
-                "max": 1,
-                "min": 0,
-                "type": "float"
-            },
-            "Microsporidia_Female_To_Male_Transmission_Probability": {
-                "default": 0,
-                "description": "The probability an infected female will infect an uninfected male during mating.",
-                "max": 1,
-                "min": 0,
-                "type": "float"
-            },
-            "Microsporidia_Larval_Growth_Modifier": {
-                "default": 1,
-                "description": "A modifier to the daily, temperature dependent, larval growth progression to immature.",
-                "max": 3.40282e+38,
-                "min": 0,
-                "type": "float"
-            },
-            "Microsporidia_Male_Mortality_Modifier": {
-                "default": 1,
-                "description": "A modifier on the death rate for male vectors due to general life expectancy, age, and dry heat",
-                "max": 3.40282e+38,
-                "min": 0,
-                "type": "float"
-            },
-            "Microsporidia_Male_To_Female_Transmission_Probability": {
-                "default": 0,
-                "description": "The probability an infected male will infect an uninfected female during mating.",
-                "max": 1,
-                "min": 0,
-                "type": "float"
+            "Microsporidia": {
+                "default": [],
+                "description": "A list of microsporidia parameters for each strain that this species can get.",
+                "item_type": "idmType:MicrosporidiaParameters",
+                "type": "Vector idmType:MicrosporidiaParameters"
             },
             "Name": {
                 "default": "UNINITIALIZED STRING",
