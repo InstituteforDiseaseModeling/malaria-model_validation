@@ -33,11 +33,11 @@ def get_command(script="run_sims.py", python_version: str=None, site: str=None, 
         extra_arguments += ' --subset ' + subset
 
     if python_version:
-        command = python_version + " " + script  + extra_arguments
+        command = python_version + ' "' + script + '"' + extra_arguments
     elif platform == "linux":
-        command = "python3 " + script + extra_arguments
+        command = 'python3 "' + script + '"' + extra_arguments
     elif platform == "win32":
-        command = "python " + script + extra_arguments
+        command = 'python "' + script + '"' + extra_arguments
     else:
         print("Unknown OS")
         raise Exception  
