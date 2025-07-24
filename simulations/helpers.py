@@ -88,6 +88,7 @@ def set_simulation_scenario(simulation, site, csv_path):
     simulation.task.config.parameters.Enable_Vital_Dynamics = coord_df.at[site, 'enable_vital_dynamics'].tolist()
     if coord_df.at[site, 'enable_vital_dynamics'] == 1:
         simulation.task.config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_COMPLEX'
+        simulation.task.config.parameters.Enable_Natural_Mortality = 1
     else:
         simulation.task.config.parameters.Age_Initialization_Distribution_Type = 'DISTRIBUTION_SIMPLE'
     # maternal antibodies - use first 12 months of data frame to get annual EIR from monthly eir
